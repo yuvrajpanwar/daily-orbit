@@ -5,6 +5,6 @@
     <title>Document</title>
 </head>
 <body>
-    <?php echo 'hello';?>
+    <?php echo 'hello testing';?>
 </body>
 </html>
