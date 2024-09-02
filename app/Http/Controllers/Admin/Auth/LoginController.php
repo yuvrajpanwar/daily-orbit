@@ -27,7 +27,7 @@ class LoginController extends Controller
         if(auth()->guard('only-admin')->check()){
             return redirect('/admin/dashboard');
         }
-        return view('admin.auth.login');
+        return view('admin.admin-auth.admin-login');
     }
     public function logout(Request $request)
     {
