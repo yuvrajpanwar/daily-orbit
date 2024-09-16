@@ -13,15 +13,6 @@
 
     <ul class="nav">
 
-        <li class="nav-item d-flex align-items-center text-center">
-
-            {{-- @foreach (Auth::user()->roles as $role)
-                {{ $role->name }} {{ Auth::user()->name }}
-            @endforeach --}}
-
-        </li>
-
-
         <li class="nav-item">
             <a class="nav-link text-muted my-2" href="#" id="modeSwitcher" data-mode="light">
                 <i class="fe fe-sun fe-16"></i>
@@ -77,41 +68,6 @@
 
 
 
-
-            <li class="nav-item ">
-                <a href="" class="nav-link">
-                    <i class="fe fe-16 fe-users "></i>
-                    <span class="ml-3 item-text h6">MEMBERS</span>
-                </a>
-            </li>
-
-
-
-            <li class="nav-item ">
-                <a href="" class="nav-link">
-                    <i class="fe fe-16 fe-user-plus "></i>
-                    <span class="ml-3 item-text h6">INTERNS</span>
-                </a>
-            </li>
-
-
-
-
-
-            <li class="nav-item ">
-                <a href="" class="nav-link">
-                    <i class="fe fe-16 fe-heart "></i>
-                    <span class="ml-3 item-text h6">APPRECIATIONS</span>
-                </a>
-            </li>
-
-            <li class="nav-item ">
-                <a href="\" class="nav-link">
-                    <i class="fe fe-16 fe-alert-circle "></i>
-                    <span class="ml-3 item-text h6">GRIEVANCES</span>
-                </a>
-            </li>
-
             <li class="nav-item ">
                 <a href="" class="nav-link">
                     <i class="fe fe-16 fe-file-text "></i>
@@ -119,28 +75,28 @@
                 </a>
             </li>
 
+         
+
+
 
             <li class="nav-item ">
-                <a href="" class="nav-link">
-                    <i class="fe fe-16 fe-message-circle "></i>
-                    <span class="ml-3 item-text h6">ADVISORY</span>
+                <a href="{{route('admin.categories')}}" class="nav-link">
+                    <i class="fe fe-16 fe-folder "></i>
+                    <span class="ml-3 item-text h6">CATEGORIES</span>
                 </a>
             </li>
 
-            <li class="nav-item ">
+           
+   <li class="nav-item ">
                 <a href="" class="nav-link">
-                    <i class="fe fe-16 fe-link "></i>
-                    <span class="ml-3 item-text h6">REFERRALS</span>
+                    <i class="fe fe-16 fe-users "></i>
+                    <span class="ml-3 item-text h6">AUTHORS</span>
                 </a>
             </li>
 
-            <li class="nav-item ">
-                <a href="" class="nav-link">
-                    <i class="fe fe-16 fe-award "></i>
-                    <span class="ml-3 item-text h6">WINNERS</span>
-                </a>
-            </li>
 
+
+          
    
 
             {{-- <li class="nav-item dropdown">
@@ -169,22 +125,7 @@
 
 
 
-            {{-- <li class="nav-item dropdown">
-                    <a href="#layouts" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle nav-link">
-                        <i class="fe fe-layout fe-16"></i>
-                        <span class="ml-3 item-text h6">Reports</span>
-                    </a>
-                    <ul class="collapse list-unstyled pl-4 w-100" id="layouts">
-                        <li class="nav-item">
-                            <a class="nav-link pl-3" href="./index.html"><span class="ml-1 item-text">Daily
-                                    Report</span></a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link pl-3" href="./index-horizontal.html"><span class="ml-1 item-text">Monthly
-                                    Report</span></a>
-                        </li>
-                    </ul>
-                </li> --}}
+            
 
 
 

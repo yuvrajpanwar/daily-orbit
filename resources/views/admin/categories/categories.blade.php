@@ -22,8 +22,7 @@
         tr>td {
             cursor: pointer;
         }
-
-        input {
+        input{
             margin-left: 1.5rem;
         }
     </style>
@@ -33,10 +32,19 @@
     <div class="container-fluid">
         <div class="row justify-content-center">
             <div class="col-12">
-                <h3 class="page-title"> Grievances (<span id="totalGrievancesCount"></span>) </h3>
+                <h3 class="page-title"> Categories (<span id="totalCategoriesCount"></span>) </h3>
             </div>
         </div>
     </div>
+
+    <div class="container-fluid mb-4">
+        <div class="row">
+            <div class="col-12 d-flex justify-content-end">
+                <a href="{{ route('admin.add-category') }}"><button class="btn btn-primary">Add New Category</button></a>
+            </div>
+        </div>
+    </div>
+
 
     <div class="container-fluid mb-4">
 
@@ -48,18 +56,14 @@
             </div>
         @endif
 
-        <table id="grievancesTable" class="table table-striped" style="width:100%">
+        <table id="categoriesTable" class="table table-striped" style="width:100%">
 
             <thead>
                 <tr>
-                    <th style="color: blue"><b>S.No.</b></th>
-                    <th style="color: blue"><b>Company</b></th>
-                    <th style="color: blue"><b>Description</b></th>
-                    <th style="color: blue"><b>Date</b></th>
-                    <th style="color: blue"><b>Visibility</b></th>
-                    <th style="color: blue"><b>Actions</b></th>
-                    <th style="color: blue"><b>Post</b></th>
-
+                    <th ><b class="h5">S.No.</b></th>
+                    <th ><b class="h5">Name</b></th>
+                    <th ><b class="h5">Publish</b></th>
+                    <th ><b class="h5">Actions</b></th>
                 </tr>
             </thead>
 
@@ -96,7 +100,6 @@
 
 
     <!--all details Modal Structure -->
-
     <div id="detailsModal" class="modal fade" tabindex="-1" role="dialog">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
@@ -107,22 +110,15 @@
                     </button>
                 </div>
                 <div class="modal-body">
-
-                    <p><strong>Description:</strong></p>
-                    <p id="modalGrievanceDescription"></p>
-                    <p><strong>Member Name : </strong> <span id="modalGrievanceMemberName"></span> <strong> Company :
-                        </strong> <span id="modalGrievanceCompany"></span><strong>
-                            <br>
-                            City : </strong> <span id="modalGrievanceCity"></span> <strong> Pin : </strong> <span
-                            id="modalGrievancePin"></span></p>
-                    <hr>
-                    <p><strong>Title By Admin : </strong></p>
-                    <p id="modalTitleByAdmin"></p>
-                    <p><strong>Description By Admin : </strong></p>
-                    <p id="modalDescriptionByAdmin"></p>
-                    <p><strong>Company Name By Admin : </strong>
-                        <span id="modalCompanyNameByAdmin"></span>
-                    </p>
+                    <p><strong>category Title :</strong></p>
+                    <p id="modalcategoryTitle"></p>
+                    <p><strong>category Description:</strong></p>
+                    <p id="modalcategoryDescription"></p>
+                    <p><strong>Author : </strong> <span id="modalcategoryAuthor"> </span></p>
+                    <p><strong>Company : </strong> <span id="modalcategoryCompany"></span></p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                 </div>
             </div>
         </div>
@@ -136,20 +132,19 @@
 
     <script>
         function truncateText(text, wordLimit) {
-            const words = text.split(' ');
-            if (words.length > wordLimit) {
-                return words.slice(0, wordLimit).join(' ') + '...';
+                const words = text.split(' ');
+                if (words.length > wordLimit) {
+                    return words.slice(0, wordLimit).join(' ') + '...';
+                }
+                return text;
             }
-            return text;
-        }
         $(document).ready(function() {
-
 
             // Initially create table
             createTable();
 
             function createTable() {
-                $('#grievancesTable').DataTable({
+                $('#categoriesTable').DataTable({
                     "processing": true,
                     "serverSide": true,
                     "lengthMenu": [
@@ -161,13 +156,13 @@
                     'pageLength': 10,
                     "ordering": false,
                     "ajax": {
-                        "url": "{{ route('fetch-all-grievances') }}",
+                        "url": "{{ route('admin.fetch-all-categories') }}",
                         "data": function(d) {
                             d._token = "{{ csrf_token() }}";
                         },
                         "dataSrc": function(json) {
-                            // Update the total grievances count
-                            $('#totalGrievancesCount').text(json.recordsTotal);
+                            // Update the total categories count
+                            $('#totalCategoriesCount').text(json.recordsTotal);
                             return json.data;
                         }
                     },
@@ -178,23 +173,13 @@
                             searchable: false
                         },
                         {
-                            "data": "CompanyName",
-                            "name": "company_name"
+                            "data": "name",
+                            "name": "name"
                         },
+                       
                         {
-                            "data": "Description",
-                            "name": "description",
-                            "render": function(data, type, row) {
-                                return truncateText(data, 7);
-                            }
-                        },
-                        {
-                            "data": "Date",
-                            "name": "created_at"
-                        },
-                        {
-                            "data": "is_visible", // Column for visibility checkbox
-                            "name": "is_visible",
+                            "data": "is_active", // Column for visibility checkbox
+                            "name": "is_active",
                             "orderable": false,
                             "searchable": false,
                             "render": function(data, type, row) {
@@ -209,23 +194,9 @@
                             "orderable": false,
                             "searchable": false,
                             "render": function(data, type, row) {
-                                if (data.title_by_admin) {
-                                    return `<button class="btn btn-sm btn-success edit-btn" data-id="${row.id}">Edited</button>
-                                            <button class="btn btn-sm btn-danger delete-btn" data-id="${row.id}">Delete</button>
-                                            <button class="btn btn-sm btn-primary mail-btn" data-id="${row.id}"><i class="fe fe-16 fe-mail "></i></button>`;
-                                } else {
-                                    return `<button class="btn btn-sm btn-primary edit-btn" data-id="${row.id}">Edit</button>
-                                            <button class="btn btn-sm btn-danger delete-btn" data-id="${row.id}">Delete</button>
-                                            <button class="btn btn-sm btn-primary mail-btn" data-id="${row.id}"><i class="fe fe-16 fe-mail "></i></button>`;
-                                }
-                            }
-                        },
-                        {
-                            "data": null,
-                            "name": "post",
-                            "searchable": false,
-                            "render": function(data, type, row) {
-                                return `<button class="btn btn-sm btn-primary post-btn" data-id="${row.id}"><i class="fe fe-16 fe-edit"></i></button>`
+                                return `
+                        <button class="btn btn-sm btn-primary edit-btn" data-id="${row.id}">Edit</button>
+                        <button class="btn btn-sm btn-danger delete-btn" data-id="${row.id}">Delete</button>`;
                             }
                         }
                     ],
@@ -240,15 +211,12 @@
                             // Prevent action if it's a button click
                             if (!$(event.target).hasClass('edit-btn') && !$(event.target)
                                 .hasClass('delete-btn') && !$(event.target).hasClass(
-                                    'visibility-checkbox') && !$(event.target).hasClass('mail-btn') && !$(event.target).hasClass('fe')) {
-                                $('#modalGrievanceDescription').text(data.description);
-                                $('#modalGrievanceMemberName').text(data.member_name);
-                                $('#modalGrievanceCity').text(data.city_town);
-                                $('#modalGrievanceCompany').text(data.company_name);
-                                $('#modalGrievancePin').text(data.pin_code);
-                                $('#modalTitleByAdmin').text(data.title_by_admin);
-                                $('#modalDescriptionByAdmin').text(data.description_by_admin);
-                                $('#modalCompanyNameByAdmin').text(data.company_name_by_admin);
+                                    'visibility-checkbox')) {
+                                $('#modalcategoryTitle').text(data.category_title);
+                                $('#modalcategoryDescription').text(data.category_description);
+                                $('#modalcategoryAuthor').text(data.author);
+                                $('#modalcategoryCompany').text(data.company);
+
                                 // Show the modal
                                 $('#detailsModal').modal('show');
                             }
@@ -261,64 +229,53 @@
             $(document).on('click', '.edit-btn', function(event) {
                 event.stopPropagation();
                 const id = $(this).data('id');
-                window.location.href = `edit-grievance/${id}`;
+                window.location.href = `edit-category/${id}`;
             });
 
             $(document).on('click', '.delete-btn', function(event) {
                 event.stopPropagation();
                 const id = $(this).data('id');
-                if (confirm("Are you sure you want to delete this grievance?")) {
+                if (confirm("Are you sure you want to delete this category?")) {
                     $.ajax({
-                        url: `delete-grievance/${id}`,
+                        url: `delete-category/${id}`,
                         type: 'DELETE',
                         data: {
                             _token: "{{ csrf_token() }}",
                         },
                         success: function(response) {
                             if (response.status === 'success') {
-                                $('#grievancesTable').DataTable().ajax.reload();
-                                // alert("grievance deleted successfully.");
+                                $('#categoriesTable').DataTable().ajax.reload();
+                                // alert("category deleted successfully.");
                             } else {
-                                alert("An error occurred while deleting the grievance.");
+                                alert("An error occurred while deleting the category.");
                             }
                         }
                     });
                 }
             });
 
-            $(document).on('click', '.mail-btn', function(event) {
-                event.stopPropagation();
-                const id = $(this).data('id');
-                window.location.href = `mail-grievance/${id}`;
-            });
-            $(document).on('click', '.post-btn', function(event) {
-                event.stopPropagation();
-                const id = $(this).data('id');
-                window.location.href = `add-post/grievance/${id}`;
-            });
-
             // Visibility checkbox change event
             $(document).on('change', '.visibility-checkbox', function() {
                 const id = $(this).data('id');
-                const isVisible = $(this).is(':checked');
+                const isActive = $(this).is(':checked');
 
                 $.ajax({
-                    url: `update-grievance-visibility/${id}`,
+                    url: `update-category-visibility/${id}`,
                     type: 'POST',
                     data: {
                         _token: "{{ csrf_token() }}",
-                        is_visible: isVisible ? 1 : 0
+                        is_active: isActive ? 1 : 0
                     },
                     success: function(response) {
                         if (response.status === 'success') {
-                            // alert("grievance visibility updated successfully.");
+                            $('#categoriesTable').DataTable().ajax.reload();
                         } else {
-                            alert("An error occurred while updating the grievance visibility.");
+                            alert("An error occurred while updating the category visibility.");
                         }
                     },
                     error: function(xhr, status, error) {
                         console.error(xhr.responseText); // Log any errors
-                        alert("An error occurred while updating the grievance visibility.");
+                        alert("An error occurred while updating the category visibility.");
                     }
                 });
             });

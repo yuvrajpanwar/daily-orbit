@@ -27,7 +27,14 @@
     <div class="container-fluid">
         <div class="row justify-content-center">
             <div class="col-12">
-                <h3 class="page-title">Edit Advisory </h3>
+                <h3 class="page-title">Add New Category </h3>
+            </div>
+        </div>
+    </div>
+    <div class="container-fluid mb-4">
+        <div class="row">
+            <div class="col-12 d-flex justify-content-end">
+                <a href="{{ route('admin.categories') }}"><button class="btn btn-primary"> <i class="fe fe-16 fe-arrow-left"></i>All Categories </button></a>
             </div>
         </div>
     </div>
@@ -57,49 +64,19 @@
 
                 <div class="card-body">
 
-                    <form method="POST" action="{{ route('update-advisory', ['advisory' => $advisory->id]) }}">
+                    <form method="POST" action="{{route('admin.store-category')}}">
                         @csrf
-                        <div class="form-row">
-                            <div class="mb-3 w-100">
-                                <label>Title</label>
-                                <input type="text" class="form-control w-100" name="advisory_title" id="advisory_title"
-                                    value="{{$advisory->advisory_title}}" required maxlength="70">
-                                    <small id="title_count">0/70</small>
-
-
-                            </div>
-                        </div>
 
                         <div class="form-row">
                             <div class="mb-3 w-100">
-                                <label class="w-100">Description</label>
-                                <textarea class="w-100" name="advisory_description" id="advisory_description" cols="30" rows="10" required maxlength="500">{{$advisory->advisory_description}}</textarea>
-                                <small id="description_count">0/500</small>
-
+                                <label>Name :</label>
+                                <input type="text" class="form-control w-100" name="name" id="name"
+                                    value="{{ old('name') }}" required maxlength="20">
+                                    <small id="name_count">0/20</small>
                             </div>
                         </div>
 
-                        <div class="form-row">
-                            <div class="mb-3 w-100">
-                                <label>Company</label>
-                                <input type="text" class="form-control w-100" name="company"  id="company"
-                                    value="{{$advisory->company}}" required maxlength="50">
-                                    <small id="company_count">0/50</small>
-
-                            </div>
-                        </div>
-
-                        <div class="form-row">
-                            <div class="mb-3 w-100">
-                                <label>Author</label>
-                                <input type="text" class="form-control w-100" name="author" id="author"
-                                    value="{{$advisory->author}}" required maxlength="20">
-                                    <small id="author_count">0/20</small>
-
-                            </div>
-                        </div>
-
-                        <button class="btn btn-primary" type="submit"> Update </button>
+                        <button class="btn btn-primary" type="submit"> Add </button>
                     </form>
 
                 </div>
@@ -126,10 +103,8 @@
                 updateCountDisplay(); // Initialize the count display
             }
 
-            updateCount('advisory_title', 'title_count', 70);
-            updateCount('advisory_description', 'description_count', 500);
-            updateCount('company', 'company_count', 50);
-            updateCount('author', 'author_count', 20);
+            updateCount('name', 'name_count', 20);
+         
 
         });
     </script>
