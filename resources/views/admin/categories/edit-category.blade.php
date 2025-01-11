@@ -42,7 +42,7 @@
     <div class="container-fluid mb-4">
 
         @if (session('success'))
-            <div class="alert alert-success show col-lg-7" id="alert-success">
+            <div class="alert alert-success show col-lg-6" id="alert-success">
                 <a data-toggle="collapse" href="#alert-success" role="button" aria-expanded="true"
                     aria-controls="alert-success" class="btn-link close-button">X</a>
                 {{ session('success') }}

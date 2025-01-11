@@ -55,5 +55,11 @@
         @stack('js')
 
     </body>
+    <script>
+        setTimeout(function() {
+            $('#alert-success').addClass('collapse');
+            $('#alert-success').removeClass('show');
+        }, 4500);
+    </script>
 
 </html>

@@ -14,4 +14,8 @@ class AdminController extends Controller
     {
         return view('admin.categories.categories');
     }
+    public function posts()
+    {
+        return view('admin.posts.posts');
+    }
 }
