@@ -20,6 +20,7 @@ class CategoryController extends Controller
         $searchArr = $request->get('search');
         $searchValue = $searchArr['value'];
         $query = Category::select('categories.*')
+            ->orderBy('categories.name')
             //for searching 
             ->where(function ($innerQuery) use ($searchValue) {
                 $innerQuery->where('categories.name', 'like', '%' . $searchValue . '%')

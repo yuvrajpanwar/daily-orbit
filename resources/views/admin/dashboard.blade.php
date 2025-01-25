@@ -9,7 +9,7 @@
                     {{-- posts --}}
                     <div class="col-md-6 col-xl-3 mb-4">
                         <div class="card shadow border-0">
-                            <a href="">
+                            <a href="{{route('admin.posts')}}">
                                 <div class="card-body">
                                     <div class="row align-items-center">
                                         <div class="col-3 text-center">
@@ -19,7 +19,7 @@
                                         </div>
                                         <div class="col">
                                             <p class="h5 mb-0">POSTS</p>
-                                            <p class="h6 mb-0">TOTAL : </p>
+                                            <p class="h6 mb-0">TOTAL : {{$totalPosts}}</p>
                                         </div>
                                     </div>
                                 </div>
@@ -40,7 +40,7 @@
                                         </div>
                                         <div class="col pr-0">
                                             <p class="h5 mb-0 ">CATEGORIES</p>
-                                            <p class="h6 mb-0">TOTAL : </p>
+                                            <p class="h6 mb-0">TOTAL : {{$totalCategories}}</p>
                                         </div>
                                     </div>
                                 </div>
@@ -51,7 +51,7 @@
                     {{-- AUTHORS --}}
                     <div class="col-md-6 col-xl-3 mb-4">
                         <div class="card shadow border-0">
-                            <a href="">
+                            <a href="{{ route('admin.authors') }}">
                                 <div class="card-body">
                                     <div class="row align-items-center">
                                         <div class="col-3 text-center">
@@ -62,7 +62,7 @@
                                         </div>
                                         <div class="col">
                                             <p class="h5 mb-0 ">AUTHORS</p>
-                                            <p class="h6 mb-0">TOTAL : </p>
+                                            <p class="h6 mb-0">TOTAL : {{ $totalAuthors}}</p>
                                         </div>
                                     </div>
                                 </div>

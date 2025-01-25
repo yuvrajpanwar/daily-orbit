@@ -69,7 +69,7 @@
 
 
             <li class="nav-item ">
-                <a href="" class="nav-link">
+                <a href="{{route('admin.posts')}}" class="nav-link">
                     <i class="fe fe-16 fe-file-text "></i>
                     <span class="ml-3 item-text h6">POSTS</span>
                 </a>
@@ -88,7 +88,7 @@
 
            
    <li class="nav-item ">
-                <a href="" class="nav-link">
+                <a href="{{route('admin.authors')}}" class="nav-link">
                     <i class="fe fe-16 fe-users "></i>
                     <span class="ml-3 item-text h6">AUTHORS</span>
                 </a>
