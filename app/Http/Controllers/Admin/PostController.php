@@ -80,9 +80,31 @@ class PostController extends Controller
             ->with('success', 'Post created successfully');
     }
 
+    public function uploadImage(Request $request)
+    {
+        if ($request->hasFile('image')) {
+            $file = $request->file('image');
+            $filename = time() . '_' . $file->getClientOriginalName();
+
+            // Store directly in public/uploads/posts directory
+            $file->move(public_path('uploads/posts'), $filename);
+
+            return response()->json([
+                'success' => true,
+                'url' => asset('uploads/posts/' . $filename)
+            ]);
+        }
+
+        return response()->json([
+            'success' => false,
+            'message' => 'No image provided'
+        ], 400);
+    }
+
     public function editPost(Post $post)
     {
-        return view('admin.posts.edit-post', compact('post'));
+        $categories = Category::where('is_deleted', 0)->orderBy('name')->get();
+        return view('admin.posts.edit-post', compact('post', 'categories'));
     }
 
     public function updatePost(Request $request, Post $post)

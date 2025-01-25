@@ -24,11 +24,21 @@
         }
         input{
             margin-left: 1.5rem;
+        }   tr>:last-child {
+            white-space: nowrap;
         }
     </style>
 @endpush
 
-@section('content')
+@section('content')    <div class="container-fluid mb-4">
+        <div class="row">
+            <div class="col-12 d-flex">
+                <a href="{{ route('admin.dashboard') }}"><button class="btn btn-primary mr-2"> <i
+                    class="fe fe-16 fe-arrow-left"></i>Back</button></a>
+                <a href="{{ route('admin.add-category') }}"><button class="btn btn-primary"><i class="fe fe-16 fe-plus"></i>Add New Category</button></a>
+            </div>
+        </div>
+    </div>
     <div class="container-fluid">
         <div class="row justify-content-center">
             <div class="col-12">
@@ -37,13 +47,7 @@
         </div>
     </div>
 
-    <div class="container-fluid mb-4">
-        <div class="row">
-            <div class="col-12 d-flex justify-content-end">
-                <a href="{{ route('admin.add-category') }}"><button class="btn btn-primary">Add New Category</button></a>
-            </div>
-        </div>
-    </div>
+
 
 
     <div class="container-fluid mb-4">
@@ -196,7 +200,7 @@
                             "render": function(data, type, row) {
                                 return `
                         <button class="btn btn-sm btn-primary edit-btn" data-id="${row.id}">Edit</button>
-                        <button class="btn btn-sm btn-danger delete-btn" data-id="${row.id}">Delete</button>`;
+                        <button class="btn btn-sm btn-danger delete-btn" data-id="${row.id}"><i class="fe fe-16 fe-trash"></i</button>`;
                             }
                         }
                     ],

@@ -31,7 +31,14 @@
     </style>
 @endpush
 
-@section('content')
+@section('content') <div class="container-fluid mb-4">
+        <div class="row">
+            <div class="col-12 d-flex">
+                <a href="{{ route('admin.posts') }}"><button class="btn btn-primary"> <i
+                    class="fe fe-16 fe-arrow-left"></i>Back</button></a>
+            </div>
+        </div>
+    </div>
     <div class="container-fluid">
         <div class="row justify-content-center">
             <div class="col-12">
@@ -39,14 +46,7 @@
             </div>
         </div>
     </div>
-    <div class="container-fluid mb-4">
-        <div class="row">
-            <div class="col-12 d-flex justify-content-end">
-                <a href="{{ route('admin.categories') }}"><button class="btn btn-primary"> <i
-                            class="fe fe-16 fe-arrow-left"></i>All Categories </button></a>
-            </div>
-        </div>
-    </div>
+   
 
     <div class="container-fluid mb-4">
 
@@ -73,7 +73,7 @@
 
                 <div class="card-body">
 
-                    <form method="POST" action="{{ route('admin.store-post') }}" enctype="multipart/form-data">
+                    <form id="postForm" method="POST" action="{{ route('admin.store-post') }}" enctype="multipart/form-data">
                         @csrf
                         <div class="form-row">
 
@@ -101,6 +101,32 @@
                                 @error('title')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
+                            </div>   
+                            
+                            <!-- Description -->
+                            <div class="mb-3 w-100">
+                                <label>Description :</label><br>
+                                <small>(Tip : Start with an image of 9:16 ratio)</small>
+                                <!-- Hidden textarea to store Quill content -->
+                                <input type="hidden" name="description" id="description">
+                                <!-- Quill editor container -->
+                                <div id="editor-container" style="height: 500px;"
+                                    class="form-control @error('description') is-invalid @enderror">
+                                    {!! old('description') ?? '<br><br><br><br>' !!}
+                                </div>
+                                @error('description')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>     
+                            
+                            <!-- Date -->
+                            <div class="mb-3 w-100">
+                                <label>Date :</label>
+                                <input type="date" class="form-control w-100 @error('date') is-invalid @enderror"
+                                    name="date" id="date" value="{{ old('date', date('Y-m-d')) }}" required>
+                                @error('date')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
                             </div>
 
                             <!-- Author -->
@@ -112,31 +138,7 @@
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
                             </div>
-
-                            <!-- Date -->
-                            <div class="mb-3 w-100">
-                                <label>Date :</label>
-                                <input type="date" class="form-control w-100 @error('date') is-invalid @enderror"
-                                    name="date" id="date" value="{{ old('date', date('Y-m-d')) }}" required>
-                                @error('date')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
-                            </div>
-
-                            <!-- Description -->
-                            <div class="mb-3 w-100">
-                                <label>Description :</label>
-                                <!-- Hidden textarea to store Quill content -->
-                                <input type="hidden" name="description" id="description">
-                                <!-- Quill editor container -->
-                                <div id="editor-container" style="height: 800px;"
-                                    class="form-control @error('description') is-invalid @enderror">
-                                    {!! old('description') !!}
-                                </div>
-                                @error('description')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
-                            </div>
+                         
                         </div>
 
                         <!-- Submit Button -->
@@ -157,40 +159,89 @@
     <script src="https://cdn.quilljs.com/1.3.7/quill.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/quill-image-resize-module@3.0.0/image-resize.min.js"></script>
     <script>
+        function imageHandler() {
+            const input = document.createElement('input');
+            input.setAttribute('type', 'file');
+            input.setAttribute('accept', 'image/*');
+            input.click();
+
+            input.onchange = async () => {
+                const file = input.files[0];
+                const formData = new FormData();
+                formData.append('image', file);
+
+                // Get CSRF token
+                const token = "{{ csrf_token() }}";
+
+                try {
+                    const response = await fetch('{{ route('admin.upload.image') }}', {
+                        method: 'POST',
+                        headers: {
+                            'X-CSRF-TOKEN': token
+                        },
+                        body: formData
+                    });
+
+                    const result = await response.json();
+
+                    if (result.success) {
+                        // Get the current cursor position
+                        const range = this.quill.getSelection(true);
+
+                        // Insert the image
+                        this.quill.insertEmbed(range.index, 'image', result.url);
+
+                        // Move cursor to next position
+                        this.quill.setSelection(range.index + 1);
+                    } else {
+                        alert('Failed to upload image');
+                    }
+                } catch (error) {
+                    console.error('Error:', error);
+                    alert('Error uploading image');
+                }
+            };
+        }
+
         const quill = new Quill('#editor-container', {
             theme: 'snow',
             modules: {
-                toolbar: [
-                    [{
-                        'header': [ 2, 3, 4, 5, 6, false]
-                    }], // Toggle header sizes
-                    ['bold', 'italic', 'underline'], // Text styling
-                    [{
-                        'list': 'ordered'
-                    }, {
-                        'list': 'bullet'
-                    }], // Ordered and bullet lists
-                    ['image', 'link'], // Add images and links
-                    [{
-                        'align': []
-                    }], // Add alignment options
-                ],
+                toolbar: {
+                    container: [
+                        [{
+                            'header': [2, 3, 4, 5, 6, false]
+                        }],
+                        ['bold', 'italic', 'underline'],
+                        [{
+                            'list': 'ordered'
+                        }, {
+                            'list': 'bullet'
+                        }],
+                        ['image', 'link'],
+                    ],
+                    handlers: {
+                        image: imageHandler
+                    }
+                },
                 imageResize: {
                     modules: ['Resize', 'DisplaySize', 'Toolbar']
                 }
             }
         });
 
-        // When form is submitted, copy Quill content to hidden input
-        document.querySelector('form').addEventListener('submit', function(e) {
-            // Get Quill content
-            const description = document.querySelector('#description');
-            description.value = quill.root.innerHTML;
-        });
+        // submitting form
+        const postForm = document.getElementById('postForm'); // Select the form
+        const descriptionInput = document.getElementById('description'); // Hidden input field
 
-        // If there are validation errors, restore old content
-        @if (old('description'))
-            quill.root.innerHTML = {!! json_encode(old('description')) !!};
-        @endif
+        postForm.addEventListener('submit', function(e) {
+            // Update the hidden input with the Quill editor's HTML content
+            descriptionInput.value = quill.root.innerHTML;
+
+            // Optional: Check if the description is empty
+            if (descriptionInput.value.trim() === '<p><br></p>') {
+                e.preventDefault(); // Prevent form submission
+                alert('Please add some content to the description!');
+            }
+        });
     </script>
 @endpush

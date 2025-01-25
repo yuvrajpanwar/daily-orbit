@@ -26,10 +26,28 @@
         input {
             margin-left: 1.5rem;
         }
+
+        #detailsModalBody img {
+            max-width: 100%;
+            height: auto;
+        }
+        tr>:last-child {
+            white-space: nowrap;
+        }
     </style>
 @endpush
 
 @section('content')
+    <div class="container-fluid mb-4">
+        <div class="row">
+            <div class="col-12 d-flex">
+                <a href="{{ route('admin.dashboard') }}"><button class="btn btn-primary mr-2"> <i
+                            class="fe fe-16 fe-arrow-left"></i>Back</button></a>
+                <a href="{{ route('admin.add-post') }}"><button class="btn btn-primary"><i class="fe fe-16 fe-plus"></i>Add New
+                        Post</button></a>
+            </div>
+        </div>
+    </div>
     <div class="container-fluid">
         <div class="row justify-content-center">
             <div class="col-12">
@@ -37,16 +55,6 @@
             </div>
         </div>
     </div>
-
-    <div class="container-fluid mb-4">
-        <div class="row">
-            <div class="col-12 d-flex justify-content-end">
-                <a href="{{ route('admin.add-post') }}"><button class="btn btn-primary">Add New Post</button></a>
-            </div>
-        </div>
-    </div>
-
-
     <div class="container-fluid mb-4">
 
         @if (session('success'))
@@ -106,12 +114,9 @@
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">All Details</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
+                    <h2 class="modal-title" id="postModalTitle">All Details</h2>
                 </div>
-                <div class="modal-body">
+                <div class="modal-body" id="detailsModalBody">
 
                 </div>
                 <div class="modal-footer">
@@ -203,7 +208,7 @@
                             "render": function(data, type, row) {
                                 return `
                         <button class="btn btn-sm btn-primary edit-btn" data-id="${row.id}">Edit</button>
-                        <button class="btn btn-sm btn-danger delete-btn" data-id="${row.id}">Delete</button>`;
+                        <button class="btn btn-sm btn-danger delete-btn" data-id="${row.id}"><i class="fe fe-16 fe-trash"></i></button>`;
                             }
                         }
                     ],
@@ -219,7 +224,9 @@
                             if (!$(event.target).hasClass('edit-btn') && !$(event.target)
                                 .hasClass('delete-btn') && !$(event.target).hasClass(
                                     'visibility-checkbox')) {
-                                $('#detailsModal').html(decodeHTMLEntities(data.description));
+                                $('#detailsModalBody').html(decodeHTMLEntities(data
+                                    .description));
+                                $('#postModalTitle').text(data.title);
                                 $('#detailsModal').modal('show');
                             }
                         });

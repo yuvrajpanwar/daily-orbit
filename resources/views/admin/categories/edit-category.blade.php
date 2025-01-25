@@ -23,7 +23,13 @@
     </style>
 @endpush
 
-@section('content')
+@section('content')    <div class="container-fluid mb-4">
+        <div class="row">
+            <div class="col-12 d-flex ">
+                <a href="{{ route('admin.categories') }}"><button class="btn btn-primary"> <i class="fe fe-16 fe-arrow-left"></i>Back</button></a>
+            </div>
+        </div>
+    </div>
     <div class="container-fluid">
         <div class="row justify-content-center">
             <div class="col-12">
@@ -31,13 +37,7 @@
             </div>
         </div>
     </div>
-    <div class="container-fluid mb-4">
-        <div class="row">
-            <div class="col-12 d-flex justify-content-end">
-                <a href="{{ route('admin.categories') }}"><button class="btn btn-primary"> <i class="fe fe-16 fe-arrow-left"></i>All Categories </button></a>
-            </div>
-        </div>
-    </div>
+
 
     <div class="container-fluid mb-4">
 
@@ -69,7 +69,7 @@
 
                         <div class="form-row">
                             <div class="mb-3 w-100">
-                                <label>Name :</label>
+                                <label>Category Name :</label>
                                 <input type="text" class="form-control w-100" name="name" id="name" value="{{$category->name}}"
                                     value="{{ old('name') }}" required maxlength="20">
                                     <small id="name_count">0/20</small>
