@@ -46,7 +46,7 @@
             </div>
         </div>
     </div>
-    
+
 
     <div class="container-fluid mb-4">
 
@@ -73,16 +73,19 @@
 
                 <div class="card-body">
 
-                    <form id="postForm" method="POST" action="{{ route('admin.update-post', $post->id) }}" enctype="multipart/form-data">
+                    <form id="postForm" method="POST" action="{{ route('admin.update-post', $post->id) }}"
+                        enctype="multipart/form-data">
                         @csrf
                         <div class="form-row">
                             <!-- Category -->
                             <div class="mb-3 w-100">
                                 <label>Category :</label>
-                                <select name="category_id" id="category_id" class="form-control @error('category_id') is-invalid @enderror" required>
-                                    <option value="" disabled class="text-center">--------Select Category--------</option>
+                                <select name="category_id" id="category_id"
+                                    class="form-control @error('category_id') is-invalid @enderror" required>
+                                    <option value="" disabled class="text-center">--------Select Category--------
+                                    </option>
                                     @foreach ($categories as $category)
-                                        <option value="{{ $category->id }}" 
+                                        <option value="{{ $category->id }}"
                                             {{ $post->category_id == $category->id ? 'selected' : '' }}>
                                             {{ $category->name }}
                                         </option>
@@ -92,85 +95,89 @@
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
                             </div>
-                    
+
                             <!-- Title -->
                             <div class="mb-3 w-100">
                                 <label>Title :</label>
                                 <input type="text" class="form-control w-100 @error('title') is-invalid @enderror"
-                                    name="title" id="title" value="{{ old('title', $post->title) }}" required maxlength="100">
+                                    name="title" id="title" value="{{ old('title', $post->title) }}" required
+                                    maxlength="100">
                                 @error('title')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
-                            </div>   
-                            
+                            </div>
+
                             <!-- Description -->
                             <div class="mb-3 w-100">
                                 <label>Description :</label><br>
                                 <small>(Tip : Start with an image of 9:16 ratio)</small>
                                 <input type="hidden" name="description" id="description">
-                                <div id="editor-container" style="height: 500px;" 
+                                <div id="editor-container" style="height: 500px;"
                                     class="form-control @error('description') is-invalid @enderror">
                                     {!! old('description') ?? $post->description !!}
                                 </div>
                                 @error('description')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
-                            </div>     
-                            
+                            </div>
+
                             <!-- Date -->
                             <div class="mb-3 w-100">
                                 <label>Date :</label>
                                 <input type="date" class="form-control w-100 @error('date') is-invalid @enderror"
-                                    name="date" id="date" value="{{ old('date', $post->date->format('Y-m-d')) }}" required>
+                                    name="date" id="date" value="{{ old('date', $post->date->format('Y-m-d')) }}"
+                                    required>
                                 @error('date')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
+                            </div>
+
+                            // add $author 
+
+                        </div>
                 </div>
 
             </div>
-        </div>
+        @endsection
 
-    </div>
-@endsection
+        @push('js')
+            <script src="https://cdn.quilljs.com/1.3.7/quill.min.js"></script>
+            <script src="https://cdn.jsdelivr.net/npm/quill-image-resize-module@3.0.0/image-resize.min.js"></script>
+            <script>
+                const quill = new Quill('#editor-container', {
+                    theme: 'snow',
+                    modules: {
+                        toolbar: [
+                            [{
+                                'header': [2, 3, 4, 5, 6, false]
+                            }], // Toggle header sizes
+                            ['bold', 'italic', 'underline'], // Text styling
+                            [{
+                                'list': 'ordered'
+                            }, {
+                                'list': 'bullet'
+                            }], // Ordered and bullet lists
+                            ['image', 'link'], // Add images and links
+                            [{
+                                'align': []
+                            }], // Add alignment options
+                        ],
+                        imageResize: {
+                            modules: ['Resize', 'DisplaySize', 'Toolbar']
+                        }
+                    }
+                });
 
-@push('js')
-    <script src="https://cdn.quilljs.com/1.3.7/quill.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/quill-image-resize-module@3.0.0/image-resize.min.js"></script>
-    <script>
-        const quill = new Quill('#editor-container', {
-            theme: 'snow',
-            modules: {
-                toolbar: [
-                    [{
-                        'header': [ 2, 3, 4, 5, 6, false]
-                    }], // Toggle header sizes
-                    ['bold', 'italic', 'underline'], // Text styling
-                    [{
-                        'list': 'ordered'
-                    }, {
-                        'list': 'bullet'
-                    }], // Ordered and bullet lists
-                    ['image', 'link'], // Add images and links
-                    [{
-                        'align': []
-                    }], // Add alignment options
-                ],
-                imageResize: {
-                    modules: ['Resize', 'DisplaySize', 'Toolbar']
-                }
-            }
-        });
+                // When form is submitted, copy Quill content to hidden input
+                document.querySelector('form').addEventListener('submit', function(e) {
+                    // Get Quill content
+                    const description = document.querySelector('#description');
+                    description.value = quill.root.innerHTML;
+                });
 
-        // When form is submitted, copy Quill content to hidden input
-        document.querySelector('form').addEventListener('submit', function(e) {
-            // Get Quill content
-            const description = document.querySelector('#description');
-            description.value = quill.root.innerHTML;
-        });
-
-        // If there are validation errors, restore old content
-        @if (old('description'))
-            quill.root.innerHTML = {!! json_encode(old('description')) !!};
-        @endif
-    </script>
-@endpush
+                // If there are validation errors, restore old content
+                @if (old('description'))
+                    quill.root.innerHTML = {!! json_encode(old('description')) !!};
+                @endif
+            </script>
+        @endpush

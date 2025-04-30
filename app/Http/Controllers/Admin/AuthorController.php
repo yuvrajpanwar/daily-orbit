@@ -27,6 +27,7 @@ class AuthorController extends Controller
                     ->orWhere('authors.phone', 'like', '%' . $searchValue . '%');
             })
             ->where('is_deleted', 0)
+            ->whereNot('authors.name', 'Other')
             ->orderBy('authors.id', 'DESC');
 
         return datatables()->of($query)

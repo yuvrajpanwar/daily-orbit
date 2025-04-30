@@ -223,7 +223,8 @@
                             // Prevent action if it's a button click
                             if (!$(event.target).hasClass('edit-btn') && !$(event.target)
                                 .hasClass('delete-btn') && !$(event.target).hasClass(
-                                    'visibility-checkbox')) {
+                                    'visibility-checkbox')&& !$(event.target).hasClass(
+                                        'fe-trash')   ) {
                                 $('#detailsModalBody').html(decodeHTMLEntities(data
                                     .description));
                                 $('#postModalTitle').text(data.title);

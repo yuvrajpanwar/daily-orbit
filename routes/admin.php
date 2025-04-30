@@ -52,7 +52,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::get('/edit-author/{author}', [AuthorController::class, 'editAuthor'])->name('edit-author');
         Route::post('/update-author/{author}', [AuthorController::class, 'updateAuthor'])->name('update-author');
         Route::post('/update-author-visibility/{author}', [AuthorController::class, 'updateAuthorVisibility'])->name('update-author-visibility');
-        Route::delete('/delete-post/{post}', [PostController::class, 'deletePost'])->name('delete-post');
+        Route::delete('/delete-author/{author}', [AuthorController::class, 'deleteAuthor'])->name('delete-author');
 
     });
 });

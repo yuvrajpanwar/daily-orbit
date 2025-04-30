@@ -1,18 +1,8 @@
 <nav class="topnav navbar navbar-light">
-
-
-
-
-
     <button type="button" class="navbar-toggler text-muted mt-2 p-0 mr-3 collapseSidebar">
         <i class="fe fe-menu navbar-toggler-icon"></i>
     </button>
-
-
-
-
     <ul class="nav">
-
         <li class="nav-item">
             <a class="nav-link text-muted my-2" href="#" id="modeSwitcher" data-mode="light">
                 <i class="fe fe-sun fe-16"></i>
@@ -26,9 +16,6 @@
                 </span>
             </a>
             <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdownMenuLink">
-                <a class="dropdown-item" href="#">Profile</a>
-                <a class="dropdown-item" href="#">Settings</a>
-                <a class="dropdown-item" href="#">Activities</a>
                 <a class="dropdown-item" href="{{ route('admin.logout') }}">Log Out</a>
             </div>
         </li>
@@ -54,51 +41,33 @@
             </a>
         </div>
         <ul class="navbar-nav flex-fill w-100 mb-2">
-
             <li class="nav-item ">
                 <a href="{{ route('admin.dashboard') }}" class="nav-link">
                     <i class="fe fe-home fe-16"></i>
                     <span class="ml-3 item-text h6">Dashboard</span>
                 </a>
             </li>
-
             <li>
                 <hr>
             </li>
-
-
-
             <li class="nav-item ">
-                <a href="{{route('admin.posts')}}" class="nav-link">
+                <a href="{{ route('admin.posts') }}" class="nav-link">
                     <i class="fe fe-16 fe-file-text "></i>
                     <span class="ml-3 item-text h6">POSTS</span>
                 </a>
             </li>
-
-         
-
-
-
             <li class="nav-item ">
-                <a href="{{route('admin.categories')}}" class="nav-link">
+                <a href="{{ route('admin.categories') }}" class="nav-link">
                     <i class="fe fe-16 fe-folder "></i>
                     <span class="ml-3 item-text h6">CATEGORIES</span>
                 </a>
             </li>
-
-           
-   <li class="nav-item ">
-                <a href="{{route('admin.authors')}}" class="nav-link">
+            <li class="nav-item ">
+                <a href="{{ route('admin.authors') }}" class="nav-link">
                     <i class="fe fe-16 fe-users "></i>
                     <span class="ml-3 item-text h6">AUTHORS</span>
                 </a>
             </li>
-
-
-
-          
-   
-
             {{-- <li class="nav-item dropdown">
                     <a href="#roleandpermission" data-toggle="collapse" aria-expanded="false"
                         class="dropdown-toggle nav-link">
@@ -122,57 +91,22 @@
                         </li>
                     </ul>
                 </li> --}}
-
-
-
-            
-
-
-
         </ul>
 
     </nav>
 </aside>
-
-
-
 {{-- for current page navigation style --}}
 <style>
-.nav-item.active {
-    background-color: #f0f0f0;
-    color: #333;
-}
+    .nav-item.active {
+        background-color: darkgray;
+    }
 </style>
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         var currentPath = window.location.href;
         var navbarLinks = document.querySelectorAll('.nav-link');
-
-        console.log(currentPath,navbarLinks);
-        // Loop through each navbar link
         navbarLinks.forEach(function(link) {
             if (link.getAttribute('href') === currentPath) {
-                link.parentElement.classList.add('active');
-            }
-            else if (link.getAttribute('href').includes('appreciation') && currentPath.includes('appreciation')) {
-                link.parentElement.classList.add('active');
-            }
-            else if (link.getAttribute('href').includes('grievance') && currentPath.includes('grievance')) {
-                link.parentElement.classList.add('active');
-            }
-            else if (link.getAttribute('href').includes('post') && currentPath.includes('post')) {
-                link.parentElement.classList.add('active');
-            }
-            else if (link.getAttribute('href').includes('advisor') && currentPath.includes('advisor')) {
-                link.parentElement.classList.add('active');
-            }
-            else if (link.getAttribute('href').includes('winner') && currentPath.includes('winner') || link.getAttribute('href').includes('winner') && currentPath.includes('candidates') ) {
-                link.parentElement.classList.add('active');
-            }
-            else if (link.getAttribute('href').includes('banner') && currentPath.includes('banner') ) {
-                link.parentElement.classList.add('active');
-            }
-            else if (link.getAttribute('href').includes('compan') && currentPath.includes('compan') ) {
                 link.parentElement.classList.add('active');
             }
         });

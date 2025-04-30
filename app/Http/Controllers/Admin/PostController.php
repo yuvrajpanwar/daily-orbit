@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use Carbon\Carbon;
 use App\Models\Post;
+use App\Models\Author;
 use App\Models\Category;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
@@ -15,7 +16,8 @@ class PostController extends Controller
     public function addPost()
     {
         $categories = Category::where('is_deleted', 0)->orderBy('name')->get();
-        return view('admin.posts.add-post', compact('categories'));
+        $authors = Author::where('is_deleted', 0)->orderBy('updated_at','desc')->get();
+        return view('admin.posts.add-post', compact('categories', 'authors'));
     }
 
     public function fetchAllPosts(Request $request)
@@ -54,31 +56,34 @@ class PostController extends Controller
             'author' => 'required|string|max:255',
             'date' => 'required|date',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'thumbnail' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048', 
             'video' => 'nullable|string'
         ]);
-
+    
         $post = new Post();
         $post->title = $request->title;
         $post->description = $request->description;
         $post->author = $request->author;
         $post->date = $request->date;
+    
 
-        // Handle image upload
-        if ($request->hasFile('image')) {
-            $imagePath = $request->file('image')->store('posts', 'public');
-            $post->image = $imagePath;
+        // Handle thumbnail upload
+        if ($request->hasFile('thumbnail')) {
+            $thumbnailPath = $request->file('thumbnail')->store('thumbnails', 'public');
+            $post->thumbnail = $thumbnailPath; 
         }
-
+    
         // Handle video URL
         if ($request->video) {
             $post->video = $request->video;
         }
-
+    
         $post->save();
-
+    
         return redirect()->route('admin.posts')
             ->with('success', 'Post created successfully');
     }
+    
 
     public function uploadImage(Request $request)
     {
@@ -104,7 +109,8 @@ class PostController extends Controller
     public function editPost(Post $post)
     {
         $categories = Category::where('is_deleted', 0)->orderBy('name')->get();
-        return view('admin.posts.edit-post', compact('post', 'categories'));
+        $authors = Author::where('is_deleted', 0)->orderBy('updated_at','desc')->get();
+        return view('admin.posts.edit-post', compact('post', 'categories', 'authors'));
     }
 
     public function updatePost(Request $request, Post $post)

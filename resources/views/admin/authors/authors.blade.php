@@ -27,11 +27,6 @@
             margin-left: 1.5rem;
         }
 
-        #detailsModalBody img {
-            max-width: 100%;
-            height: auto;
-        }
-
         tr>:last-child {
             white-space: nowrap;
         }
@@ -119,8 +114,11 @@
                 <div class="modal-header">
                     <h2 class="modal-title" id="postModalTitle">All Details</h2>
                 </div>
+                <div class="d-flex justify-content-center mt-3">
+                    <img src="" id="authorImg" style="height: 200px;" class="img-fluid">
+                </div>
+                <hr>
                 <div class="modal-body" id="detailsModalBody">
-
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
@@ -230,10 +228,19 @@
                             // Prevent action if it's a button click
                             if (!$(event.target).hasClass('edit-btn') && !$(event.target)
                                 .hasClass('delete-btn') && !$(event.target).hasClass(
-                                    'visibility-checkbox')) {
+                                    'visibility-checkbox') && !$(event.target).hasClass(
+                                    'fe-trash')) {
+                                $('#postModalTitle').text(data.name);
+
                                 $('#detailsModalBody').html(decodeHTMLEntities(data
-                                    .description));
-                                $('#postModalTitle').text(data.title);
+                                    .about));
+
+                                //insert data.profile_picture img tag
+                                // $('#detailsModalBody').append(`<img src="{{ asset('uploads/authors/') }}/${data.profile_picture}" style="height:300px;margin-top:20px;" class="img-fluid">`);
+                                // change src of #authorImg
+                                $('#authorImg').attr('src',
+                                    `{{ asset('uploads/authors/') }}/${data.profile_picture}`
+                                    );
                                 $('#detailsModal').modal('show');
                             }
                         });
@@ -251,7 +258,7 @@
             $(document).on('click', '.delete-btn', function(event) {
                 event.stopPropagation();
                 const id = $(this).data('id');
-                if (confirm("Are you sure you want to delete this post?")) {
+                if (confirm("Are you sure you want to delete this author ?")) {
                     $.ajax({
                         url: `delete-author/${id}`,
                         type: 'DELETE',
@@ -274,7 +281,6 @@
             $(document).on('change', '.visibility-checkbox', function() {
                 const id = $(this).data('id');
                 const isActive = $(this).is(':checked');
-
                 $.ajax({
                     url: `update-author-visibility/${id}`,
                     type: 'POST',
