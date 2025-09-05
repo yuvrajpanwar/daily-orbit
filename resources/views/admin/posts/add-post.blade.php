@@ -96,7 +96,7 @@
             </div>
         @endif
         <div class="row">
-            <div class="card col-md-6">
+            <div class="card col-md-8">
                 <div class="card-body">
                     <form id="postForm" method="POST" action="{{ route('admin.store-post') }}"
                         enctype="multipart/form-data">
@@ -107,10 +107,12 @@
                                 <label>Category :</label>
                                 <select name="category_id" id="category_id"
                                     class="form-control @error('category_id') is-invalid @enderror" required>
-                                    <option value="" disabled class="text-center">--------Select Category--------
+                                    <option value="" disabled selected class="text-center">--------Select Category--------
                                     </option>
                                     @foreach ($categories as $category)
-                                        <option value="{{ $category->id }}">{{ $category->name }}</option>
+                                        <option value="{{ $category->id }}" {{ old('category_id') == $category->id ? 'selected' : '' }}>
+                                            {{ $category->name }}
+                                        </option>
                                     @endforeach
                                 </select>
                                 @error('category_id')
@@ -141,33 +143,21 @@
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
                             </div>
-                            <!-- Date -->
+                            <!-- Time -->
                             <div class="mb-3 w-100">
-                                <label>Date :</label>
-                                <input type="date" class="form-control w-100 @error('date') is-invalid @enderror"
-                                    name="date" id="date" value="{{ old('date', date('Y-m-d')) }}" required>
-                                @error('date')
+                                <label>Time :</label>
+                                <input type="datetime-local" class="form-control w-100 @error('time') is-invalid @enderror"
+                                    name="time" id="time" value="{{ old('time', date('Y-m-d\TH:i')) }}" required>
+                                @error('time')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
                             </div>
-                            <!-- Author -->
-                            <div class="mb-3 w-100">
-                                <label>Author :</label>
-                                <select name="author" id="author_id"
-                                    class="form-control @error('author_id') is-invalid @enderror" required>
-                                    <option value="" disabled selected class="text-center">--------Select
-                                        Author--------
-                                    </option>
-                                    @foreach ($authors as $author)
-                                        <option value="{{ $author->id }}">{{ $author->name }}</option>
-                                    @endforeach
-                                </select>
-                            </div>
+
                             <!-- Thumbnail -->
                             <div class="mb-3 w-100">
                                 <label>Thumbnail Image :</label>
                                 <div class="@error('thumbnail') is-invalid @enderror">
-                                    <input type="file" name="thumbnail" id="thumbnail-input" class="form-control" accept="image/*">
+                                    <input type="file" name="thumbnail" id="thumbnail-input" class="form-control" accept="image/*" required>
                                     
                                     <!-- Cropper.js container -->
                                     <div id="thumbnail-preview-container" class="mt-3">
@@ -301,6 +291,27 @@
                 imageResize: {
                     modules: ['Resize', 'DisplaySize', 'Toolbar']
                 }
+            }
+        });
+
+        // Override the default image handler to prevent base64 insertion
+        quill.clipboard.addMatcher('img', function(node, delta) {
+            // If the image has a data URL (base64), we need to handle it
+            if (node.src && node.src.startsWith('data:')) {
+                // Remove the image from the delta to prevent base64 insertion
+                return delta.compose(new Delta().retain(delta.length()));
+            }
+            return delta;
+        });
+
+        // Prevent base64 images from being pasted
+        quill.on('paste', function(e) {
+            // Check if the pasted content contains base64 images
+            const html = e.clipboardData.getData('text/html');
+            if (html && html.includes('data:image/')) {
+                e.preventDefault();
+                alert('Please use the image button to upload images instead of pasting them.');
+                return false;
             }
         });
 

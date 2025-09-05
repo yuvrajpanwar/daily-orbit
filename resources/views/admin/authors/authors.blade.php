@@ -67,9 +67,11 @@
             <thead>
                 <tr>
                     <th><b class="h5">S.No.</b></th>
+                    <th><b class="h5">Image</b></th>
                     <th><b class="h5">Name</b></th>
                     <th><b class="h5">Email</b></th>
-                    <th><b class="h5">Phone</b></th>
+                    <th><b class="h5">Phone Number</b></th>
+                    <th><b class="h5">Type</b></th>
                     <th><b class="h5">Active/Deactive</b></th>
                     <th><b class="h5">Actions</b></th>
                 </tr>
@@ -182,6 +184,19 @@
                             searchable: false
                         },
                         {
+                            "data": "profile_picture",
+                            "name": "profile_picture",
+                            "orderable": false,
+                            "searchable": false,
+                            "render": function(data, type, row) {
+                                if (data) {
+                                    return `<img src="{{ asset('uploads/authors/') }}/${data}" alt="Profile" style="width: 50px; height: 50px; border-radius: 50%; object-fit: cover;">`;
+                                } else {
+                                    return '<img src="{{ asset('assets/images/default-avatar.png') }}" alt="Default" style="width: 50px; height: 50px; border-radius: 50%; object-fit: cover;">';
+                                }
+                            }
+                        },
+                        {
                             "data": "name",
                             "name": "name",
                         },
@@ -190,8 +205,20 @@
                             "name": "email",
                         },
                         {
-                            "data": "phone",
-                            "name": "phone",
+                            "data": "phone_number",
+                            "name": "phone_number",
+                        },
+
+                        {
+                            "data": "type",
+                            "name": "type",
+                            "render": function(data, type, row) {
+                                if (data === 'admin-author') {
+                                    return '<span class="badge badge-primary">Admin Author</span>';
+                                } else {
+                                    return '<span class="badge badge-secondary">Author</span>';
+                                }
+                            }
                         },
 
                         {
@@ -252,7 +279,7 @@
             $(document).on('click', '.edit-btn', function(event) {
                 event.stopPropagation();
                 const id = $(this).data('id');
-                window.location.href = `edit-author/${id}`;
+                window.location.href = `{{ route('admin.edit-author', '') }}/${id}`;
             });
 
             $(document).on('click', '.delete-btn', function(event) {
@@ -260,7 +287,7 @@
                 const id = $(this).data('id');
                 if (confirm("Are you sure you want to delete this author ?")) {
                     $.ajax({
-                        url: `delete-author/${id}`,
+                        url: `{{ route('admin.delete-author', '') }}/${id}`,
                         type: 'DELETE',
                         data: {
                             _token: "{{ csrf_token() }}",
@@ -268,9 +295,9 @@
                         success: function(response) {
                             if (response.status === 'success') {
                                 $('#postsTable').DataTable().ajax.reload();
-                                // alert("category deleted successfully.");
+                                // alert("Author deleted successfully.");
                             } else {
-                                alert("An error occurred while deleting the category.");
+                                alert("An error occurred while deleting the author.");
                             }
                         }
                     });
@@ -282,7 +309,7 @@
                 const id = $(this).data('id');
                 const isActive = $(this).is(':checked');
                 $.ajax({
-                    url: `update-author-visibility/${id}`,
+                    url: `{{ route('admin.update-author-visibility', '') }}/${id}`,
                     type: 'POST',
                     data: {
                         _token: "{{ csrf_token() }}",
@@ -290,14 +317,14 @@
                     },
                     success: function(response) {
                         if (response.status === 'success') {
-                            $('#authorsTable').DataTable().ajax.reload();
+                            $('#postsTable').DataTable().ajax.reload();
                         } else {
-                            alert("An error occurred while updating the post visibility.");
+                            alert("An error occurred while updating the author visibility.");
                         }
                     },
                     error: function(xhr, status, error) {
                         console.error(xhr.responseText); // Log any errors
-                        alert("An error occurred while updating the post visibility.");
+                        alert("An error occurred while updating the author visibility.");
                     }
                 });
             });

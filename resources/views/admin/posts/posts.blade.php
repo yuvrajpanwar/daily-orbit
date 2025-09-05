@@ -34,6 +34,24 @@
         tr>:last-child {
             white-space: nowrap;
         }
+        
+        .post-thumbnail {
+            width: 60px;
+            height: 60px;
+            object-fit: cover;
+            border-radius: 4px;
+        }
+        body{
+            font-size: 1.3rem;
+            /* line-height: 0.5; */
+        }
+        /* medie query for mobile phones  */
+        @media (max-width: 600px) {
+            body{
+                font-size: 1rem;
+                /* line-height: 0.5; */
+            }
+        }
     </style>
 @endpush
 
@@ -70,8 +88,11 @@
             <thead>
                 <tr>
                     <th><b class="h5">S.No.</b></th>
+                    <th><b class="h5">Thumbnail</b></th>
                     <th><b class="h5">Title</b></th>
-                    <th><b class="h5">Date</b></th>
+                    <th><b class="h5">Author</b></th>
+                    <th><b class="h5">Category</b></th>
+                    <th><b class="h5">Time</b></th>
                     <th><b class="h5">Publish</b></th>
                     <th><b class="h5">Actions</b></th>
                 </tr>
@@ -111,13 +132,16 @@
 
     <!--all details Modal Structure -->
     <div id="detailsModal" class="modal fade" tabindex="-1" role="dialog">
-        <div class="modal-dialog" role="document">
+        <div class="modal-dialog" role="document" style="max-width: 800px;">
             <div class="modal-content">
-                <div class="modal-header">
-                    <h2 class="modal-title" id="postModalTitle">All Details</h2>
+                <div class="d-block pt-4 modal-header justify-content-center position-relative">
+                     <button type="button" class="close position-absolute" data-dismiss="modal" aria-label="Close" style="top: 10px; right: 15px; z-index: 10;">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <h1 class="modal-title mt-4" id="postModalTitle"></h1>
+                    <img src="" id="postThumbnail" style="height: 200px;" class="mt-2 img-fluid">
                 </div>
                 <div class="modal-body" id="detailsModalBody">
-
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
@@ -181,22 +205,42 @@
                             searchable: false
                         },
                         {
+                            "data": "thumbnail",
+                            "name": "thumbnail",
+                            "orderable": false,
+                            "searchable": false,
+                            "render": function(data, type, row) {
+                                if (data) {
+                                    return `<img src="/storage/${data}" alt="Post Thumbnail" class="post-thumbnail">`;
+                                }
+                                return '<div class="post-thumbnail bg-light d-flex align-items-center justify-content-center text-muted">No Image</div>';
+                            }
+                        },
+                        {
                             "data": "title",
                             "name": "title",
                         },
                         {
-                            "data": "date",
-                            "name": "date",
+                            "data": "author",
+                            "name": "author",
+                        },
+                        {
+                            "data": "category",
+                            "name": "category",
+                        },
+                        {
+                            "data": "time",
+                            "name": "time",
                         },
 
                         {
-                            "data": "is_active",
-                            "name": "is_active",
+                            "data": "is_published",
+                            "name": "is_published",
                             "orderable": false,
                             "searchable": false,
                             "render": function(data, type, row) {
                                 return `
-                        <input type="checkbox" class="visibility-checkbox" data-id="${row.id}" ${data ? 'checked' : ''}>
+                        <input type="checkbox" class="visibility-checkbox" data-id="${row.id}" ${data === 'Published' ? 'checked' : ''}>
                     `;
                             }
                         },
@@ -208,7 +252,7 @@
                             "render": function(data, type, row) {
                                 return `
                         <button class="btn btn-sm btn-primary edit-btn" data-id="${row.id}">Edit</button>
-                        <button class="btn btn-sm btn-danger delete-btn" data-id="${row.id}"><i class="fe fe-16 fe-trash"></i></button>`;
+                        <button class="btn btn-sm btn-danger delete-btn" data-id="${row.id}"><i class="fe fe-trash"></i></button>`;
                             }
                         }
                     ],
@@ -228,6 +272,14 @@
                                 $('#detailsModalBody').html(decodeHTMLEntities(data
                                     .description));
                                 $('#postModalTitle').text(data.title);
+                                
+                                // Set the thumbnail image
+                                if (data.thumbnail) {
+                                    $('#postThumbnail').attr('src', `/storage/${data.thumbnail}`).show();
+                                } else {
+                                    $('#postThumbnail').hide();
+                                }
+                                
                                 $('#detailsModal').modal('show');
                             }
                         });
@@ -267,14 +319,14 @@
             // Visibility checkbox change event
             $(document).on('change', '.visibility-checkbox', function() {
                 const id = $(this).data('id');
-                const isActive = $(this).is(':checked');
+                const isPublished = $(this).is(':checked');
 
                 $.ajax({
                     url: `update-post-visibility/${id}`,
                     type: 'POST',
                     data: {
                         _token: "{{ csrf_token() }}",
-                        is_active: isActive ? 1 : 0
+                        is_published: isPublished ? 1 : 0
                     },
                     success: function(response) {
                         if (response.status === 'success') {
