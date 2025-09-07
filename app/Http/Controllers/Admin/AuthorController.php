@@ -2,8 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
-
-use App\Models\Author;
+use App\Models\Admin;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -20,14 +19,16 @@ class AuthorController extends Controller
         $searchArr = $request->get('search');
         $searchValue = $searchArr['value'];
 
-        $query = Author::select('authors.*')
+        $query = Admin::select('admins.*')
             ->where(function ($innerQuery) use ($searchValue) {
-                $innerQuery->where('authors.name', 'like', '%' . $searchValue . '%')
-                    ->orWhere('authors.email', 'like', '%' . $searchValue . '%')
-                    ->orWhere('authors.phone', 'like', '%' . $searchValue . '%');
+                $innerQuery->where('admins.name', 'like', '%' . $searchValue . '%')
+                    ->orWhere('admins.email', 'like', '%' . $searchValue . '%')
+                    ->orWhere('admins.phone_number', 'like', '%' . $searchValue . '%');
             })
             ->where('is_deleted', 0)
-            ->orderBy('authors.id', 'DESC');
+            ->whereIn('type', ['author', 'admin-author']) // Fetch both author types
+            ->whereNot('admins.name', 'Other')
+            ->orderBy('admins.id', 'DESC');
 
         return datatables()->of($query)
             ->addIndexColumn()
@@ -38,7 +39,7 @@ class AuthorController extends Controller
                 return $row->email;
             })
             ->addColumn('phone', function ($row) {
-                return $row->phone;
+                return $row->phone_number;
             })
             ->make(true);
     }
@@ -47,54 +48,60 @@ class AuthorController extends Controller
     {
         $request->validate([
             'name' => 'required|string|max:255',
-            'email' => 'required|email|max:255|unique:authors,email',
-            'phone' => 'nullable|string|max:20',
+            'email' => 'required|email|max:255|unique:admins,email',
+            'phone_number' => 'nullable|string|max:20',
             'about' => 'nullable|string',
             'profile_picture' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-            'password' => 'required|string|min:6'
+            'password' => 'required|string|min:6',
+            'type' => 'required|in:author,admin-author'
         ]);
 
-        $author = new Author();
-        $author->name = $request->name;
-        $author->email = $request->email;
-        $author->phone = $request->phone;
-        $author->about = $request->about;
-        $author->password = bcrypt($request->password);
+        $admin = new Admin();
+        $admin->name = $request->name;
+        $admin->email = $request->email;
+        $admin->phone_number = $request->phone_number;
+        $admin->about = $request->about;
+        $admin->password = bcrypt($request->password);
+        $admin->type = $request->type; // Use type from form
+        $admin->is_active = 1; // Set as active by default
+        $admin->is_deleted = 0; // Set as not deleted
 
         if ($request->hasFile('profile_picture')) {
             $file = $request->file('profile_picture');
             $filename = time() . '_' . $file->getClientOriginalName();
             // Store directly in public/uploads/authors directory
             $file->move(public_path('uploads/authors'), $filename);
-            $author->profile_picture = $filename;
+            $admin->profile_picture = $filename;
         }
 
-        $author->save();
+        $admin->save();
 
         return redirect()->route('admin.authors')
             ->with('success', 'Author created successfully');
     }
 
-    public function editAuthor(Author $author)
+    public function editAuthor(Admin $author)
     {
         return view('admin.authors.edit-author', compact('author'));
     }
 
-    public function updateAuthor(Request $request, Author $author)
+    public function updateAuthor(Request $request, Admin $author)
     {
         $request->validate([
             'name' => 'required|string|max:255',
-            'email' => 'required|email|max:255|unique:authors,email,' . $author->id,
-            'phone' => 'nullable|string|max:20',
+            'email' => 'required|email|max:255|unique:admins,email,' . $author->id,
+            'phone_number' => 'nullable|string|max:20',
             'about' => 'nullable|string',
             'profile_picture' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-            'password' => 'nullable|string|min:6'
+            'password' => 'nullable|string|min:6',
+            'type' => 'required|in:author,admin-author'
         ]);
 
         $author->name = $request->name;
         $author->email = $request->email;
-        $author->phone = $request->phone;
+        $author->phone_number = $request->phone_number;
         $author->about = $request->about;
+        $author->type = $request->type; // Update type field
 
         if ($request->password) {
             $author->password = bcrypt($request->password);
@@ -118,7 +125,7 @@ class AuthorController extends Controller
             ->with('success', 'Author updated successfully');
     }
 
-    public function updateAuthorVisibility(Author $author)
+    public function updateAuthorVisibility(Admin $author)
     {
         $author->is_active = !$author->is_active;
         $author->save();
@@ -130,7 +137,7 @@ class AuthorController extends Controller
         ]);
     }
 
-    public function deleteAuthor(Author $author)
+    public function deleteAuthor(Admin $author)
     {
         $author->is_deleted = 1;
         $author->save();

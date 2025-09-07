@@ -99,12 +99,12 @@
                                 @enderror
                             </div>
                     
-                            <!-- Phone -->
+                            <!-- Phone Number -->
                             <div class="mb-3 w-100">
-                                <label>Phone :</label>
-                                <input type="text" class="form-control w-100 @error('phone') is-invalid @enderror"
-                                    name="phone" id="phone" value="{{ old('phone', $author->phone) }}" maxlength="20">
-                                @error('phone')
+                                <label>Phone Number :</label>
+                                <input type="text" class="form-control w-100 @error('phone_number') is-invalid @enderror"
+                                    name="phone_number" id="phone_number" value="{{ old('phone_number', $author->phone_number) }}" maxlength="20">
+                                @error('phone_number')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
                             </div>
@@ -158,6 +158,19 @@
                                     name="password" id="password" minlength="6">
                                 <small>Leave empty if you don't want to change the password.</small>
                                 @error('password')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+
+                            <!-- Type -->
+                            <div class="mb-3 w-100">
+                                <label>Type :</label>
+                                <select class="form-control w-100 @error('type') is-invalid @enderror" name="type" id="type" required>
+                                    <option value="">Select Type</option>
+                                    <option value="author" {{ old('type', $author->type) == 'author' ? 'selected' : '' }}>Author</option>
+                                    <option value="admin-author" {{ old('type', $author->type) == 'admin-author' ? 'selected' : '' }}>Admin Author</option>
+                                </select>
+                                @error('type')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
                             </div>

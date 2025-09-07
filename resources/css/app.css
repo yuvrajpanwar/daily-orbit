@@ -1,0 +1,14 @@
+/* Bootstrap first */
+@import "bootstrap/dist/css/bootstrap.min.css";
+
+/* FontAwesome local */
+@import "./fontawesome-all.min.css";
+
+/* other styles */
+@import "./flaticon.css";
+@import "./slicknav.css";
+@import "./slick.css";
+@import "./themify-icons.css";
+@import "./responsive.css";
+@import "./style.css";
+@import "./bootstrap.min.css";
