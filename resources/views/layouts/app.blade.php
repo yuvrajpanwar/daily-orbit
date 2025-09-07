@@ -56,7 +56,28 @@
                 transform: rotate(360deg);
             }
         }
+
+        /* Smooth bouncy transitions for the hamburger bars */
+        .slicknav_icon-bar {
+            transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            transform-origin: center;
+        }
+
+        /* Cross transformation when active */
+        .slicknav_icon.active .slicknav_icon-bar:first-child {
+            transform: rotate(45deg) translate(6px, 6px);
+        }
+
+        .slicknav_icon.active .slicknav_icon-bar:nth-child(2) {
+            opacity: 0;
+            transform: translateX(-20px);
+        }
+
+        .slicknav_icon.active .slicknav_icon-bar:last-child {
+            transform: rotate(-45deg) translate(6px, -6px);
+        }
     </style>
+
     @stack('css')
 </head>
 
@@ -107,20 +128,20 @@
                                         <i class="fa fa-user"
                                             style="
                                                     margin-top: auto;
-    margin-bottom: auto;
-    margin-right: 20px;
-    /* margin-left: 20px; */
-    padding: 1rem;
-    color: white;
-    border: 1px solid white;
-    border-radius: 10px;
+                                                    margin-bottom: auto;
+                                                    margin-right: 20px;
+                                                    /* margin-left: 20px; */
+                                                    padding: 1rem;
+                                                    color: white;
+                                                    border: 1px solid white;
+                                                    border-radius: 10px;
                                             "></i>
                                         <a href="index.html" style="display: flex;height:60px;width:fit-content;">
                                             <img src="assets/img/logo/logo-text-white.png" alt="Daily Orbit Logo">
-                                            <img src="assets/img/logo/logo-circle-white.png"
-                                                class="logo-spin-round" style="padding:.7rem 0;" alt="Daily Orbit Logo">
+                                            <img src="assets/img/logo/logo-circle-white.png" class="logo-spin-round"
+                                                style="padding:.7rem 0;" alt="Daily Orbit Logo">
                                         </a>
-                                    </div>  
+                                    </div>
                                 </div>
                                 <!-- Main-menu -->
                                 <div class="main-menu d-none d-md-block">
@@ -145,25 +166,19 @@
                             <div class="col-xl-4 col-lg-4 col-md-4">
                                 <div class="header-right f-right d-none d-lg-block">
                                     <!-- Heder social -->
-                                    {{-- <ul class="header-social">
-                                        <li><a href="https://www.fb.com/sai4ull"><i class="fab fa-facebook-f"></i></a>
-                                        </li>
-                                        <li><a href="#"><i class="fab fa-twitter"></i></a></li>
-                                        <li><a href="#"><i class="fab fa-instagram"></i></a></li>
-                                        <li> <a href="#"><i class="fab fa-youtube"></i></a></li>
-                                    </ul> --}}
                                     <!-- Search Nav -->
                                     <div class="nav-search search-switch">
-                                        <a href="{{route('login')}}">
-                                        <p class="px-2 m-auto" style="color: white">Login&nbsp;<i class="fa fa-sign-in-alt"
-                                                style="padding:0 !important"></i></p>
+                                        <a href="{{ route('login') }}">
+                                            <p class="px-2 m-auto" style="color: white">Login&nbsp;<i
+                                                    class="fa fa-sign-in-alt" style="padding:0 !important"></i></p>
                                         </a>
                                     </div>
                                 </div>
                             </div>
                             <!-- Mobile Menu -->
                             <div class="col-12">
-                                <div class="mobile_menu d-block d-md-none"></div>
+                                <div class="mobile_menu d-block d-md-none">
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -178,6 +193,14 @@
 
 
     <footer>
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                const icon = document.querySelector('.slicknav_icon');
+                icon.addEventListener('click', function() {
+                    this.classList.toggle('active');
+                });
+            });
+        </script>
         <!-- Footer Start-->
         <div class="footer-main footer-bg">
             <div class="footer-area footer-padding">
