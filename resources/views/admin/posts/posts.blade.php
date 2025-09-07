@@ -31,25 +31,37 @@
             max-width: 100%;
             height: auto;
         }
+
         tr>:last-child {
             white-space: nowrap;
         }
-        
+
         .post-thumbnail {
-            width: 60px;
-            height: 60px;
+            width: 100px;
             object-fit: cover;
             border-radius: 4px;
         }
-        body{
+
+        #detailsModal {
             font-size: 1.3rem;
             /* line-height: 0.5; */
         }
+
         /* medie query for mobile phones  */
         @media (max-width: 600px) {
-            body{
+            #detailsModal {
                 font-size: 1rem;
                 /* line-height: 0.5; */
+            }
+        }
+
+        img {
+            border-radius: 30px;
+        }
+
+        @media (max-width: 600px) {
+            img {
+                border-radius: 15px;
             }
         }
     </style>
@@ -87,7 +99,6 @@
 
             <thead>
                 <tr>
-                    <th><b class="h5">S.No.</b></th>
                     <th><b class="h5">Thumbnail</b></th>
                     <th><b class="h5">Title</b></th>
                     <th><b class="h5">Author</b></th>
@@ -132,14 +143,15 @@
 
     <!--all details Modal Structure -->
     <div id="detailsModal" class="modal fade" tabindex="-1" role="dialog">
-        <div class="modal-dialog" role="document" style="max-width: 800px;">
+        <div class="modal-dialog" role="document" style="max-width: 800px; margin-top:0px">
             <div class="modal-content">
                 <div class="d-block pt-4 modal-header justify-content-center position-relative">
-                     <button type="button" class="close position-absolute" data-dismiss="modal" aria-label="Close" style="top: 10px; right: 15px; z-index: 10;">
+                    <button type="button" class="close position-absolute" data-dismiss="modal" aria-label="Close"
+                        style="top: 10px; right: 15px; z-index: 10;">
                         <span aria-hidden="true">&times;</span>
                     </button>
                     <h1 class="modal-title mt-4" id="postModalTitle"></h1>
-                    <img src="" id="postThumbnail" style="height: 200px;" class="mt-2 img-fluid">
+                    <img src="" id="postThumbnail" class="mt-2 img-fluid">
                 </div>
                 <div class="modal-body" id="detailsModalBody">
                 </div>
@@ -198,12 +210,7 @@
                             return json.data;
                         }
                     },
-                    "columns": [{
-                            "data": 'DT_RowIndex',
-                            "name": 'DT_RowIndex',
-                            orderable: false,
-                            searchable: false
-                        },
+                    "columns": [
                         {
                             "data": "thumbnail",
                             "name": "thumbnail",
@@ -267,19 +274,20 @@
                             // Prevent action if it's a button click
                             if (!$(event.target).hasClass('edit-btn') && !$(event.target)
                                 .hasClass('delete-btn') && !$(event.target).hasClass(
-                                    'visibility-checkbox')&& !$(event.target).hasClass(
-                                        'fe-trash')   ) {
+                                    'visibility-checkbox') && !$(event.target).hasClass(
+                                    'fe-trash')) {
                                 $('#detailsModalBody').html(decodeHTMLEntities(data
                                     .description));
                                 $('#postModalTitle').text(data.title);
-                                
+
                                 // Set the thumbnail image
                                 if (data.thumbnail) {
-                                    $('#postThumbnail').attr('src', `/storage/${data.thumbnail}`).show();
+                                    $('#postThumbnail').attr('src',
+                                        `/storage/${data.thumbnail}`).show();
                                 } else {
                                     $('#postThumbnail').hide();
                                 }
-                                
+
                                 $('#detailsModal').modal('show');
                             }
                         });

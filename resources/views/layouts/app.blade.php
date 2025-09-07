@@ -7,36 +7,57 @@
     <title>Daily Orbit</title>
     <meta name="description" content="Daily Orbit">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    {{-- <link rel="manifest" href="site.webmanifest"> --}}
     <link rel="shortcut icon" type="image/x-icon" href="{{ asset('assets/img/favicon.ico') }}">
-    <!-- CSS here -->
-    <link rel="stylesheet" href="{{ asset('assets/css/style.css') }}">
+    {{-- <link rel="stylesheet" href="{{ asset('assets/css/style.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/css/bootstrap.min.css') }}">
-    <link rel="stylesheet" href="{{ asset('assets/css/owl.carousel.min.css') }}">
-    {{-- <link rel="stylesheet" href="{{asset('assets/css/ticker-style.css')}}"> --}}
     <link rel="stylesheet" href="{{ asset('assets/css/flaticon.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/css/fontawesome-all.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/css/responsive.css') }}"> 
     <link rel="stylesheet" href="{{ asset('assets/css/slicknav.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/css/slick.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/css/themify-icons.css') }}"> --}}
+    {{-- Vite will inject the built CSS/JS in dev & prod --}}
+    @vite(['resources/js/app.js'])
+    {{-- not in use  --}}
+    {{-- <link rel="stylesheet" href="{{ asset('assets/css/owl.carousel.min.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/css/animate.min.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/css/magnific-popup.css') }}">
-    <link rel="stylesheet" href="{{ asset('assets/css/fontawesome-all.min.css') }}">
-    <link rel="stylesheet" href="{{ asset('assets/css/themify-icons.css') }}">
-    <link rel="stylesheet" href="{{ asset('assets/css/slick.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/css/nice-select.css') }}">
-    <link rel="stylesheet" href="{{ asset('assets/css/responsive.css') }}">
+    --}}
     <style>
-        .header-social,#navigation{
+        .header-social,
+        #navigation {
             margin-bottom: 0 !important;
         }
-        .main-header .nav-search i{
+
+        .main-header .nav-search i {
             padding: 20px 30px !important;
         }
-        .header-area .header-bottom .header-social{
+
+        .header-area .header-bottom .header-social {
             padding: 20px 30px !important;
         }
-        .main-header .main-menu ul li a{
+
+        .main-header .main-menu ul li a {
             padding: 20px 25px !important;
         }
+
+        .logo-spin-round {
+            animation: spin 4s linear infinite;
+            /* 4s = speed, adjust as needed */
+        }
+
+        @keyframes spin {
+            from {
+                transform: rotate(0deg);
+            }
+
+            to {
+                transform: rotate(360deg);
+            }
+        }
     </style>
+    @stack('css')
 </head>
 
 <body>
@@ -45,7 +66,8 @@
         <div class="preloader  d-flex align-items-center justify-content-center"
             style="height: 100vh;width:100vw;right:auto">
             <div class="preloader-inner position-relative">
-                <img src="assets/img/logo/logo-circle.png" height="100px" class="preloader-circle" style="border: none !important;">
+                <img src="assets/img/logo/logo-circle.png" height="100px" class="preloader-circle"
+                    style="border: none !important;">
             </div>
         </div>
     </div>
@@ -53,17 +75,21 @@
     <header>
         <!-- Header Start -->
         <div class="header-area">
-            <div class="main-header ">             
+            <div class="main-header ">
                 <div class="header-mid gray-bg">
                     <div class="container">
                         <div class="row d-flex align-items-center">
                             <!-- Logo -->
-                            <div class="col-xl-3 col-lg-3 col-md-3 d-none d-md-block">
+                            <div class="col-xl-4 col-lg-4 col-md-4 d-none d-md-block">
                                 <div class="logo">
-                                    <a href="index.html"><img src="assets/img/logo/logo.png" alt="Daily Orbit Logo" height="55px" class="img-fluid"></a>
+                                    <a href="index.html" style="display: flex;height:60px;width:fit-content;">
+                                        <img src="assets/img/logo/logo-text.png" alt="Daily Orbit Logo">
+                                        <img src="assets/img/logo/logo-circle.png" class="logo-spin-round"
+                                            alt="Daily Orbit Logo">
+                                    </a>
                                 </div>
                             </div>
-                            <div class="col-xl-9 col-lg-9 col-md-9">
+                            <div class="col-xl-8 col-lg-8 col-md-8">
                                 <div class="header-banner f-right ">
                                     <img src="assets/img/gallery/header_card.png" alt="">
                                 </div>
@@ -77,7 +103,24 @@
                             <div class="col-xl-8 col-lg-8 col-md-12 header-flex">
                                 <!-- sticky -->
                                 <div class="sticky-logo my-1">
-                                    <a href="index.html"><img src="assets/img/logo/logo-white.png" alt="Daily Orbit Logo" height="45px"></a>
+                                    <div class="d-flex">
+                                        <i class="fa fa-user"
+                                            style="
+                                                    margin-top: auto;
+    margin-bottom: auto;
+    margin-right: 20px;
+    /* margin-left: 20px; */
+    padding: 1rem;
+    color: white;
+    border: 1px solid white;
+    border-radius: 10px;
+                                            "></i>
+                                        <a href="index.html" style="display: flex;height:60px;width:fit-content;">
+                                            <img src="assets/img/logo/logo-text-white.png" alt="Daily Orbit Logo">
+                                            <img src="assets/img/logo/logo-circle-white.png"
+                                                class="logo-spin-round" style="padding:.7rem 0;" alt="Daily Orbit Logo">
+                                        </a>
+                                    </div>  
                                 </div>
                                 <!-- Main-menu -->
                                 <div class="main-menu d-none d-md-block">
@@ -102,16 +145,19 @@
                             <div class="col-xl-4 col-lg-4 col-md-4">
                                 <div class="header-right f-right d-none d-lg-block">
                                     <!-- Heder social -->
-                                    <ul class="header-social">
+                                    {{-- <ul class="header-social">
                                         <li><a href="https://www.fb.com/sai4ull"><i class="fab fa-facebook-f"></i></a>
                                         </li>
                                         <li><a href="#"><i class="fab fa-twitter"></i></a></li>
                                         <li><a href="#"><i class="fab fa-instagram"></i></a></li>
                                         <li> <a href="#"><i class="fab fa-youtube"></i></a></li>
-                                    </ul>
+                                    </ul> --}}
                                     <!-- Search Nav -->
                                     <div class="nav-search search-switch">
-                                        <i class="fa fa-search"></i>
+                                        <a href="{{route('login')}}">
+                                        <p class="px-2 m-auto" style="color: white">Login&nbsp;<i class="fa fa-sign-in-alt"
+                                                style="padding:0 !important"></i></p>
+                                        </a>
                                     </div>
                                 </div>
                             </div>
@@ -242,22 +288,15 @@
     </div>
     <!-- Search model end -->
     <!-- JS here -->
-
     <!-- All JS Custom Plugins Link Here here -->
-    <script src="{{ asset('assets/js/vendor/modernizr-3.5.0.min.js') }}"></script>
-    <script src="{{ asset('assets/js/vendor/jquery-1.12.4.min.js') }}"></script>
+    {{-- <script src="{{ asset('assets/js/vendor/modernizr-3.5.0.min.js') }}"></script>
     <script src="{{ asset('assets/js/popper.min.js') }}"></script>
     <script src="{{ asset('assets/js/bootstrap.min.js') }}"></script>
-    <script src="{{ asset('assets/js/jquery.slicknav.min.js') }}"></script>
     <script src="{{ asset('assets/js/owl.carousel.min.js') }}"></script>
-    <script src="{{ asset('assets/js/slick.min.js') }}"></script>
     <script src="{{ asset('assets/js/gijgo.min.js') }}"></script>
     <script src="{{ asset('assets/js/wow.min.js') }}"></script>
     <script src="{{ asset('assets/js/animated.headline.js') }}"></script>
     <script src="{{ asset('assets/js/jquery.magnific-popup.js') }}"></script>
-    {{-- <script src="{{asset('assets/js/jquery.ticker.js')}}"></script> --}}
-    {{-- <script src="{{asset('assets/js/site.js')}}"></script> --}}
-    <script src="{{ asset('assets/js/jquery.scrollUp.min.js') }}"></script>
     <script src="{{ asset('assets/js/jquery.nice-select.min.js') }}"></script>
     <script src="{{ asset('assets/js/jquery.sticky.js') }}"></script>
     <script src="{{ asset('assets/js/contact.js') }}"></script>
@@ -265,8 +304,14 @@
     <script src="{{ asset('assets/js/jquery.validate.min.js') }}"></script>
     <script src="{{ asset('assets/js/mail-script.js') }}"></script>
     <script src="{{ asset('assets/js/jquery.ajaxchimp.min.js') }}"></script>
-    <script src="{{ asset('assets/js/plugins.js') }}"></script>
-    <script src="{{ asset('assets/js/main.js') }}"></script>
+    <script src="{{ asset('assets/js/plugins.js') }}"></script> --}}
+    {{-- in use  --}}
+    {{-- <script src="{{ asset('assets/js/vendor/jquery-1.12.4.min.js') }}"></script> --}}
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="{{ asset('assets/js/jquery.scrollUp.min.js') }}"></script>
+    <script src="{{ asset('assets/js/slick.min.js') }}"></script>
+    <script src="{{ asset('assets/js/jquery.slicknav.min.js') }}"></script>
+    {{-- <script src="{{ asset('assets/js/main.js') }}"></script> --}}
 </body>
 
 </html>

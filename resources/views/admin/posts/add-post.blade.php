@@ -2,7 +2,8 @@
 @push('css')
     <link href="https://cdn.quilljs.com/1.3.7/quill.snow.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css">
-    <style type="text/css">
+
+    <style>
         .error {
             color: red;
         }
@@ -28,41 +29,43 @@
         .ql-container {
             font-size: 16px;
         }
-        
+
         /* Cropper.js related styles */
         .img-container {
             margin-bottom: 1rem;
             max-height: 400px;
             width: 100%;
         }
-        
+
         .img-container img {
             max-width: 100%;
             max-height: 400px;
         }
-        
+
         .preview {
             overflow: hidden;
             width: 160px;
             height: 90px;
             margin: 10px;
             border: 1px solid #ddd;
+            display: none;
         }
-        
+
         .cropper-container {
             margin-bottom: 20px;
         }
-        
+
         #thumbnail-preview-container {
             display: none;
             margin-top: 10px;
         }
-        
+
         .cropper-buttons {
             margin-top: 10px;
         }
     </style>
 @endpush
+
 @section('content') <div class="container-fluid mb-4">
         <div class="row">
             <div class="col-12 d-flex">
@@ -107,10 +110,12 @@
                                 <label>Category :</label>
                                 <select name="category_id" id="category_id"
                                     class="form-control @error('category_id') is-invalid @enderror" required>
-                                    <option value="" disabled selected class="text-center">--------Select Category--------
+                                    <option value="" disabled selected class="text-center">--------Select
+                                        Category--------
                                     </option>
                                     @foreach ($categories as $category)
-                                        <option value="{{ $category->id }}" {{ old('category_id') == $category->id ? 'selected' : '' }}>
+                                        <option value="{{ $category->id }}"
+                                            {{ old('category_id') == $category->id ? 'selected' : '' }}>
                                             {{ $category->name }}
                                         </option>
                                     @endforeach
@@ -137,7 +142,7 @@
                                 <!-- Quill editor container -->
                                 <div id="editor-container" style="height: 500px;"
                                     class="form-control @error('description') is-invalid @enderror">
-                                    {!! old('description') ?? '<br><br><br><br>' !!}
+                                    {!! old('description') ?? '<br><br>' !!}
                                 </div>
                                 @error('description')
                                     <div class="invalid-feedback">{{ $message }}</div>
@@ -156,34 +161,58 @@
                             <!-- Thumbnail -->
                             <div class="mb-3 w-100">
                                 <label>Thumbnail Image :</label>
+                                <small class="text-muted d-block mb-2">Please select an image and crop it to 16:9 ratio
+                                    before submitting.</small>
+
                                 <div class="@error('thumbnail') is-invalid @enderror">
-                                    <input type="file" name="thumbnail" id="thumbnail-input" class="form-control" accept="image/*" required>
-                                    
+                                    <input type="file" name="thumbnail" id="thumbnail-input" class="form-control"
+                                        accept="image/*" required>
+
                                     <!-- Cropper.js container -->
-                                    <div id="thumbnail-preview-container" class="mt-3">
-                                        <div class="img-container">
-                                            <img id="thumbnail-image" src="" alt="Thumbnail Preview">
+                                    <div id="thumbnail-preview-container" class="mt-3" style="display: none;">
+                                        <div class="img-container" style="max-height: 400px; overflow: hidden;">
+                                            <img id="thumbnail-image" src="" alt="Thumbnail Preview"
+                                                style="max-width: 100%; display: block;">
                                         </div>
-                                        <div class="preview"></div>
-                                        <div class="cropper-buttons">
-                                            <button type="button" class="btn btn-primary" id="crop-btn">Crop & Save</button>
-                                            <button type="button" class="btn btn-secondary" id="cancel-btn">Cancel</button>
+
+                                        <!-- Preview container -->
+                                        <div class="row mt-3">
+                                            <div class="col-md-6">
+                                                <h6>Preview (16:9 ratio):</h6>
+                                                <div class="preview"
+                                                    style="width: 200px; height: 112.5px; border: 1px solid #ddd; overflow: hidden; margin: 10px 0;">
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- Cropper buttons -->
+                                        <div class="cropper-buttons mt-3">
+                                            <button type="button" class="btn btn-primary" id="crop-btn">
+                                                <i class="fe fe-crop"></i> Crop & Save
+                                            </button>
+                                            <button type="button" class="btn btn-secondary" id="cancel-btn">
+                                                <i class="fe fe-x"></i> Cancel
+                                            </button>
                                         </div>
                                     </div>
+
                                     <!-- Reset button container (shows after cropping) -->
                                     <div id="reset-container" class="mt-2" style="display: none;">
                                         <button type="button" class="btn btn-outline-secondary btn-sm" id="reset-btn">
                                             <i class="fe fe-refresh-cw"></i> Change Image
                                         </button>
                                     </div>
-                                </div>                                
+                                </div>
+
                                 @error('thumbnail')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
                             </div>
-                            
-                            <!-- Hidden input to hold cropped blob -->
+
+                            <!-- Hidden input to hold cropped blob (for fallback) -->
                             <input type="hidden" name="cropped_thumbnail" id="cropped_thumbnail">
+
+                            
                             <!-- Submit Button -->
                             <div class="my-3">
                                 <input class="btn btn-primary" type="submit" value="Add Post" />
@@ -194,9 +223,10 @@
             </div>
         </div>
     </div>
-    
+
     <!-- Cropper.js Modal -->
-    <div class="modal fade" id="cropperModal" tabindex="-1" role="dialog" aria-labelledby="cropperModalLabel" aria-hidden="true">
+    <div class="modal fade" id="cropperModal" tabindex="-1" role="dialog" aria-labelledby="cropperModalLabel"
+        aria-hidden="true">
         <div class="modal-dialog modal-lg" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -217,6 +247,7 @@
             </div>
         </div>
     </div>
+
 @endsection
 @push('js')
     <script src="https://cdn.quilljs.com/1.3.7/quill.min.js"></script>
@@ -323,156 +354,222 @@
             const croppedThumbnailInput = document.getElementById('cropped_thumbnail');
             const cropBtn = document.getElementById('crop-btn');
             const cancelBtn = document.getElementById('cancel-btn');
-            
+            const resetBtn = document.getElementById('reset-btn');
+            const resetContainer = document.getElementById('reset-container');
+
             let cropper;
+            let croppedBlob = null;
+            let originalFileName = '';
 
             // When a file is selected
             thumbnailInput.addEventListener('change', function(e) {
                 const file = e.target.files[0];
-                
                 if (!file) return;
-                
+
+                originalFileName = file.name;
                 const reader = new FileReader();
-                
+
                 reader.onload = function(e) {
                     // Display the thumbnail preview
                     thumbnailImage.src = e.target.result;
                     thumbnailPreviewContainer.style.display = 'block';
-                    
+
+                    // Reset any previous states
+                    resetBtn.style.display = 'none';
+                    document.querySelector('.cropper-buttons').style.display = 'block';
+                    thumbnailImage.style.border = '';
+
+                    // Remove any previous success indicators
+                    const existingSuccess = thumbnailPreviewContainer.querySelector('.alert-success');
+                    if (existingSuccess) {
+                        existingSuccess.remove();
+                    }
+
                     // Initialize Cropper
                     if (cropper) {
                         cropper.destroy();
                     }
-                    
+
                     cropper = new Cropper(thumbnailImage, {
                         aspectRatio: 16 / 9,
                         viewMode: 1,
                         preview: '.preview',
                         autoCropArea: 1,
                         responsive: true,
-                        zoomable: false
+                        zoomable: true,
+                        scalable: true,
+                        rotatable: true,
+                        minCanvasWidth: 320,
+                        minCanvasHeight: 180
                     });
                 };
-                
+
                 reader.readAsDataURL(file);
             });
-            
+
             // When crop button is clicked
             cropBtn.addEventListener('click', function() {
                 if (!cropper) return;
-                
-                // Get the cropped canvas
+
+                // Get the cropped canvas with high quality
                 const canvas = cropper.getCroppedCanvas({
-                    width: 800,
-                    height: 450,
+                    width: 1600, // Higher resolution for better quality
+                    height: 900,
+                    minWidth: 800,
+                    minHeight: 450,
+                    maxWidth: 1600,
+                    maxHeight: 900,
+                    fillColor: '#fff',
                     imageSmoothingEnabled: true,
                     imageSmoothingQuality: 'high'
                 });
-                
+
                 // Convert canvas to blob
                 canvas.toBlob(function(blob) {
-                    // Convert blob to base64
+                    if (!blob) {
+                        alert('Error cropping image. Please try again.');
+                        return;
+                    }
+
+                    croppedBlob = blob;
+
+                    // Convert blob to base64 for preview and hidden input
                     const reader = new FileReader();
                     reader.readAsDataURL(blob);
+
                     reader.onloadend = function() {
                         const base64data = reader.result;
-                        
+
                         // Set the cropped image data to the hidden input
                         croppedThumbnailInput.value = base64data;
-                        
+
                         // Update the preview
                         thumbnailImage.src = base64data;
-                        
+
                         // Destroy the cropper
                         cropper.destroy();
                         cropper = null;
-                        
+
                         // Hide the cropper buttons
                         document.querySelector('.cropper-buttons').style.display = 'none';
-                        
-                        // Add a subtle visual indication that cropping is complete
-                        thumbnailImage.style.border = '2px solid #28a745';
-                        
-                        // Add a small success indicator
+
+                        // Add visual indication that cropping is complete
+                        thumbnailImage.style.border = '3px solid #28a745';
+                        thumbnailImage.style.borderRadius = '5px';
+
+                        // Add success indicator
                         const successIndicator = document.createElement('div');
                         successIndicator.className = 'alert alert-success mt-2';
-                        successIndicator.style.padding = '5px 10px';
-                        successIndicator.innerHTML = '<small><i class="fe fe-check"></i> Image cropped successfully</small>';
+                        successIndicator.style.padding = '8px 12px';
+                        successIndicator.innerHTML =
+                            '<small><i class="fe fe-check"></i> Image cropped successfully (16:9 ratio)</small>';
                         thumbnailPreviewContainer.appendChild(successIndicator);
-                        
+
                         // Show the reset button
-                        document.getElementById('reset-container').style.display = 'block';
+                        resetContainer.style.display = 'block';
                     };
-                }, 'image/jpeg', 0.9);
+                }, 'image/jpeg', 0.92); // High quality JPEG
             });
-            
+
             // When cancel button is clicked
             cancelBtn.addEventListener('click', function() {
-                if (cropper) {
-                    cropper.destroy();
-                    cropper = null;
-                }
-                
-                thumbnailPreviewContainer.style.display = 'none';
-                thumbnailInput.value = '';
-                croppedThumbnailInput.value = '';
-                document.getElementById('reset-container').style.display = 'none';
-                
-                // Remove any success indicators
-                const successIndicator = thumbnailPreviewContainer.querySelector('.alert-success');
-                if (successIndicator) {
-                    successIndicator.remove();
-                }
-                
-                // Reset border
-                thumbnailImage.style.border = '';
+                resetCropper();
             });
-            
+
             // Reset button functionality
-            const resetBtn = document.getElementById('reset-btn');
             resetBtn.addEventListener('click', function() {
-                // Reset the cropper
-                if (cropper) {
-                    cropper.destroy();
-                    cropper = null;
-                }
-                
-                // Show the buttons again
-                document.querySelector('.cropper-buttons').style.display = 'block';
-                
-                // Reset the border
-                thumbnailImage.style.border = '';
-                
-                // Clear the thumbnail input so user can select the same file again if needed
+                resetCropper();
+                // Clear the file input and trigger new selection
                 thumbnailInput.value = '';
-                
-                // Hide reset button
-                document.getElementById('reset-container').style.display = 'none';
-                
-                // Remove any success indicators
-                const successIndicator = thumbnailPreviewContainer.querySelector('.alert-success');
-                if (successIndicator) {
-                    successIndicator.remove();
-                }
-                
-                // Trigger file input click to open file dialog
                 thumbnailInput.click();
             });
-        });
 
-        // Form submission
-        const postForm = document.getElementById('postForm'); // Select the form
-        const descriptionInput = document.getElementById('description'); // Hidden input field
+            // Helper function to reset cropper state
+            function resetCropper() {
+                if (cropper) {
+                    cropper.destroy();
+                    cropper = null;
+                }
 
-        postForm.addEventListener('submit', function(e) {
-            // Update the hidden input with the Quill editor's HTML content
-            descriptionInput.value = quill.root.innerHTML;
+                thumbnailPreviewContainer.style.display = 'none';
+                croppedThumbnailInput.value = '';
+                croppedBlob = null;
+                resetContainer.style.display = 'none';
+                thumbnailImage.style.border = '';
+                thumbnailImage.style.borderRadius = '';
 
-            // Optional: Check if the description is empty
-            if (descriptionInput.value.trim() === '<p><br></p>') {
-                e.preventDefault(); // Prevent form submission
-                alert('Please add some content to the description!');
+                // Remove success indicators
+                const successIndicator = thumbnailPreviewContainer.querySelector('.alert-success');
+                if (successIndicator) {
+                    successIndicator.remove();
+                }
             }
+
+            // Form submission handling
+            const postForm = document.getElementById('postForm');
+            const descriptionInput = document.getElementById('description');
+
+            postForm.addEventListener('submit', function(e) {
+                // Update the hidden input with the Quill editor's HTML content
+                descriptionInput.value = quill.root.innerHTML;
+
+                // Check if description is empty
+                if (descriptionInput.value.trim() === '<p><br></p>' || descriptionInput.value.trim() ===
+                    '') {
+                    e.preventDefault();
+                    alert('Please add some content to the description!');
+                    return false;
+                }
+
+                // Check if thumbnail file is selected
+                if (!thumbnailInput.files[0] && !croppedBlob) {
+                    e.preventDefault();
+                    alert('Please select a thumbnail image.');
+                    return false;
+                }
+
+                // Ensure the thumbnail is cropped before submitting
+                if (thumbnailInput.files[0] && !croppedBlob) {
+                    e.preventDefault();
+                    alert('Please crop the thumbnail image before submitting.');
+                    return false;
+                }
+
+                // If we have a cropped blob, create a new file and replace the input
+                if (croppedBlob) {
+                    try {
+                        // Create a new file from the cropped blob
+                        const fileExtension = originalFileName.split('.').pop() || 'jpg';
+                        const fileName = `cropped_thumbnail_${Date.now()}.${fileExtension}`;
+                        const croppedFile = new File([croppedBlob], fileName, {
+                            type: 'image/jpeg',
+                            lastModified: Date.now()
+                        });
+
+                        // Create a new DataTransfer object and add the cropped file
+                        const dataTransfer = new DataTransfer();
+                        dataTransfer.items.add(croppedFile);
+
+                        // Replace the input's files with the cropped file
+                        thumbnailInput.files = dataTransfer.files;
+
+                        console.log('Cropped file prepared for upload:', {
+                            name: croppedFile.name,
+                            size: croppedFile.size,
+                            type: croppedFile.type
+                        });
+
+                    } catch (error) {
+                        console.error('Error preparing cropped file:', error);
+                        e.preventDefault();
+                        alert('Error preparing the cropped image. Please try cropping again.');
+                        return false;
+                    }
+                }
+
+                // Additional validation can be added here
+                console.log('Form submission proceeding with cropped thumbnail');
+            });
         });
     </script>
 @endpush

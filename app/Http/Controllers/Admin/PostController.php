@@ -48,7 +48,7 @@ class PostController extends Controller
             })
             ->addColumn('time', function ($row) {
                 // Format: dd-mm-yyyy | hh:mm AM/PM
-                return Carbon::parse($row->time)->format('d-m-Y | h:i A');
+                return Carbon::parse($row->time)->format('d/m/y h:i A');
             })
             ->addColumn('is_published', function ($row) {
                 return $row->is_published ? 'Published' : 'Draft';
