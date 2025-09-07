@@ -1,0 +1,133 @@
+{
+  "resources/fonts/Flaticon.eot": {
+    "file": "assets/Flaticon-DOUOd_5V.eot",
+    "src": "resources/fonts/Flaticon.eot"
+  },
+  "resources/fonts/Flaticon.svg": {
+    "file": "assets/Flaticon-D8AUwahw.svg",
+    "src": "resources/fonts/Flaticon.svg"
+  },
+  "resources/fonts/Flaticon.ttf": {
+    "file": "assets/Flaticon-sjtO2Tkx.ttf",
+    "src": "resources/fonts/Flaticon.ttf"
+  },
+  "resources/fonts/Flaticon.woff": {
+    "file": "assets/Flaticon-BPU0qTFg.woff",
+    "src": "resources/fonts/Flaticon.woff"
+  },
+  "resources/fonts/Flaticon.woff2": {
+    "file": "assets/Flaticon-BGZKTLVt.woff2",
+    "src": "resources/fonts/Flaticon.woff2"
+  },
+  "resources/fonts/fa-brands-400.eot": {
+    "file": "assets/fa-brands-400-BZXIr3Hf.eot",
+    "src": "resources/fonts/fa-brands-400.eot"
+  },
+  "resources/fonts/fa-brands-400.svg": {
+    "file": "assets/fa-brands-400-DsI8Ll30.svg",
+    "src": "resources/fonts/fa-brands-400.svg"
+  },
+  "resources/fonts/fa-brands-400.ttf": {
+    "file": "assets/fa-brands-400-DIxkRYTH.ttf",
+    "src": "resources/fonts/fa-brands-400.ttf"
+  },
+  "resources/fonts/fa-brands-400.woff": {
+    "file": "assets/fa-brands-400-hOaZW2kQ.woff",
+    "src": "resources/fonts/fa-brands-400.woff"
+  },
+  "resources/fonts/fa-brands-400.woff2": {
+    "file": "assets/fa-brands-400-BjisjjBg.woff2",
+    "src": "resources/fonts/fa-brands-400.woff2"
+  },
+  "resources/fonts/fa-regular-400.eot": {
+    "file": "assets/fa-regular-400-DUMU9UZZ.eot",
+    "src": "resources/fonts/fa-regular-400.eot"
+  },
+  "resources/fonts/fa-regular-400.svg": {
+    "file": "assets/fa-regular-400-BKzZjT2x.svg",
+    "src": "resources/fonts/fa-regular-400.svg"
+  },
+  "resources/fonts/fa-regular-400.ttf": {
+    "file": "assets/fa-regular-400-CVh8gm3u.ttf",
+    "src": "resources/fonts/fa-regular-400.ttf"
+  },
+  "resources/fonts/fa-regular-400.woff": {
+    "file": "assets/fa-regular-400-C2YmpOXm.woff",
+    "src": "resources/fonts/fa-regular-400.woff"
+  },
+  "resources/fonts/fa-regular-400.woff2": {
+    "file": "assets/fa-regular-400-CTcKcFQk.woff2",
+    "src": "resources/fonts/fa-regular-400.woff2"
+  },
+  "resources/fonts/fa-solid-900.eot": {
+    "file": "assets/fa-solid-900-CRr4Cdx8.eot",
+    "src": "resources/fonts/fa-solid-900.eot"
+  },
+  "resources/fonts/fa-solid-900.svg": {
+    "file": "assets/fa-solid-900-Ci9b5apN.svg",
+    "src": "resources/fonts/fa-solid-900.svg"
+  },
+  "resources/fonts/fa-solid-900.ttf": {
+    "file": "assets/fa-solid-900-42C6EjIC.ttf",
+    "src": "resources/fonts/fa-solid-900.ttf"
+  },
+  "resources/fonts/fa-solid-900.woff": {
+    "file": "assets/fa-solid-900-D90VXQbB.woff",
+    "src": "resources/fonts/fa-solid-900.woff"
+  },
+  "resources/fonts/fa-solid-900.woff2": {
+    "file": "assets/fa-solid-900-B48GT_Wj.woff2",
+    "src": "resources/fonts/fa-solid-900.woff2"
+  },
+  "resources/fonts/themify.eot": {
+    "file": "assets/themify-BifPJsew.eot",
+    "src": "resources/fonts/themify.eot"
+  },
+  "resources/fonts/themify.svg": {
+    "file": "assets/themify-DqOiMLGc.svg",
+    "src": "resources/fonts/themify.svg"
+  },
+  "resources/fonts/themify.ttf": {
+    "file": "assets/themify-DuU3rJAt.ttf",
+    "src": "resources/fonts/themify.ttf"
+  },
+  "resources/fonts/themify.woff": {
+    "file": "assets/themify-BgsFA67P.woff",
+    "src": "resources/fonts/themify.woff"
+  },
+  "resources/js/app.js": {
+    "file": "assets/app-tTwFsmgi.js",
+    "name": "app",
+    "src": "resources/js/app.js",
+    "isEntry": true,
+    "css": [
+      "assets/app-CLXiHiVk.css"
+    ],
+    "assets": [
+      "assets/fa-brands-400-BZXIr3Hf.eot",
+      "assets/fa-brands-400-BjisjjBg.woff2",
+      "assets/fa-brands-400-hOaZW2kQ.woff",
+      "assets/fa-brands-400-DIxkRYTH.ttf",
+      "assets/fa-brands-400-DsI8Ll30.svg",
+      "assets/fa-regular-400-DUMU9UZZ.eot",
+      "assets/fa-regular-400-CTcKcFQk.woff2",
+      "assets/fa-regular-400-C2YmpOXm.woff",
+      "assets/fa-regular-400-CVh8gm3u.ttf",
+      "assets/fa-regular-400-BKzZjT2x.svg",
+      "assets/fa-solid-900-CRr4Cdx8.eot",
+      "assets/fa-solid-900-B48GT_Wj.woff2",
+      "assets/fa-solid-900-D90VXQbB.woff",
+      "assets/fa-solid-900-42C6EjIC.ttf",
+      "assets/fa-solid-900-Ci9b5apN.svg",
+      "assets/Flaticon-DOUOd_5V.eot",
+      "assets/Flaticon-BGZKTLVt.woff2",
+      "assets/Flaticon-BPU0qTFg.woff",
+      "assets/Flaticon-sjtO2Tkx.ttf",
+      "assets/Flaticon-D8AUwahw.svg",
+      "assets/themify-BifPJsew.eot",
+      "assets/themify-BgsFA67P.woff",
+      "assets/themify-DuU3rJAt.ttf",
+      "assets/themify-DqOiMLGc.svg"
+    ]
+  }
+}
