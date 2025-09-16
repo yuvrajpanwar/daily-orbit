@@ -19,6 +19,9 @@ class User extends Authenticatable
     protected $fillable = [
         'name',
         'email',
+        'mobile_number',
+        'avatar',
+        'profile_picture',
         'password',
     ];
 
@@ -43,5 +46,9 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+    public function detail()
+    {
+        return $this->hasOne(UserDetail::class);
     }
 }

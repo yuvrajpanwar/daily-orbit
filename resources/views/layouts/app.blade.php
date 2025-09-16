@@ -76,6 +76,12 @@
         .slicknav_icon.active .slicknav_icon-bar:last-child {
             transform: rotate(-45deg) translate(6px, -6px);
         }
+
+        @media (max-width: 768px) {
+            .not-for-mobile {
+                display: none !important;
+            }
+        }
     </style>
 
     @stack('css')
@@ -125,7 +131,7 @@
                                 <!-- sticky -->
                                 <div class="sticky-logo my-1">
                                     <div class="d-flex">
-                                        <i class="fa fa-user"
+                                        <div class="my-dropdown" data-dropdown
                                             style="
                                                     margin-top: auto;
                                                     margin-bottom: auto;
@@ -135,7 +141,38 @@
                                                     color: white;
                                                     border: 1px solid white;
                                                     border-radius: 10px;
-                                            "></i>
+                                            ">
+                                            <div class="my-dropdown-toggle p-0 m-0">
+                                                <i class="fa fa-user"></i>
+                                            </div>
+                                            <div id="userMenu" class="my-dropdown-menu" role="menu"
+                                                aria-hidden="true">
+                                                @if (Auth::check())
+                                                    <a class="my-dropdown-item" href="{{ route('account.index') }}">
+                                                        <i class="fa fa-user-circle" style="margin-right:6px"></i> My
+                                                        Account
+                                                    </a>
+                                                    <div class="my-dropdown-divider" role="separator"></div>
+                                                    <a class="my-dropdown-item" href="#"
+                                                        onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                                                        <i class="fa fa-sign-out-alt" style="margin-right:6px"></i>
+                                                        Logout
+                                                    </a>
+                                                @else
+                                                    @if (request()->routeIs('login'))
+                                                        <a class="my-dropdown-item" href="{{ route('register') }}">
+                                                            <i class="fa fa-user-plus" style="margin-right:6px"></i>
+                                                            Register
+                                                        </a>
+                                                    @else
+                                                        <a class="my-dropdown-item" href="{{ route('login') }}">
+                                                            <i class="fa fa-sign-in-alt" style="margin-right:6px"></i>
+                                                            Login
+                                                        </a>
+                                                    @endif
+                                                @endif
+                                            </div>
+                                        </div>
                                         <a href="index.html" style="display: flex;height:60px;width:fit-content;">
                                             <img src="assets/img/logo/logo-text-white.png" alt="Daily Orbit Logo">
                                             <img src="assets/img/logo/logo-circle-white.png" class="logo-spin-round"
@@ -163,27 +200,216 @@
                                     </nav>
                                 </div>
                             </div>
-                            <div class="col-xl-4 col-lg-4 col-md-4">
-                                <div class="header-right f-right d-none d-lg-block">
-                                    <!-- Heder social -->
-                                    <!-- Search Nav -->
-                                    <div class="nav-search search-switch">
-                                        <a href="{{ route('login') }}">
-                                            <p class="px-2 m-auto" style="color: white">Login&nbsp;<i
-                                                    class="fa fa-sign-in-alt" style="padding:0 !important"></i></p>
-                                        </a>
-                                    </div>
+                            <div class="col-xl-4 col-lg-4 col-md-4 not-for-mobile">
+                                <div class="header-right f-right d-lg-block"
+                                    style="border: 1px solid white;border-radius:5px;">
+                                    @if (Auth::check())
+                                        <div class="my-dropdown" data-dropdown>
+                                            <button type="button" class="my-dropdown-toggle" aria-haspopup="true"
+                                                aria-expanded="false" aria-controls="userMenu">
+                                                <i class="fa fa-user" aria-hidden="true"
+                                                    style="margin-right:6px"></i>
+                                                <span class="my-user-name">
+                                                    {{ strlen(Auth::user()->name) > 15 ? substr(Auth::user()->name, 0, 15) . '...' : Auth::user()->name }}
+                                                </span>
+                                                <i class="fa fa-chevron-down my-dropdown-icon" aria-hidden="true"></i>
+                                            </button>
+
+                                            <div id="userMenu" class="my-dropdown-menu" role="menu"
+                                                aria-hidden="true">
+                                                <a class="my-dropdown-item" href="{{ route('account.index') }}">
+                                                    <i class="fa fa-user-circle" style="margin-right:6px"></i> My
+                                                    Account
+                                                </a>
+                                                <div class="my-dropdown-divider" role="separator"></div>
+                                                <a class="my-dropdown-item" href="#"
+                                                    onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                                                    <i class="fa fa-sign-out-alt" style="margin-right:6px"></i> Logout
+                                                </a>
+                                            </div>
+
+                                            <form id="logout-form" action="{{ route('logout') }}" method="POST"
+                                                style="display: none;">
+                                                @csrf
+                                            </form>
+                                        </div>
+                                    @else
+                                        @if (request()->routeIs('login'))
+                                            <a href="{{ route('register') }}" class="my-login-link">
+                                                <p class="px-2 m-auto" style="color: white">
+                                                    Register&nbsp;<i class="fa fa-user-plus"></i>
+                                                </p>
+                                            </a>
+                                        @else
+                                            <a href="{{ route('login') }}" class="my-login-link">
+                                                <p class="px-2 m-auto" style="color: white">
+                                                    Login&nbsp;<i class="fa fa-sign-in-alt"></i>
+                                                </p>
+                                            </a>
+                                        @endif
+
+                                    @endif
+
+                                    <style>
+                                        /* ---------- container & toggle ---------- */
+                                        .my-dropdown {
+                                            position: relative;
+                                            display: inline-block;
+                                        }
+
+                                        .my-dropdown-toggle {
+                                            background: transparent;
+                                            border: none;
+                                            color: #fff;
+                                            cursor: pointer;
+                                            padding: 6px 8px;
+                                            display: inline-flex;
+                                            align-items: center;
+                                            gap: 8px;
+                                            font: inherit;
+                                        }
+
+                                        /* chevron animation */
+                                        .my-dropdown-icon {
+                                            transition: transform 180ms ease;
+                                        }
+
+                                        /* ---------- menu (custom name avoids bootstrap collision) ---------- */
+                                        .my-dropdown-menu {
+                                            position: absolute;
+                                            right: 0;
+                                            top: calc(100% + 8px);
+                                            min-width: 180px;
+                                            background: rgb(255, 33, 67);
+                                            border: 1px solid red;
+                                            border-radius: 6px;
+                                            box-shadow: 0 8px 20px red;
+                                            transform-origin: top center;
+                                            transform: translateY(-6px) scale(0.98);
+                                            opacity: 0;
+                                            pointer-events: none;
+                                            transition: transform 180ms ease, opacity 180ms ease;
+                                            z-index: 2100;
+                                        }
+
+                                        /* visible state */
+                                        .my-dropdown.open .my-dropdown-menu {
+                                            transform: translateY(0) scale(1);
+                                            opacity: 1;
+                                            pointer-events: auto;
+                                        }
+
+                                        /* rotate icon when open */
+                                        .my-dropdown.open .my-dropdown-icon {
+                                            transform: rotate(180deg);
+                                        }
+
+                                        /* menu items */
+                                        .my-dropdown-item {
+                                            display: block;
+                                            padding: 10px 14px;
+                                            color: #fff;
+                                            text-decoration: none;
+                                            font-size: 14px;
+                                        }
+
+                                        .my-dropdown-item:hover,
+                                        .my-dropdown-item:focus {
+                                            background: #495057;
+                                            color: #fff;
+                                            outline: none;
+                                        }
+
+                                        /* divider */
+                                        .my-dropdown-divider {
+                                            height: 1px;
+                                            background: #495057;
+                                            margin: 6px 0;
+                                        }
+
+                                        /* helpful: avoid parent overflow clipping */
+                                        .my-dropdown {
+                                            overflow: visible;
+                                        }
+
+                                        /* optional: small responsive tweak */
+                                        @media (max-width: 480px) {
+                                            .my-dropdown-menu {
+                                                right: 0;
+                                                left: 0;
+                                                margin: 0 8px;
+                                                width: auto;
+                                            }
+                                        }
+                                    </style>
+
+                                    <script>
+                                        document.addEventListener('DOMContentLoaded', () => {
+                                            // Initialize all custom dropdowns (supports multiple)
+                                            document.querySelectorAll('[data-dropdown]').forEach(drop => {
+                                                const toggle = drop.querySelector('.my-dropdown-toggle');
+                                                const menu = drop.querySelector('.my-dropdown-menu');
+
+                                                if (!toggle || !menu) return;
+
+                                                // toggle click
+                                                toggle.addEventListener('click', (ev) => {
+                                                    ev.stopPropagation();
+                                                    const isOpen = drop.classList.toggle('open');
+                                                    toggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+                                                    menu.setAttribute('aria-hidden', isOpen ? 'false' : 'true');
+                                                });
+
+                                                // close when clicking an item (optional)
+                                                menu.addEventListener('click', (ev) => {
+                                                    // you may want to keep open for certain links; this closes by default
+                                                    drop.classList.remove('open');
+                                                    toggle.setAttribute('aria-expanded', 'false');
+                                                    menu.setAttribute('aria-hidden', 'true');
+                                                });
+                                            });
+
+                                            // close on outside click
+                                            document.addEventListener('click', (ev) => {
+                                                document.querySelectorAll('[data-dropdown].open').forEach(openDrop => {
+                                                    if (!openDrop.contains(ev.target)) {
+                                                        openDrop.classList.remove('open');
+                                                        const togg = openDrop.querySelector('.my-dropdown-toggle');
+                                                        const m = openDrop.querySelector('.my-dropdown-menu');
+                                                        if (togg) togg.setAttribute('aria-expanded', 'false');
+                                                        if (m) m.setAttribute('aria-hidden', 'true');
+                                                    }
+                                                });
+                                            });
+
+                                            // close on ESC
+                                            document.addEventListener('keydown', (ev) => {
+                                                if (ev.key === 'Escape') {
+                                                    document.querySelectorAll('[data-dropdown].open').forEach(openDrop => {
+                                                        openDrop.classList.remove('open');
+                                                        const togg = openDrop.querySelector('.my-dropdown-toggle');
+                                                        const m = openDrop.querySelector('.my-dropdown-menu');
+                                                        if (togg) togg.setAttribute('aria-expanded', 'false');
+                                                        if (m) m.setAttribute('aria-hidden', 'true');
+                                                    });
+                                                }
+                                            });
+                                        });
+                                    </script>
+
+
                                 </div>
                             </div>
-                            <!-- Mobile Menu -->
-                            <div class="col-12">
-                                <div class="mobile_menu d-block d-md-none">
-                                </div>
+                        </div>
+                        <!-- Mobile Menu -->
+                        <div class="col-12">
+                            <div class="mobile_menu d-block d-md-none">
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
+        </div>
         </div>
         <!-- Header End -->
     </header>
@@ -191,125 +417,116 @@
 
     @yield('main')
 
-
-    <footer>
-        <script>
-            document.addEventListener('DOMContentLoaded', function() {
-                const icon = document.querySelector('.slicknav_icon');
-                icon.addEventListener('click', function() {
-                    this.classList.toggle('active');
+    @if (!(request()->is('login') || request()->is('register') || request()->is('account*')))
+        <footer>
+            <script>
+                document.addEventListener('DOMContentLoaded', function() {
+                    const icon = document.querySelector('.slicknav_icon');
+                    icon.addEventListener('click', function() {
+                        this.classList.toggle('active');
+                    });
                 });
-            });
-        </script>
-        <!-- Footer Start-->
-        <div class="footer-main footer-bg">
-            <div class="footer-area footer-padding">
-                <div class="container">
-                    <div class="row d-flex justify-content-between">
-                        <div class="col-xl-3 col-lg-3 col-md-5 col-sm-8">
-                            <div class="single-footer-caption mb-50">
-                                <div class="single-footer-caption mb-30">
-                                    <!-- logo -->
-                                    <div class="footer-logo">
-                                        <a href="index.html"><img src="assets/img/logo/logo2_footer.png"
-                                                alt=""></a>
-                                    </div>
-                                    <div class="footer-tittle">
-                                        <div class="footer-pera">
-                                            <p class="info1">Lorem ipsum dolor sit amet, nsectetur adipiscing elit,
-                                                sed do eiusmod tempor incididunt ut labore.</p>
-                                            <p class="info2">198 West 21th Street, Suite 721 New York,NY 10010</p>
-                                            <p class="info2">Phone: +95 (0) 123 456 789 Cell: +95 (0) 123 456 789</p>
+            </script>
+            <!-- Footer Start-->
+            <div class="footer-main footer-bg">
+                <div class="footer-area footer-padding">
+                    <div class="container">
+                        <div class="row d-flex justify-content-between">
+                            <div class="col-xl-3 col-lg-3 col-md-5 col-sm-8">
+                                <div class="single-footer-caption mb-50">
+                                    <div class="single-footer-caption mb-30">
+                                        <!-- logo -->
+                                        <div class="footer-logo">
+                                            <a href="index.html"><img src="assets/img/logo/logo2_footer.png"
+                                                    alt=""></a>
+                                        </div>
+                                        <div class="footer-tittle">
+                                            <div class="footer-pera">
+                                                <p class="info1">Lorem ipsum dolor sit amet, nsectetur adipiscing
+                                                    elit,
+                                                    sed do eiusmod tempor incididunt ut labore.</p>
+                                                <p class="info2">198 West 21th Street, Suite 721 New York,NY 10010</p>
+                                                <p class="info2">Phone: +95 (0) 123 456 789 Cell: +95 (0) 123 456 789
+                                                </p>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="col-xl-4 col-lg-4 col-md-5 col-sm-7">
-                            <div class="single-footer-caption mb-50">
-                                <div class="footer-tittle">
-                                    <h4>Popular post</h4>
+                            <div class="col-xl-4 col-lg-4 col-md-5 col-sm-7">
+                                <div class="single-footer-caption mb-50">
+                                    <div class="footer-tittle">
+                                        <h4>Popular post</h4>
+                                    </div>
+                                    <!-- Popular post -->
+                                    <div class="whats-right-single mb-20">
+                                        <div class="whats-right-img">
+                                            <img src="assets/img/gallery/footer_post1.png" alt="">
+                                        </div>
+                                        <div class="whats-right-cap">
+                                            <h4><a href="details.html">Scarlett’s disappointment at latest accolade</a>
+                                            </h4>
+                                            <p>Jhon | 2 hours ago</p>
+                                        </div>
+                                    </div>
+                                    <!-- Popular post -->
+                                    <div class="whats-right-single mb-20">
+                                        <div class="whats-right-img">
+                                            <img src="assets/img/gallery/footer_post2.png" alt="">
+                                        </div>
+                                        <div class="whats-right-cap">
+                                            <h4><a href="details.html">Scarlett’s disappointment at latest accolade</a>
+                                            </h4>
+                                            <p>Jhon | 2 hours ago</p>
+                                        </div>
+                                    </div>
+                                    <!-- Popular post -->
+                                    <div class="whats-right-single mb-20">
+                                        <div class="whats-right-img">
+                                            <img src="assets/img/gallery/footer_post3.png" alt="">
+                                        </div>
+                                        <div class="whats-right-cap">
+                                            <h4><a href="details.html">Scarlett’s disappointment at latest accolade</a>
+                                            </h4>
+                                            <p>Jhon | 2 hours ago</p>
+                                        </div>
+                                    </div>
                                 </div>
-                                <!-- Popular post -->
-                                <div class="whats-right-single mb-20">
-                                    <div class="whats-right-img">
-                                        <img src="assets/img/gallery/footer_post1.png" alt="">
-                                    </div>
-                                    <div class="whats-right-cap">
-                                        <h4><a href="details.html">Scarlett’s disappointment at latest accolade</a>
-                                        </h4>
-                                        <p>Jhon | 2 hours ago</p>
-                                    </div>
-                                </div>
-                                <!-- Popular post -->
-                                <div class="whats-right-single mb-20">
-                                    <div class="whats-right-img">
-                                        <img src="assets/img/gallery/footer_post2.png" alt="">
-                                    </div>
-                                    <div class="whats-right-cap">
-                                        <h4><a href="details.html">Scarlett’s disappointment at latest accolade</a>
-                                        </h4>
-                                        <p>Jhon | 2 hours ago</p>
-                                    </div>
-                                </div>
-                                <!-- Popular post -->
-                                <div class="whats-right-single mb-20">
-                                    <div class="whats-right-img">
-                                        <img src="assets/img/gallery/footer_post3.png" alt="">
-                                    </div>
-                                    <div class="whats-right-cap">
-                                        <h4><a href="details.html">Scarlett’s disappointment at latest accolade</a>
-                                        </h4>
-                                        <p>Jhon | 2 hours ago</p>
+                            </div>
+                            <div class="col-xl-3 col-lg-3 col-md-5 col-sm-7">
+                                <div class="single-footer-caption mb-50">
+                                    <div class="banner">
+                                        <img src="assets/img/gallery/body_card4.png" alt="">
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        <div class="col-xl-3 col-lg-3 col-md-5 col-sm-7">
-                            <div class="single-footer-caption mb-50">
-                                <div class="banner">
-                                    <img src="assets/img/gallery/body_card4.png" alt="">
+                    </div>
+                </div>
+                <!-- footer-bottom aera -->
+                <div class="footer-bottom-area footer-bg">
+                    <div class="container">
+                        <div class="footer-border">
+                            <div class="row d-flex align-items-center">
+                                <div class="col-xl-12 ">
+                                    <div class="footer-copy-right text-center">
+                                        <p><!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
+                                            Copyright &copy;
+                                            <script>
+                                                document.write(new Date().getFullYear());
+                                            </script> All rights reserved
+                                        </p>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-            <!-- footer-bottom aera -->
-            <div class="footer-bottom-area footer-bg">
-                <div class="container">
-                    <div class="footer-border">
-                        <div class="row d-flex align-items-center">
-                            <div class="col-xl-12 ">
-                                <div class="footer-copy-right text-center">
-                                    <p><!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
-                                        Copyright &copy;
-                                        <script>
-                                            document.write(new Date().getFullYear());
-                                        </script> All rights reserved | This template is made with <i
-                                            class="fa fa-heart" aria-hidden="true"></i> by <a
-                                            href="https://colorlib.com" target="_blank">Colorlib</a>
-                                        <!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <!-- Footer End-->
-    </footer>
-    <!-- Search model Begin -->
-    <div class="search-model-box">
-        <div class="d-flex align-items-center h-100 justify-content-center">
-            <div class="search-close-btn">+</div>
-            <form class="search-model-form">
-                <input type="text" id="search-input" placeholder="Searching key.....">
-            </form>
-        </div>
-    </div>
-    <!-- Search model end -->
+            <!-- Footer End-->
+        </footer>
+    @endif
+
     <!-- JS here -->
     <!-- All JS Custom Plugins Link Here here -->
     {{-- <script src="{{ asset('assets/js/vendor/modernizr-3.5.0.min.js') }}"></script>
@@ -335,6 +552,96 @@
     <script src="{{ asset('assets/js/slick.min.js') }}"></script>
     <script src="{{ asset('assets/js/jquery.slicknav.min.js') }}"></script>
     {{-- <script src="{{ asset('assets/js/main.js') }}"></script> --}}
+
+
+
+
+    <style>
+        #toast-container {
+            position: fixed;
+            top: 20px;
+            right: 0px;
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .toast {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            min-width: 250px;
+            max-width: 350px;
+            padding: 12px 16px;
+            border-radius: 8px;
+            color: #fff;
+            font-size: 14px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+            animation: slideIn 0.3s ease;
+        }
+
+        .toast-success {
+            background-color: #28a745;
+            /* green */
+        }
+
+        .toast-error {
+            background-color: green;
+            /* red */
+        }
+
+        .toast button.toast-close {
+            background: none;
+            border: none;
+            color: #fff;
+            font-size: 16px;
+            margin-left: 12px;
+            cursor: pointer;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(100%);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+    </style>
+
+    @if (session('success') || session('error'))
+        <div id="toast-container">
+            @if (session('success'))
+                <div class="toast toast-success show">
+                    <span>{{ session('success') }}</span>
+                    <button class="toast-close">&times;</button>
+                </div>
+            @endif
+            @if (session('error'))
+                <div class="toast toast-error show">
+                    <span>{{ session('error') }}</span>
+                    <button class="toast-close">&times;</button>
+                </div>
+            @endif
+
+        </div>
+    @endif
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const toasts = document.querySelectorAll(".toast");
+            toasts.forEach(toast => {
+                // Manual close
+                toast.querySelector(".toast-close").addEventListener("click", () => {
+                    toast.remove();
+                });
+            });
+        });
+    </script>
 </body>
 
 </html>

@@ -68,6 +68,7 @@
         @endif
 
         <div class="row">
+        
 
             <div class="card col-md-6">
 
