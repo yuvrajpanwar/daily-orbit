@@ -136,15 +136,33 @@
                                                     margin-top: auto;
                                                     margin-bottom: auto;
                                                     margin-right: 20px;
-                                                    /* margin-left: 20px; */
                                                     padding: 1rem;
                                                     color: white;
                                                     border: 1px solid white;
                                                     border-radius: 10px;
+                                                    width: 40px;
+                                                    height: 40px;
+                                                    justify-content: center;
+                                                    display: flex;
+                                                    @if (Auth::check() && Auth::user()->avatar) background: url('{{ Auth::user()->avatar }}');
+                                                    background-size: cover;
+                                                    background-position: center; @endif
                                             ">
-                                            <div class="my-dropdown-toggle p-0 m-0">
-                                                <i class="fa fa-user"></i>
-                                            </div>
+                                            {{-- if user is log in and have avatar then show avatar image else show user icon --}}
+                                            @if (!Auth::check() || (Auth::check() && !Auth::user()->avatar))
+                                                <div class="my-dropdown-toggle p-0 m-0">
+                                                    <i class="fa fa-user"></i>
+                                                </div>
+                                            @else
+                                                <div class="my-dropdown-toggle w-100 h-100">
+
+                                                </div>
+                                            @endif
+
+
+
+
+
                                             <div id="userMenu" class="my-dropdown-menu" role="menu"
                                                 aria-hidden="true">
                                                 @if (Auth::check())
@@ -207,8 +225,16 @@
                                         <div class="my-dropdown" data-dropdown>
                                             <button type="button" class="my-dropdown-toggle" aria-haspopup="true"
                                                 aria-expanded="false" aria-controls="userMenu">
-                                                <i class="fa fa-user" aria-hidden="true"
-                                                    style="margin-right:6px"></i>
+
+                                                {{-- if user is log in and have avatar then show avatar image else show user icon --}}
+                                                @if (Auth::user()->avatar)
+                                                    <img src="{{ Auth::user()->avatar }}" alt="User Avatar"
+                                                        style="width:32px;height:32px;border-radius:50%;margin-right:6px;object-fit:cover">
+                                                @else
+                                                    <i class="fa fa-user" aria-hidden="true"
+                                                        style="margin-right:6px"></i>
+                                                @endif
+
                                                 <span class="my-user-name">
                                                     {{ strlen(Auth::user()->name) > 15 ? substr(Auth::user()->name, 0, 15) . '...' : Auth::user()->name }}
                                                 </span>
@@ -613,8 +639,8 @@
         }
     </style>
 
-    @if (session('success') || session('error'))
-        <div id="toast-container">
+    <div id="toast-container">
+        @if (session('success') || session('error'))
             @if (session('success'))
                 <div class="toast toast-success show">
                     <span>{{ session('success') }}</span>
@@ -627,9 +653,8 @@
                     <button class="toast-close">&times;</button>
                 </div>
             @endif
-
-        </div>
-    @endif
+        @endif
+    </div>
 
     <script>
         document.addEventListener("DOMContentLoaded", function() {

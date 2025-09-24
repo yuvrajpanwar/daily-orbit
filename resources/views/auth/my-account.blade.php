@@ -373,6 +373,24 @@
                                 <button type="button" class="edit-btn" onclick="toggleEdit('email')"><i
                                         class="fa fa-edit"></i></button>
                             </div>
+                            <!-- EMAIL VERIFICATION STATUS -->
+                            <div class="info-item mt-2" id="email-verification">
+                                <span class="info-label">{{ __('Email Verification') }}</span>
+
+                                @if (auth()->user()->email_verified_at)
+                                    <span class="text-success info-value">
+                                        <i class="fa fa-check-circle"></i> Verified
+                                    </span>
+                                @else
+                                    <button type="button" class="btn btn-warning btn-sm info-value" id="verify-btn"
+                                        style="max-width: fit-content">
+                                        <i class="fa fa-envelope"></i> Verify Now
+                                    </button>
+                                @endif
+                            </div>
+
+
+
                             <!-- MOBILE -->
                             <div class="info-item">
                                 <span class="info-label">{{ __('Mobile') }}</span>
@@ -589,5 +607,59 @@
             submitButton.disabled = true;
             submitButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Updating...';
         });
+    </script>
+
+    <script>
+        document.getElementById("verify-btn")?.addEventListener("click", function() {
+            const btn = this;
+
+            // Start 2 min lock immediately
+            startCooldown(btn, 120);
+
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
+
+            fetch("example.com", {
+                    method: "POST",
+                    headers: {
+                        "X-CSRF-TOKEN": "{{ csrf_token() }}",
+                        "Content-Type": "application/json"
+                    }
+                })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.success) {
+                        //create "toast toast-success show" inside toast-container
+                        const toastContainer = document.getElementById("toast-container");
+                        const toast = document.createElement("div");
+                        toast.className = "toast toast-success show";
+                        toast.innerHTML = `<span>${data.message || 'Verification link has been sent to your email.'}</span>
+                        <button class="toast-close">&times;</button>`;
+                        toastContainer.appendChild(toast);
+                    } else {
+                        alert(data.message || "Something went wrong");
+                    }
+                })
+                .catch(() => {
+                    alert("Something went wrong");
+                });
+        });
+
+        function startCooldown(btn, seconds) {
+            btn.disabled = true;
+            let remaining = seconds;
+
+            const interval = setInterval(() => {
+                const mins = Math.floor(remaining / 60);
+                const secs = remaining % 60;
+                btn.innerHTML = `Resend in ${mins}:${secs.toString().padStart(2, '0')}`;
+                remaining--;
+
+                if (remaining < 0) {
+                    clearInterval(interval);
+                    btn.disabled = false;
+                    btn.innerHTML = '<i class="fa fa-envelope"></i> Verify Now';
+                }
+            }, 1000);
+        }
     </script>
 @endsection
