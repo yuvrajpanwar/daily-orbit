@@ -28,13 +28,12 @@ class GoogleController extends Controller
         if (! $user->exists) {
             $user->password = bcrypt(Str::random(16));
             $user->name      = $googleUser->getName();
-            $user->email_verified_at = now();
             $user->avatar    = $googleUser->getAvatar();
             $user->google_id = $googleUser->getId();
             $user->profile_picture = $googleUser->user['picture'] ?? $googleUser->getAvatar(); // full-size
         }
     
-        // Save changes
+        $user->email_verified_at = now();
         $user->save();
     
         Auth::login($user);

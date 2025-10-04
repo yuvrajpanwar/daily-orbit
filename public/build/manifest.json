@@ -96,12 +96,12 @@
     "src": "resources/fonts/themify.woff"
   },
   "resources/js/app.js": {
-    "file": "assets/app-tTwFsmgi.js",
+    "file": "assets/app-DChiOoQ6.js",
     "name": "app",
     "src": "resources/js/app.js",
     "isEntry": true,
     "css": [
-      "assets/app-CLXiHiVk.css"
+      "assets/app-DgClJvmj.css"
     ],
     "assets": [
       "assets/fa-brands-400-BZXIr3Hf.eot",

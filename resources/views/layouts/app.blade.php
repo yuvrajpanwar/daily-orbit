@@ -8,22 +8,6 @@
     <meta name="description" content="Daily Orbit">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="shortcut icon" type="image/x-icon" href="{{ asset('assets/img/favicon.ico') }}">
-    {{-- <link rel="stylesheet" href="{{ asset('assets/css/style.css') }}">
-    <link rel="stylesheet" href="{{ asset('assets/css/bootstrap.min.css') }}">
-    <link rel="stylesheet" href="{{ asset('assets/css/flaticon.css') }}">
-    <link rel="stylesheet" href="{{ asset('assets/css/fontawesome-all.min.css') }}">
-    <link rel="stylesheet" href="{{ asset('assets/css/responsive.css') }}"> 
-    <link rel="stylesheet" href="{{ asset('assets/css/slicknav.css') }}">
-    <link rel="stylesheet" href="{{ asset('assets/css/slick.css') }}">
-    <link rel="stylesheet" href="{{ asset('assets/css/themify-icons.css') }}"> --}}
-    {{-- Vite will inject the built CSS/JS in dev & prod --}}
-    @vite(['resources/js/app.js'])
-    {{-- not in use  --}}
-    {{-- <link rel="stylesheet" href="{{ asset('assets/css/owl.carousel.min.css') }}">
-    <link rel="stylesheet" href="{{ asset('assets/css/animate.min.css') }}">
-    <link rel="stylesheet" href="{{ asset('assets/css/magnific-popup.css') }}">
-    <link rel="stylesheet" href="{{ asset('assets/css/nice-select.css') }}">
-    --}}
     <style>
         .header-social,
         #navigation {
@@ -83,17 +67,64 @@
             }
         }
     </style>
+    <style>
+        .preloader {
+            background-color: #f7f7f7;
+            height: 100vh;
+            width: 100vw;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            z-index: 999999;
+            margin: 0 auto
+        }
+
+        .preloader .preloader-circle {
+            width: 100px;
+            height: 100px;
+            position: relative;          
+            z-index: 10;
+            border-radius: 50%;
+        }
+
+        .preloader .preloader-img {
+            position: absolute;
+            top: 50%;
+            z-index: 200;
+            left: 0;
+            right: 0;
+            margin: 0 auto;
+            text-align: center;
+            display: inline-block;
+        }
+
+        .preloader .preloader-img img {
+            max-width: 55px
+        }
+
+        .preloader .pere-text strong {
+            font-weight: 800;
+            color: #dca73a;
+            text-transform: uppercase
+        }
+    </style>
+<link rel="preload" as="image" href="{{ asset('assets/img/logo/logo-circle.png') }}">
 
     @stack('css')
 </head>
 
 <body>
     <!-- Preloader Start -->
-    <div id="preloader-active" style="height: 100vh;width:100vw">
+    <div id="preloader-active">
         <div class="preloader  d-flex align-items-center justify-content-center"
             style="height: 100vh;width:100vw;right:auto">
             <div class="preloader-inner position-relative">
-                <img src="assets/img/logo/logo-circle.png" height="100px" class="preloader-circle"
+                <img src="assets/img/logo/logo-circle.png" height="100px" class="preloader-circle logo-spin-round"
                     style="border: none !important;">
             </div>
         </div>
@@ -127,7 +158,7 @@
                 <div class="header-bottom header-sticky">
                     <div class="container">
                         <div class="row align-items-center">
-                            <div class="col-xl-8 col-lg-8 col-md-12 header-flex">
+                            <div class="col-xl-8 col-lg-8 col-md-8 header-flex">
                                 <!-- sticky -->
                                 <div class="sticky-logo my-1">
                                     <div class="d-flex">
@@ -553,31 +584,10 @@
         </footer>
     @endif
 
-    <!-- JS here -->
-    <!-- All JS Custom Plugins Link Here here -->
-    {{-- <script src="{{ asset('assets/js/vendor/modernizr-3.5.0.min.js') }}"></script>
-    <script src="{{ asset('assets/js/popper.min.js') }}"></script>
-    <script src="{{ asset('assets/js/bootstrap.min.js') }}"></script>
-    <script src="{{ asset('assets/js/owl.carousel.min.js') }}"></script>
-    <script src="{{ asset('assets/js/gijgo.min.js') }}"></script>
-    <script src="{{ asset('assets/js/wow.min.js') }}"></script>
-    <script src="{{ asset('assets/js/animated.headline.js') }}"></script>
-    <script src="{{ asset('assets/js/jquery.magnific-popup.js') }}"></script>
-    <script src="{{ asset('assets/js/jquery.nice-select.min.js') }}"></script>
-    <script src="{{ asset('assets/js/jquery.sticky.js') }}"></script>
-    <script src="{{ asset('assets/js/contact.js') }}"></script>
-    <script src="{{ asset('assets/js/jquery.form.js') }}"></script>
-    <script src="{{ asset('assets/js/jquery.validate.min.js') }}"></script>
-    <script src="{{ asset('assets/js/mail-script.js') }}"></script>
-    <script src="{{ asset('assets/js/jquery.ajaxchimp.min.js') }}"></script>
-    <script src="{{ asset('assets/js/plugins.js') }}"></script> --}}
-    {{-- in use  --}}
-    {{-- <script src="{{ asset('assets/js/vendor/jquery-1.12.4.min.js') }}"></script> --}}
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     <script src="{{ asset('assets/js/jquery.scrollUp.min.js') }}"></script>
     <script src="{{ asset('assets/js/slick.min.js') }}"></script>
     <script src="{{ asset('assets/js/jquery.slicknav.min.js') }}"></script>
-    {{-- <script src="{{ asset('assets/js/main.js') }}"></script> --}}
 
 
 
@@ -638,7 +648,6 @@
             }
         }
     </style>
-
     <div id="toast-container">
         @if (session('success') || session('error'))
             @if (session('success'))
@@ -666,7 +675,12 @@
                 });
             });
         });
+        /* 1. Proloder */
+    $(window).on('load', function () {
+      $('#preloader-active').css('display', 'none');
+    });
     </script>
+    @vite(['resources/js/app.js'])
 </body>
 
 </html>

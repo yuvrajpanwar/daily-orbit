@@ -618,7 +618,7 @@
 
             btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
 
-            fetch("example.com", {
+            fetch("{{route('verification.send')}}", {
                     method: "POST",
                     headers: {
                         "X-CSRF-TOKEN": "{{ csrf_token() }}",
