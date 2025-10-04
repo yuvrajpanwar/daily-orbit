@@ -14,6 +14,8 @@ Route::get('/about', function () {
     return view('about');
 });
 
+// post details 
+Route::get('/post/{slug}', [App\Http\Controllers\PostController::class, 'postDetials'])->name('post.details');
 
 
 Auth::routes();
@@ -28,8 +30,6 @@ Route::middleware('auth')->group(function () {
     Route::put('/account/update', [App\Http\Controllers\AccountController::class, 'update'])->name('account.update');
     Route::delete('/account/destroy', [App\Http\Controllers\AccountController::class, 'destroy'])->name('account.destroy');
     Route::post('/account/avatar-update', [App\Http\Controllers\AccountController::class, 'updateAvatar'])->name('account.avatar.update');
-
-
     Route::post('/send-verification-link', [EmailVerificationController::class, 'sendLink'])->name('verification.send');
     Route::get('/verify-email/{id}/{hash}', [EmailVerificationController::class, 'verify'])->name('verification.verify');
 });

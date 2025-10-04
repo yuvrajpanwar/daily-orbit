@@ -70,6 +70,7 @@ class AccountController extends Controller
 
         return redirect('/')->with('success', 'Your account has been permanently deleted.');
     }
+    
     public function updateAvatar(Request $request)
     {
         $request->validate([

@@ -1,13 +1,12 @@
 <!doctype html>
 <html class="no-js" lang="zxx">
-
 <head>
     <meta charset="utf-8">
     <meta http-equiv="x-ua-compatible" content="ie=edge">
     <title>Daily Orbit</title>
     <meta name="description" content="Daily Orbit">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="shortcut icon" type="image/x-icon" href="{{ asset('assets/img/favicon.ico') }}">
+    <link rel="shortcut icon" type="image/x-icon" href="{{ asset('/assets/img/favicon.ico') }}">
     <style>
         .header-social,
         #navigation {
@@ -66,8 +65,6 @@
                 display: none !important;
             }
         }
-    </style>
-    <style>
         .preloader {
             background-color: #f7f7f7;
             height: 100vh;
@@ -87,7 +84,7 @@
         .preloader .preloader-circle {
             width: 100px;
             height: 100px;
-            position: relative;          
+            position: relative;
             z-index: 10;
             border-radius: 50%;
         }
@@ -113,7 +110,6 @@
             text-transform: uppercase
         }
     </style>
-<link rel="preload" as="image" href="{{ asset('assets/img/logo/logo-circle.png') }}">
 
     @stack('css')
 </head>
@@ -124,7 +120,7 @@
         <div class="preloader  d-flex align-items-center justify-content-center"
             style="height: 100vh;width:100vw;right:auto">
             <div class="preloader-inner position-relative">
-                <img src="assets/img/logo/logo-circle.png" height="100px" class="preloader-circle logo-spin-round"
+                <img src="/assets/img/logo/logo-circle.png" height="100px" class="preloader-circle logo-spin-round"
                     style="border: none !important;">
             </div>
         </div>
@@ -141,15 +137,15 @@
                             <div class="col-xl-4 col-lg-4 col-md-4 d-none d-md-block">
                                 <div class="logo">
                                     <a href="index.html" style="display: flex;height:60px;width:fit-content;">
-                                        <img src="assets/img/logo/logo-text.png" alt="Daily Orbit Logo">
-                                        <img src="assets/img/logo/logo-circle.png" class="logo-spin-round"
+                                        <img src="/assets/img/logo/logo-text.png" alt="Daily Orbit Logo">
+                                        <img src="/assets/img/logo/logo-circle.png" class="logo-spin-round"
                                             alt="Daily Orbit Logo">
                                     </a>
                                 </div>
                             </div>
                             <div class="col-xl-8 col-lg-8 col-md-8">
                                 <div class="header-banner f-right ">
-                                    <img src="assets/img/gallery/header_card.png" alt="">
+                                    <img src="/assets/img/gallery/header_card.png" alt="">
                                 </div>
                             </div>
                         </div>
@@ -223,8 +219,8 @@
                                             </div>
                                         </div>
                                         <a href="index.html" style="display: flex;height:60px;width:fit-content;">
-                                            <img src="assets/img/logo/logo-text-white.png" alt="Daily Orbit Logo">
-                                            <img src="assets/img/logo/logo-circle-white.png" class="logo-spin-round"
+                                            <img src="/assets/img/logo/logo-text-white.png" alt="Daily Orbit Logo">
+                                            <img src="/assets/img/logo/logo-circle-white.png" class="logo-spin-round"
                                                 style="padding:.7rem 0;" alt="Daily Orbit Logo">
                                         </a>
                                     </div>
@@ -233,7 +229,7 @@
                                 <div class="main-menu d-none d-md-block">
                                     <nav>
                                         <ul id="navigation">
-                                            <li><a href="index.html">Home</a></li>
+                                            <li><a href="/">Home</a></li>
                                             <li><a href="about.html">about</a></li>
                                             <li><a href="categori.html">Category</a></li>
                                             <li><a href="latest_news.html">Latest News</a></li>
@@ -494,7 +490,7 @@
                                     <div class="single-footer-caption mb-30">
                                         <!-- logo -->
                                         <div class="footer-logo">
-                                            <a href="index.html"><img src="assets/img/logo/logo2_footer.png"
+                                            <a href="index.html"><img src="/assets/img/logo/logo2_footer.png"
                                                     alt=""></a>
                                         </div>
                                         <div class="footer-tittle">
@@ -518,7 +514,7 @@
                                     <!-- Popular post -->
                                     <div class="whats-right-single mb-20">
                                         <div class="whats-right-img">
-                                            <img src="assets/img/gallery/footer_post1.png" alt="">
+                                            <img src="/assets/img/gallery/footer_post1.png" alt="">
                                         </div>
                                         <div class="whats-right-cap">
                                             <h4><a href="details.html">Scarlett’s disappointment at latest accolade</a>
@@ -529,7 +525,7 @@
                                     <!-- Popular post -->
                                     <div class="whats-right-single mb-20">
                                         <div class="whats-right-img">
-                                            <img src="assets/img/gallery/footer_post2.png" alt="">
+                                            <img src="/assets/img/gallery/footer_post2.png" alt="">
                                         </div>
                                         <div class="whats-right-cap">
                                             <h4><a href="details.html">Scarlett’s disappointment at latest accolade</a>
@@ -540,7 +536,7 @@
                                     <!-- Popular post -->
                                     <div class="whats-right-single mb-20">
                                         <div class="whats-right-img">
-                                            <img src="assets/img/gallery/footer_post3.png" alt="">
+                                            <img src="/assets/img/gallery/footer_post3.png" alt="">
                                         </div>
                                         <div class="whats-right-cap">
                                             <h4><a href="details.html">Scarlett’s disappointment at latest accolade</a>
@@ -553,7 +549,7 @@
                             <div class="col-xl-3 col-lg-3 col-md-5 col-sm-7">
                                 <div class="single-footer-caption mb-50">
                                     <div class="banner">
-                                        <img src="assets/img/gallery/body_card4.png" alt="">
+                                        <img src="/assets/img/gallery/body_card4.png" alt="">
                                     </div>
                                 </div>
                             </div>
@@ -676,9 +672,9 @@
             });
         });
         /* 1. Proloder */
-    $(window).on('load', function () {
-      $('#preloader-active').css('display', 'none');
-    });
+        $(window).on('load', function() {
+            $('#preloader-active').css('display', 'none');
+        });
     </script>
     @vite(['resources/js/app.js'])
 </body>
