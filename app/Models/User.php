@@ -23,6 +23,7 @@ class User extends Authenticatable
         'avatar',
         'profile_picture',
         'password',
+        'google_id'
     ];
 
     /**
@@ -33,6 +34,7 @@ class User extends Authenticatable
     protected $hidden = [
         'password',
         'remember_token',
+        'google_id'
     ];
 
     /**

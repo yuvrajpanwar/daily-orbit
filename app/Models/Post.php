@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -28,25 +29,37 @@ class Post extends Model
         'time' => 'datetime',
     ];
 
-    // Auto-generate slug from title
     protected static function boot()
     {
         parent::boot();
-        
+
         static::creating(function ($post) {
             if (empty($post->slug)) {
-                $baseSlug = Str::slug($post->title);
+                // Detect if title contains Hindi (Devanagari) characters
+                if (preg_match('/[\x{0900}-\x{097F}]/u', $post->title)) {
+                    // Generate Hindi slug (keep Hindi chars, replace spaces/symbols)
+                    $baseSlug = trim(preg_replace('/[^\p{Devanagari}\p{N}\s-]+/u', '', $post->title)); // keep only Hindi, numbers, spaces, and dashes
+                    $baseSlug = preg_replace('/\s+/u', '-', $baseSlug); // spaces → dashes
+                    $baseSlug = preg_replace('/-+/', '-', $baseSlug); // collapse multiple dashes
+                } else {
+                    // For English or Latin text, use Laravel's slug helper
+                    $baseSlug = Str::slug($post->title);
+                }
+
                 $slug = $baseSlug;
                 $counter = 1;
-                // Keep checking until we find a unique slug
+
+                // Ensure uniqueness
                 while (static::where('slug', $slug)->exists()) {
                     $slug = $baseSlug . '-' . $counter;
                     $counter++;
                 }
+
                 $post->slug = $slug;
             }
         });
     }
+
 
     // Relationship with Admin (author)
     public function author()
@@ -73,26 +86,26 @@ class Post extends Model
     public static function getAllPosts()
     {
         return self::where('is_deleted', 0)
-                   ->where('is_published', 1)
-                   ->orderBy('time', 'desc')
-                   ->get();
+            ->where('is_published', 1)
+            ->orderBy('time', 'desc')
+            ->get();
     }
 
     // Get post by slug
     public static function getPostBySlug($slug)
     {
         return self::where('slug', $slug)
-                   ->where('is_deleted', 0)
-                   ->where('is_published', 1)
-                   ->firstOrFail();
+            ->where('is_deleted', 0)
+            ->where('is_published', 1)
+            ->firstOrFail();
     }
 
     // Scope for published posts
     public function scopePublished($query)
     {
         return $query->where('is_published', 1)
-                     ->where('is_deleted', 0)
-                     ->where('time', '<=', now());
+            ->where('is_deleted', 0)
+            ->where('time', '<=', now());
     }
 
     // Scope for active posts (alias for published)

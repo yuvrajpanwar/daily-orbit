@@ -109,6 +109,9 @@
             color: #dca73a;
             text-transform: uppercase
         }
+        #scrollUp{
+            text-decoration: none;
+        }
     </style>
 
     @stack('css')
@@ -130,31 +133,26 @@
         <!-- Header Start -->
         <div class="header-area">
             <div class="main-header ">
-                <div class="header-mid gray-bg">
+                {{-- <div class="header-mid gray-bg p-0">
                     <div class="container">
                         <div class="row d-flex align-items-center">
                             <!-- Logo -->
                             <div class="col-xl-4 col-lg-4 col-md-4 d-none d-md-block">
                                 <div class="logo">
-                                    <a href="index.html" style="display: flex;height:60px;width:fit-content;">
+                                    <a href="/" style="display: flex;height:60px;width:fit-content;">
                                         <img src="/assets/img/logo/logo-text.png" alt="Daily Orbit Logo">
                                         <img src="/assets/img/logo/logo-circle.png" class="logo-spin-round"
                                             alt="Daily Orbit Logo">
                                     </a>
                                 </div>
                             </div>
-                            <div class="col-xl-8 col-lg-8 col-md-8">
-                                <div class="header-banner f-right ">
-                                    <img src="/assets/img/gallery/header_card.png" alt="">
-                                </div>
-                            </div>
                         </div>
                     </div>
-                </div>
+                </div> --}}
                 <div class="header-bottom header-sticky">
                     <div class="container">
                         <div class="row align-items-center">
-                            <div class="col-xl-8 col-lg-8 col-md-8 header-flex">
+                            <div class="col-xl-11 col-lg-11 col-md-11 header-flex">
                                 <!-- sticky -->
                                 <div class="sticky-logo my-1">
                                     <div class="d-flex">
@@ -218,7 +216,7 @@
                                                 @endif
                                             </div>
                                         </div>
-                                        <a href="index.html" style="display: flex;height:60px;width:fit-content;">
+                                        <a href="/" style="display: flex;height:60px;width:fit-content;">
                                             <img src="/assets/img/logo/logo-text-white.png" alt="Daily Orbit Logo">
                                             <img src="/assets/img/logo/logo-circle-white.png" class="logo-spin-round"
                                                 style="padding:.7rem 0;" alt="Daily Orbit Logo">
@@ -227,13 +225,19 @@
                                 </div>
                                 <!-- Main-menu -->
                                 <div class="main-menu d-none d-md-block">
-                                    <nav>
+                                    <nav style="display: flex;width:100%;flex-wrap:wrap;">
+                                        <div class="logo d-flex justify-content-center align-items-center">
+                                            <a href="/" style="display: flex;height:45px;width:fit-content;margin-right:1rem;">
+                                                <img src="/assets/img/logo/logo-text-white.png" alt="Daily Orbit Logo">
+                                                <img src="/assets/img/logo/logo-circle-white.png" class="logo-spin-round"
+                                                    alt="Daily Orbit Logo">
+                                            </a>
+                                        </div>
                                         <ul id="navigation">
-                                            <li><a href="/">Home</a></li>
                                             <li><a href="about.html">about</a></li>
                                             <li><a href="categori.html">Category</a></li>
                                             <li><a href="latest_news.html">Latest News</a></li>
-                                            <li><a href="#">Pages</a>
+                                            <li><a href="#">Pages &nbsp;<i class="fa fa-chevron-down"></i> </a>
                                                 <ul class="submenu">
                                                     <li><a href="blog.html">Blog</a></li>
                                                     <li><a href="blog_details.html">Blog Details</a></li>
@@ -245,7 +249,7 @@
                                     </nav>
                                 </div>
                             </div>
-                            <div class="col-xl-4 col-lg-4 col-md-4 not-for-mobile">
+                            <div class="col-xl-1 col-lg-1 col-md-1 not-for-mobile">
                                 <div class="header-right f-right d-lg-block"
                                     style="border: 1px solid white;border-radius:5px;">
                                     @if (Auth::check())
@@ -490,7 +494,7 @@
                                     <div class="single-footer-caption mb-30">
                                         <!-- logo -->
                                         <div class="footer-logo">
-                                            <a href="index.html"><img src="/assets/img/logo/logo2_footer.png"
+                                            <a href="/"><img src="/assets/img/logo/logo2_footer.png"
                                                     alt=""></a>
                                         </div>
                                         <div class="footer-tittle">
@@ -626,7 +630,7 @@
         .toast button.toast-close {
             background: none;
             border: none;
-            color: #fff;
+            color: black;
             font-size: 16px;
             margin-left: 12px;
             cursor: pointer;
