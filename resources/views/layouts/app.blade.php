@@ -237,7 +237,7 @@
                                             <li><a href="about.html">about</a></li>
                                             <li><a href="categori.html">Category</a></li>
                                             <li><a href="latest_news.html">Latest News</a></li>
-                                            <li><a href="#">Pages &nbsp;<i class="fa fa-chevron-down"></i> </a>
+                                            <li><a href="#">Pages &nbsp;<i class="fa fa-chevron-down not-for-mobile"></i> </a>
                                                 <ul class="submenu">
                                                     <li><a href="blog.html">Blog</a></li>
                                                     <li><a href="blog_details.html">Blog Details</a></li>
