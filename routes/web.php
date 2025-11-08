@@ -10,6 +10,10 @@ Route::get('/', function () {
     return view('home');
 });
 
+Route::any('/coming-soon', function () {
+    return view('coming-soon');
+})->name('coming-soon');
+
 Route::get('/about', function () {
     return view('about');
 });

@@ -18,9 +18,7 @@
     <!-- ShareThis BEGIN -->
         <script type='text/javascript' src='https://platform-api.sharethis.com/js/sharethis.js#property=690cc0de38de9793e85fcc81&product=sop' async='async'></script>
     <!-- ShareThis END -->
-@endpush
 
-@section('main')
     <link
         href="https://fonts.googleapis.com/css2?family=Hind:wght@400;500;700&family=Tiro+Devanagari+Hindi:wght@400;700&display=swap"
         rel="stylesheet">
@@ -77,7 +75,9 @@
             white-space: nowrap;
         }
     </style>
+@endpush
 
+@section('main')
     <section class="blog_area single-post-area m-4">
         <div class="container">
             <div class="row">
@@ -146,7 +146,7 @@
                     {{-- Comment Form --}}
                     <div class="comment-form mt-0">
                       <h4><i class="fa fa-comment"></i> Add Comment</h4>
-                        <form class="form-contact comment_form" action="#" method="POST">
+                        <form class="form-contact comment_form" action="{{route('coming-soon')}}" method="POST">
                             @csrf
                             <div class="row">
                                 <div class="col-12">
@@ -193,13 +193,15 @@
                         <aside class="single_sidebar_widget newsletter_widget">
                             <h4 class="widget_title">Subscribe</h4>
                             <small>Receive similar posts <i class="fa fa-paper-plane"></i> </small>
-                            <form action="#">
+                            <form action="{{route('coming-soon')}}" method="post">
+                                @csrf
                                 <div class="form-group">
                                     <input type="email" class="form-control" onfocus="this.placeholder=''"
                                         onblur="this.placeholder='Enter email'" placeholder='Enter email' required>
                                 </div>
-                                <button class="button rounded-0 w-100 btn_1 boxed-btn primary-bg"
-                                    type="submit"><i class="fa fa-envelope"></i> Subscribe</button>
+                                <button type="submit" class="button rounded-0 w-100 btn_1 boxed-btn primary-bg">
+                                    <i class="fa fa-envelope"></i> Subscribe
+                                </button>
                             </form>
                         </aside>
                     </div>
@@ -209,3 +211,43 @@
     </section>
 
 @endsection
+
+
+@push('scripts')
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    // Select all forms with .form-contact or newsletter_widget form
+    const forms = document.querySelectorAll('.comment_form, .newsletter_widget form');
+
+    forms.forEach(form => {
+        form.addEventListener('submit', function (e) {
+            const submitBtn = form.querySelector('button[type="submit"]');
+            if (!submitBtn) return;
+
+            // Prevent double click
+            if (submitBtn.disabled) return;
+
+            // Disable button
+            submitBtn.disabled = true;
+
+            // Save original text & icon
+            const originalText = submitBtn.innerHTML;
+
+            // Replace with loading state
+            submitBtn.innerHTML = `
+                <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                Please Wait...
+            `;
+
+            // Optional: Re-enable after 10s (fallback if redirect fails)
+            setTimeout(() => {
+                if (submitBtn.disabled) {
+                    submitBtn.disabled = false;
+                    submitBtn.innerHTML = originalText;
+                }
+            }, 4000);
+        });
+    });
+});
+</script>
+@endpush
