@@ -75,6 +75,99 @@
             white-space: nowrap;
         }
     </style>
+    <style>
+    .hover-bg-light {
+        transition: background-color 0.2s ease;
+    }
+    .hover-bg-light:hover {
+        background-color: #f8f9fa !important;
+    }
+    .transition {
+        transition: all 0.2s ease;
+    }
+</style>
+
+<style>
+    .similar-shimmer-item {
+        display: flex;
+        gap: 12px;
+        align-items: center;
+        animation: fadeIn 0.6s ease-out forwards;
+        opacity: 0;
+    }
+    .similar-shimmer-item:nth-child(1) { animation-delay: 0.1s; }
+    .similar-shimmer-item:nth-child(2) { animation-delay: 0.2s; }
+    .similar-shimmer-item:nth-child(3) { animation-delay: 0.3s; }
+    .similar-shimmer-item:nth-child(4) { animation-delay: 0.4s; }
+    .similar-shimmer-item:nth-child(5) { animation-delay: 0.5s; }
+
+    .shimmer-img {
+        width: 100px;
+        height: 80px;
+        border-radius: 8px;
+        background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+        background-size: 200% 100%;
+        animation: shimmer 1.8s ease-in-out infinite;
+        position: relative;
+        overflow: hidden;
+    }
+    .shimmer-img::after {
+        content: '';
+        position: absolute;
+        top: 0; left: -150%;
+        width: 50%; height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255,255,255,0.6), transparent);
+        animation: shine 1.8s ease-in-out infinite;
+    }
+
+    .shimmer-text { flex: 1; }
+    .shimmer-line {
+        height: 14px;
+        border-radius: 7px;
+        background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+        background-size: 200% 100%;
+        animation: shimmer 1.8s ease-in-out infinite;
+        margin: 6px 0;
+    }
+    .shimmer-line.title { width: 80%; height: 16px; }
+    .shimmer-line.meta  { width: 55%; height: 12px; }
+
+    @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+    @keyframes shine   { 0% { left: -150%; } 100% { left: 150%; } }
+    @keyframes fadeIn  { to { opacity: 1; } }
+
+    /* Real item fade-in */
+    #similar-content li {
+        animation: fadeInContent 0.5s ease-out forwards;
+        opacity: 0;
+        transform: translateY(5px);
+    }
+    #similar-content li:nth-child(1) { animation-delay: 0.1s; }
+    #similar-content li:nth-child(2) { animation-delay: 0.2s; }
+    #similar-content li:nth-child(3) { animation-delay: 0.3s; }
+    #similar-content li:nth-child(4) { animation-delay: 0.4s; }
+    #similar-content li:nth-child(5) { animation-delay: 0.5s; }
+
+    @keyframes fadeInContent {
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Real image */
+    .similar-real-img {
+        width: 100px; height: 80px; object-fit: cover; border-radius: 8px;
+        transition: transform .3s ease;
+    }
+    .similar-real-img:hover { transform: scale(1.05); }
+
+    .similar-real-title {
+        font-size: 14px; line-height: 1.3; font-weight: 600; margin: 0;
+        color: #1a1a1a;
+    }
+    .similar-real-title a { color: inherit; text-decoration: none; }
+    .similar-real-title a:hover { color: #ff4757; }
+
+    .similar-real-meta { font-size: 12px; color: #666; }
+</style>
 @endpush
 
 @section('main')
@@ -123,7 +216,7 @@
                     <div class="navigation-top">
                         <div class="d-flex justify-content-between py-4" style="flex-wrap: nowrap">
                             <p class="like-info" >
-                                <i class="fa fa-eye"></i>0 Views
+                                <i class="fa fa-eye"></i>{{$post->total_views}} Views
                             </p>
                             <div class="w-100">
                                 <div class="sharethis-inline-share-buttons"
@@ -176,17 +269,57 @@
                 <div class="col-lg-4">
                     <div class="blog_right_sidebar">
 
-                        {{-- Categories Widget --}}
-                        <aside class="single_sidebar_widget post_category_widget">
-                            <h4 class="widget_title">Category</h4>
+                        {{-- Categories similar post Widget --}}
+                        {{-- <aside class="single_sidebar_widget post_category_widget">
+                            <h4 class="widget_title">Similar Posts</h4>
                             <ul class="list cat-list">
-                                <li>
-                                    <a href="#" class="d-flex">
-                                        <p>{{ $post->category_name }}</p>
-                                        {{-- Optionally show number of posts per category --}}
-                                    </a>
-                                </li>
+                                @forelse($similarPosts as $similar)
+                                    <li>
+                                        <a href="{{ route('post.details', $similar->slug) }}" 
+                                        class="d-flex align-items-center p-2 rounded hover-bg-light transition">
+                                            <div class="me-3">
+                                                <img src="{{ asset('storage/' . $similar->thumbnail) }}" 
+                                                    alt="{{ $similar->title }}"
+                                                    class="rounded"
+                                                    style="width: 100px; height: 80px; object-fit: cover;">
+                                            </div>
+                                            <div class="flex-grow-1">
+                                                <p class="mb-1 fw-bold small text-dark" style="line-height: 1.3;">
+                                                    {{ $similar->title }}
+                                                </p>
+                                                <small class="text-muted">
+                                                    <i class="fa fa-user"></i> {{ $similar->author_name }}
+                                                </small>
+                                            </div>
+                                        </a>
+                                    </li>
+                                @empty
+                                    <li class="p-3 text-center text-muted small">
+                                        No similar posts available.
+                                    </li>
+                                @endforelse
                             </ul>
+                        </aside> --}}
+
+                        {{-- Similar Posts Widget (AJAX + Shimmer) --}}
+                        <aside class="single_sidebar_widget post_category_widget">
+                            <h4 class="widget_title">Similar Posts</h4>
+
+                            {{-- Shimmer Skeleton --}}
+                            <div id="similar-loading">
+                                @for($i = 0; $i < 5; $i++)
+                                    <div class="similar-shimmer-item mb-3">
+                                        <div class="shimmer-img"></div>
+                                        <div class="shimmer-text">
+                                            <div class="shimmer-line title"></div>
+                                            <div class="shimmer-line meta"></div>
+                                        </div>
+                                    </div>
+                                @endfor
+                            </div>
+
+                            {{-- Real Content (hidden initially) --}}
+                            <ul class="list cat-list" id="similar-content" style="display:none;"></ul>
                         </aside>
 
                         {{-- Newsletter Widget --}}
@@ -247,6 +380,46 @@ document.addEventListener('DOMContentLoaded', function () {
                 }
             }, 4000);
         });
+    });
+});
+</script>
+
+<script>
+$(document).ready(function() {
+    const slug = "{{ $post->slug }}"; // from current post
+
+    $.ajax({
+        url: '{{ route("post.similar.ajax", ":slug") }}'.replace(':slug', slug),
+        method: 'GET',
+        cache: true,
+        success: function(posts) {
+            let html = '';
+            posts.forEach(function(p) {
+                html += `
+                    <li>
+                        <a href="${p.post_url}" class="d-flex align-items-center p-2 rounded hover-bg-light transition">
+                            <div class="me-3">
+                                <img src="${p.image}" alt="${p.title}" class="similar-real-img">
+                            </div>
+                            <div class="flex-grow-1">
+                                <p class="mb-1 similar-real-title">
+                                    ${p.title}
+                                </p>
+                                <small class="similar-real-meta">
+                                    <i class="fa fa-user"></i> ${p.author_name}
+                                </small>
+                            </div>
+                        </a>
+                    </li>`;
+            });
+
+            $('#similar-loading').fadeOut(300, function() {
+                $('#similar-content').html(html).fadeIn(400);
+            });
+        },
+        error: function() {
+            $('#similar-loading').html('<p class="text-center text-muted small py-2">Failed to load.</p>');
+        }
     });
 });
 </script>

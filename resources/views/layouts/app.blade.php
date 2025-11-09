@@ -22,7 +22,7 @@
         }
 
         .main-header .main-menu ul li a {
-            padding: 20px 25px !important;
+            padding: 20px 20px !important;
         }
 
         .logo-spin-round {
@@ -112,7 +112,143 @@
         #scrollUp{
             text-decoration: none;
         }
+
+        
     </style>
+
+
+    <style>
+        /* Container */
+        .popular-posts-container {
+            position: relative;
+        }
+
+        /* Shimmer Item */
+        .shimmer-item {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            padding: 8px 0;
+            animation: fadeIn 0.6s ease-out forwards;
+            opacity: 0;
+        }
+
+        .shimmer-item:nth-child(1) { animation-delay: 0.1s; }
+        .shimmer-item:nth-child(2) { animation-delay: 0.2s; }
+        .shimmer-item:nth-child(3) { animation-delay: 0.3s; }
+
+        /* Image Placeholder */
+        .shimmer-img {
+            width: 70px;
+            height: 70px;
+            border-radius: 10px;
+            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background-size: 200% 100%;
+            animation: shimmer 1.8s ease-in-out infinite;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .shimmer-img::after {
+            content: '';
+            position: absolute;
+            top: 0; left: -150%;
+            width: 50%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.6), transparent);
+            animation: shine 1.8s ease-in-out infinite;
+        }
+
+        /* Text Lines */
+        .shimmer-line {
+            height: 14px;
+            border-radius: 7px;
+            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background-size: 200% 100%;
+            animation: shimmer 1.8s ease-in-out infinite;
+            margin: 6px 0;
+        }
+
+        .shimmer-line.title { 
+            width: 85%; 
+            height: 16px;
+        }
+        .shimmer-line.meta { 
+            width: 60%; 
+            height: 12px;
+        }
+
+        /* Animations */
+        @keyframes shimmer {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+
+        @keyframes shine {
+            0% { left: -150%; }
+            100% { left: 150%; }
+        }
+
+        @keyframes fadeIn {
+            to { opacity: 1; }
+        }
+
+        /* Real Content Fade In */
+        #popular-posts-content .whats-right-single {
+            animation: fadeInContent 0.5s ease-out forwards;
+            opacity: 0;
+        }
+
+        #popular-posts-content .whats-right-single:nth-child(1) { animation-delay: 0.1s; }
+        #popular-posts-content .whats-right-single:nth-child(2) { animation-delay: 0.2s; }
+        #popular-posts-content .whats-right-single:nth-child(3) { animation-delay: 0.3s; }
+
+        @keyframes fadeInContent {
+            to { opacity: 1; transform: translateY(0); }
+            from { opacity: 0; transform: translateY(5px); }
+        }
+
+        /* Real Image */
+        .whats-right-img img {
+            width: 100px !important;
+            height: 70px !important;
+            object-fit: cover;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            transition: transform 0.3s ease;
+        }
+
+        .whats-right-img img:hover {
+            transform: scale(1.05);
+        }
+
+        /* Typography */
+        .whats-right-cap h4 {
+            margin: 0;
+            font-size: 14.5px;
+            line-height: 1.4;
+            font-weight: 600;
+            color: #1a1a1a;
+        }
+
+        .whats-right-cap h4 a {
+            color: inherit;
+            text-decoration: none;
+            transition: color 0.2s ease;
+        }
+
+        .whats-right-cap h4 a:hover {
+            color: #ff4757;
+        }
+
+        .whats-right-cap p {
+            margin: 4px 0 0;
+            font-size: 12px;
+            color: #666;
+            font-weight: 500;
+        }
+    </style>
+
 
     @stack('css')
 </head>
@@ -216,7 +352,7 @@
                                                 @endif
                                             </div>
                                         </div>
-                                        <a href="/" style="display: flex;height:60px;width:fit-content;">
+                                        <a href="/" style="display: flex;height:50px;width:fit-content;">
                                             <img src="/assets/img/logo/logo-text-white.png" alt="Daily Orbit Logo">
                                             <img src="/assets/img/logo/logo-circle-white.png" class="logo-spin-round"
                                                 style="padding:.7rem 0;" alt="Daily Orbit Logo">
@@ -234,17 +370,18 @@
                                             </a>
                                         </div>
                                         <ul id="navigation">
-                                            <li><a href="about.html">about</a></li>
-                                            <li><a href="categori.html">Category</a></li>
-                                            <li><a href="latest_news.html">Latest News</a></li>
-                                            <li><a href="#">Pages &nbsp;<i class="fa fa-chevron-down not-for-mobile"></i> </a>
+                                            <li><a href="/">Home</a></li>
+                                            <li><a href="/post/औली-में-स्कीइंग-का-रोमांच-बर्फीले-ढलानों-पर-उड़ान">Must Read</a></li>
+                                            <li><a href="#">Categories &nbsp;<i class="fa fa-chevron-down not-for-mobile"></i> </a>
                                                 <ul class="submenu">
                                                     <li><a href="blog.html">Blog</a></li>
                                                     <li><a href="blog_details.html">Blog Details</a></li>
                                                     <li><a href="elements.html">Element</a></li>
                                                 </ul>
                                             </li>
+                                            <li><a href="contact.html">About</a></li>
                                             <li><a href="contact.html">Contact</a></li>
+                                            
                                         </ul>
                                     </nav>
                                 </div>
@@ -479,8 +616,9 @@
             <script>
                 document.addEventListener('DOMContentLoaded', function() {
                     const icon = document.querySelector('.slicknav_icon');
-                    icon.addEventListener('click', function() {
-                        this.classList.toggle('active');
+                    const slicknav_btn = document.querySelector('.slicknav_btn');
+                    slicknav_btn.addEventListener('click', function() {
+                        icon.classList.toggle('active');
                     });
                 });
             </script>
@@ -490,6 +628,7 @@
                     <div class="container">
                         <div class="row d-flex justify-content-between">
                             <div class="col-xl-3 col-lg-3 col-md-5 col-sm-8">
+
                                 <div class="single-footer-caption mb-50">
                                     <div class="single-footer-caption mb-30">
                                         <!-- logo -->
@@ -509,9 +648,14 @@
                                         </div>
                                     </div>
                                 </div>
+
+                                
+
+
                             </div>
                             <div class="col-xl-4 col-lg-4 col-md-5 col-sm-7">
-                                <div class="single-footer-caption mb-50">
+                                
+                                {{-- <div class="single-footer-caption mb-50">
                                     <div class="footer-tittle">
                                         <h4>Popular post</h4>
                                     </div>
@@ -548,7 +692,32 @@
                                             <p>Jhon | 2 hours ago</p>
                                         </div>
                                     </div>
+                                </div> --}}
+
+
+                                <div class="single-footer-caption mb-50 popular-posts-container">
+                                    <div class="footer-tittle">
+                                        <h4>Popular Posts</h4>
+                                    </div>
+
+                                    <!-- Shimmer Loading -->
+                                    <div id="popular-posts-loading">
+                                        @for($i = 0; $i < 3; $i++)
+                                            <div class="shimmer-item">
+                                                <div class="shimmer-img"></div>
+                                                <div style="flex: 1;">
+                                                    <div class="shimmer-line title"></div>
+                                                    <div class="shimmer-line meta"></div>
+                                                </div>
+                                            </div>
+                                        @endfor
+                                    </div>
+
+                                    <!-- Real Content -->
+                                    <div id="popular-posts-content" style="display: none;"></div>
                                 </div>
+
+
                             </div>
                             <div class="col-xl-3 col-lg-3 col-md-5 col-sm-7">
                                 <div class="single-footer-caption mb-50">
@@ -680,8 +849,41 @@
             $('#preloader-active').css('display', 'none');
         });
     </script>
+
+    <script>
+$(document).ready(function() {
+    $.ajax({
+        url: '{{ route("popular.posts") }}',
+        method: 'GET',
+        cache: true,
+        success: function(posts) {
+            let html = '';
+            posts.forEach(function(post, index) {
+                html += `
+                    <div class="whats-right-single mb-20">
+                        <div class="whats-right-img">
+                            <img src="${post.image}" alt="${post.title}" loading="lazy">
+                        </div>
+                        <div class="whats-right-cap">
+                            <h4><a href="/post/${post.slug}">${post.title}</a></h4>
+                            <p>${post.author_name} | ${post.time_ago}</p>
+                        </div>
+                    </div>
+                `;
+            });
+
+            $('#popular-posts-loading').fadeOut(400, function() {
+                $('#popular-posts-content').html(html).fadeIn(500);
+            });
+        },
+        error: function() {
+            $('#popular-posts-loading').html('<p class="text-center text-muted small py-3">Failed to load posts.</p>');
+        }
+    });
+});
+</script>
     @vite(['resources/js/app.js'])
-     @stack('scripts')
+    @stack('scripts')
 </body>
 
 </html>

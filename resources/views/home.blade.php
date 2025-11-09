@@ -124,6 +124,218 @@
             width: 100% !important;
         }
     </style>
+    <style>
+    /* Shimmer Container */
+    .trending-shimmer {
+        position: relative;
+        overflow: hidden;
+        animation: fadeIn 0.6s ease-out forwards;
+        opacity: 0;
+    }
+    .trending-shimmer:nth-child(1) { animation-delay: 0.1s; }
+    .trending-shimmer:nth-child(2) { animation-delay: 0.2s; }
+
+    /* Large Image */
+    .shimmer-img-large {
+        width: 100%;
+        height: 250px;
+        border-radius: 12px;
+        background: linear-gradient(90deg, #f0f0f0 25%, #e5e5e5 50%, #f0f0f0 75%);
+        background-size: 200% 100%;
+        animation: shimmer 1.8s ease-in-out infinite;
+        position: relative;
+        overflow: hidden;
+    }
+    .shimmer-img-large::after {
+        content: '';
+        position: absolute;
+        top: 0; left: -150%;
+        width: 50%; height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255,255,255,0.6), transparent);
+        animation: shine 1.8s ease-in-out infinite;
+    }
+
+    /* Text Lines */
+    .shimmer-line {
+        height: 16px;
+        border-radius: 8px;
+        background: linear-gradient(90deg, #f0f0f0 25%, #e5e5e5 50%, #f0f0f0 75%);
+        background-size: 200% 100%;
+        animation: shimmer 1.8s ease-in-out infinite;
+        margin: 8px 0;
+    }
+    .shimmer-line.title-long { width: 85%; height: 24px; }
+    .shimmer-line.meta       { width: 50%; height: 14px; }
+    .shimmer-line.short      { width: 70%; }
+
+    @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+    @keyframes shine   { 0% { left: -150%; } 100% { left: 150%; } }
+    @keyframes fadeIn  { to { opacity: 1; } }
+
+    /* Real Content Animation */
+    #trending-content .whats-news-single {
+        animation: fadeInContent 0.6s ease-out forwards;
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    #trending-content .whats-news-single:nth-child(1) { animation-delay: 0.1s; }
+    #trending-content .whats-news-single:nth-child(2) { animation-delay: 0.2s; }
+
+    @keyframes fadeInContent {
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Real Image */
+    .trending-real-img {
+        width: 100%; height: 250px; object-fit: cover; border-radius: 12px;
+        transition: transform 0.4s ease;
+    }
+    .trending-real-img:hover { transform: scale(1.03); }
+
+    /* Typography */
+    .trending-real-title {
+        font-size: 1.4rem; line-height: 1.3; font-weight: 700; margin: 12px 0 6px;
+        color: #1a1a1a;
+    }
+    .trending-real-title a { color: inherit; text-decoration: none; }
+    .trending-real-title a:hover { color: #ff4757; }
+
+    .trending-real-meta {
+        font-size: 0.9rem; color: #666; font-weight: 500;
+    }
+
+    .trending-real-excerpt {
+        font-size: 0.95rem; color: #444; line-height: 1.6; margin-top: 10px;
+    }
+    .whats-news-area .most-recent-area .most-recent .most-recent-img::before{
+        /* background:white!important; */
+    }
+</style>
+
+<style>
+    /* Fade-in Animation */
+    #recent-loading > div {
+        animation: fadeIn 0.6s ease-out forwards;
+        opacity: 0;
+    }
+    #recent-loading > div:nth-child(1) { animation-delay: 0.1s; }
+    #recent-loading > div:nth-child(2) { animation-delay: 0.2s; }
+    #recent-loading > div:nth-child(3) { animation-delay: 0.3s; }
+
+    /* Large Featured Post */
+    .shimmer-img-large {
+        width: 100%;
+        height: 280px;
+        background: linear-gradient(90deg, #f0f0f0 25%, #e5e5e5 50%, #f0f0f0 75%);
+        background-size: 200% 100%;
+        animation: shimmer 1.8s ease-in-out infinite;
+        position: relative;
+        overflow: hidden;
+    }
+    .shimmer-img-large::after {
+        content: '';
+        position: absolute;
+        top: 0; left: -150%;
+        width: 50%; height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255,255,255,0.6), transparent);
+        animation: shine 1.8s ease-in-out infinite;
+    }
+
+    /* Small Thumbnails */
+    .shimmer-img-small {
+        width: 80px; height: 80px;
+        border-radius: 10px;
+        background: linear-gradient(90deg, #f0f0f0 25%, #e5e5e5 50%, #f0f0f0 75%);
+        background-size: 200% 100%;
+        animation: shimmer 1.8s ease-in-out infinite;
+        position: relative;
+        overflow: hidden;
+    }
+    .shimmer-img-small::after {
+        content: '';
+        position: absolute;
+        top: 0; left: -150%;
+        width: 50%; height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255,255,255,0.6), transparent);
+        animation: shine 1.8s ease-in-out infinite;
+    }
+
+    /* Text Lines */
+    .shimmer-line {
+        height: 14px;
+        border-radius: 7px;
+        background: linear-gradient(90deg, #f0f0f0 25%, #e5e5e5 50%, #f0f0f0 75%);
+        background-size: 200% 100%;
+        animation: shimmer 1.8s ease-in-out infinite;
+        margin: 6px 0;
+    }
+    .shimmer-line.badge       { width: 60px; height: 20px; }
+    .shimmer-line.title-long  { width: 80%; height: 26px; }
+    .shimmer-line.title-medium{ width: 90%; height: 18px; }
+    .shimmer-line.meta        { width: 60%; height: 14px; }
+
+    @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+    @keyframes shine   { 0% { left: -150%; } 100% { left: 150%; } }
+    @keyframes fadeIn  { to { opacity: 1; } }
+
+    /* Real Content Animation */
+    #recent-content > div {
+        animation: fadeInContent 0.6s ease-out forwards;
+        opacity: 0;
+        transform: translateY(8px);
+    }
+    #recent-content > div:nth-child(1) { animation-delay: 0.1s; }
+    #recent-content > div:nth-child(2) { animation-delay: 0.2s; }
+    #recent-content > div:nth-child(3) { animation-delay: 0.3s; }
+
+    @keyframes fadeInContent {
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Real Images */
+    .recent-real-img-large {
+        width: 100%; height: 280px; object-fit: cover; border-radius: 12px;
+        transition: transform 0.4s ease;
+    }
+    .recent-real-img-large:hover { transform: scale(1.02); }
+
+    .recent-real-img-small {
+        width: 80px; height: 80px; object-fit: cover; border-radius: 10px;
+        transition: transform 0.3s ease;
+    }
+    .recent-real-img-small:hover { transform: scale(1.08); }
+
+    /* Typography */
+    .recent-real-badge {
+        display: inline-block;
+        background: #ff4757;
+        color: white;
+        font-size: 12px;
+        font-weight: 600;
+        padding: 4px 10px;
+        border-radius: 20px;
+        margin-bottom: 8px;
+    }
+
+    .recent-real-title {
+        font-size: 1.35rem; line-height: 1.3; font-weight: 700; margin: 8px 0;
+        color: #1a1a1a;
+    }
+    .recent-real-title a { color: inherit; text-decoration: none; }
+    .recent-real-title a:hover { color: #ff4757; }
+
+    .recent-real-meta {
+        font-size: 0.85rem; color: #666; font-weight: 500;
+    }
+
+    .recent-real-title-small {
+        font-size: 1rem; line-height: 1.4; font-weight: 600; margin: 0;
+        color: #1a1a1a;
+    }
+    .recent-real-title-small a { color: inherit; text-decoration: none; }
+    .recent-real-title-small a:hover { color: #ff4757; }
+</style>
+
 @endpush
 
 
@@ -134,12 +346,13 @@
             <div class="container">
                 <div class="row">
                     <div class="col-lg-8">
-                        <div class="whats-news-wrapper">
+                        <div class="whats-news-wrapper" style="padding: 10px 20px 20px;">
                             <!-- Heading & Nav Button -->
                             <div class="row justify-content-between align-items-end mb-15">
                                 <div class="col-xl-4">
                                     <div class="section-tittle">
-                                        <h3>Trending</h3>                                      
+                                       <h3>Trending</h3>      
+                                       <h4 style="white-space: nowrap">{{date('d M Y | h:i A')}}</h4>                              
                                     </div>
                                 </div>
                             </div>
@@ -148,43 +361,28 @@
                                 <div class="col-12">
                                     <!-- Nav Card -->
                                     <div class="tab-content" id="nav-tabContent">
-                                        <!-- card one -->
-                                        <div class="tab-pane fade show active" id="nav-home" role="tabpanel"
-                                            aria-labelledby="nav-home-tab">
-                                            <div class="row g-4">
-                                                <!-- Left Details Caption -->
-                                                <div class="col-xl-6 col-lg-6">
-                                                    <div class="whats-news-single m-1 p-3 bg-light rounded">
-                                                        <div class="whates-img">
-                                                            <img src="assets/img/gallery/whats_news_details1.png"
-                                                                alt="">
-                                                        </div>
-                                                        <div class="whates-caption">
-                                                            <h4><a href="latest_news.html">Secretart for Economic Air plane
-                                                                    that looks like</a></h4>
-                                                            <span>by Alice cloe - Jun 19, 2020</span>
-                                                            <p>Struggling to sell one multi-million dollar home currently on
-                                                                the market won’t stop actress and singer Jennifer Lopez.</p>
+                                        <!-- Trending Tab -->
+                                        <div class="tab-pane fade show active" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab">
+                                            
+                                            {{-- Shimmer Skeleton --}}
+                                            <div id="trending-loading" class="row g-4">
+                                                @for($i = 0; $i < 2; $i++)
+                                                    <div class="col-xl-6 col-lg-6">
+                                                        <div class="trending-shimmer m-1 p-3 bg-light rounded">
+                                                            <div class="shimmer-img-large"></div>
+                                                            <div class="shimmer-text mt-3">
+                                                                <div class="shimmer-line title-long"></div>
+                                                                <div class="shimmer-line meta"></div>
+                                                                <div class="shimmer-line short mt-2"></div>
+                                                                <div class="shimmer-line short"></div>
+                                                            </div>
                                                         </div>
                                                     </div>
-                                                </div>
-
-                                                <div class="col-xl-6 col-lg-6">
-                                                    <div class="whats-news-single m-1 p-3 bg-light rounded">
-                                                        <div class="whates-img">
-                                                            <img src="assets/img/gallery/whats_news_details1.png"
-                                                                alt="">
-                                                        </div>
-                                                        <div class="whates-caption">
-                                                            <h4><a href="latest_news.html">Secretart for Economic Air plane
-                                                                    that looks like</a></h4>
-                                                            <span>by Alice cloe - Jun 19, 2020</span>
-                                                            <p>Struggling to sell one multi-million dollar home currently on
-                                                                the market won’t stop actress and singer Jennifer Lopez.</p>
-                                                        </div>
-                                                    </div>
-                                                </div>
+                                                @endfor
                                             </div>
+
+                                            {{-- Real Content (hidden) --}}
+                                            <div id="trending-content" class="row g-4" style="display: none;"></div>
                                         </div>
                                     </div>
                                     <!-- End Nav Card -->
@@ -197,6 +395,46 @@
                         </div>
                     </div>
                     <div class="col-lg-4">
+                        
+                        <!-- Most Recent Area -->
+                        <div class="most-recent-area pt-2">
+                            <!-- Section Tittle -->
+                            <div class="section-tittle mb-20">
+                                <h3>Most Recent</h3>
+                            </div>
+
+                            {{-- Shimmer Skeleton --}}
+                            <div id="recent-loading">
+                                {{-- First Large Card --}}
+                                <div class="most-recent mb-40">
+                                    <div class="most-recent-img">
+                                        <div class="shimmer-img-large" style="border-radius: 12px 12px 0 0 !important;"></div>
+                                        <div class="most-recent-cap">
+                                            <div class="shimmer-line badge"></div>
+                                            <div class="shimmer-line title-long mt-2"></div>
+                                            <div class="shimmer-line meta mt-1"></div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {{-- Two Small Cards --}}
+                                @for($i = 0; $i < 2; $i++)
+                                    <div class="most-recent-single mb-3">
+                                        <div class="most-recent-images">
+                                            <div class="shimmer-img-small"></div>
+                                        </div>
+                                        <div class="most-recent-capt" style="width: 100%">
+                                            <div class="shimmer-line title-medium"></div>
+                                            <div class="shimmer-line meta"></div>
+                                        </div>
+                                    </div>
+                                @endfor
+                            </div>
+
+                            {{-- Real Content (hidden) --}}
+                            <div id="recent-content" style="display: none;"></div>
+                        </div>
+
                         <!-- Flow Socail -->
                         <div class="single-follow mb-45 bg-light">
                             <div class="single-box">
@@ -238,46 +476,8 @@
                                 </div>
                             </div>
                         </div>
-                        <!-- Most Recent Area -->
-                        <div class="most-recent-area pt-2">
-                            <!-- Section Tittle -->
-                            <div class="section-tittle mb-20">
-                                <h3>Most Recent</h3>
-                            </div>
-                            <!-- Details -->
-                            <div class="most-recent mb-40">
-                                <div class="most-recent-img">
-                                    <img src="assets/img/gallery/most_recent.png" alt="">
-                                    <div class="most-recent-cap">
-                                        <span class="bgbeg">Vogue</span>
-                                        <h4><a href="latest_news.html">What to Wear: 9+ Cute Work <br>
-                                                Outfits to Wear This.</a></h4>
-                                        <p>Jhon | 2 hours ago</p>
-                                    </div>
-                                </div>
-                            </div>
-                            <!-- Single -->
-                            <div class="most-recent-single">
-                                <div class="most-recent-images">
-                                    <img src="assets/img/gallery/most_recent1.png" alt="">
-                                </div>
-                                <div class="most-recent-capt">
-                                    <h4><a href="latest_news.html">Scarlett’s disappointment at latest accolade</a></h4>
-                                    <p>Jhon | 2 hours ago</p>
-                                </div>
-                            </div>
-                            <!-- Single -->
-                            <div class="most-recent-single">
-                                <div class="most-recent-images">
-                                    <img src="assets/img/gallery/most_recent2.png" alt="">
-                                </div>
-                                <div class="most-recent-capt">
-                                    <h4><a href="latest_news.html">Most Beautiful Things to Do in Sidney with Your BF</a>
-                                    </h4>
-                                    <p>Jhon | 3 hours ago</p>
-                                </div>
-                            </div>
-                        </div>
+
+
                     </div>
                 </div>
             </div>
@@ -476,3 +676,95 @@
 
     </main>
 @endsection
+
+@push('scripts')
+<script>
+$(document).ready(function() {
+    $.ajax({
+        url: '{{ route("post.trending") }}',
+        method: 'GET',
+        cache: true,
+        success: function(posts) {
+            let html = '';
+            posts.forEach(function(p) {
+                html += `
+                    <div class="col-xl-6 col-lg-6">
+                        <div class="whats-news-single m-1 p-3 bg-light rounded">
+                            <div class="whates-img">
+                                <img src="${p.image}" alt="${p.title}" class="trending-real-img">
+                            </div>
+                            <div class="whates-caption">
+                                <h4 class="trending-real-title">
+                                    <a href="${p.post_url}">${p.title}</a>
+                                </h4>
+                                <span class="trending-real-meta">by ${p.author_name} - ${p.time_ago}</span>
+                                <p class="trending-real-excerpt">${p.excerpt}</p>
+                            </div>
+                        </div>
+                    </div>`;
+            });
+
+            $('#trending-loading').fadeOut(400, function() {
+                $('#trending-content').html(html).fadeIn(500);
+            });
+        },
+        error: function() {
+            $('#trending-loading').html('<p class="text-center text-muted">Failed to load trending posts.</p>');
+        }
+    });
+});
+</script>
+
+<script>
+$(document).ready(function() {
+    $.ajax({
+        url: '{{ route("post.recent") }}',
+        method: 'GET',
+        cache: true,
+        success: function(posts) {
+            let html = '';
+
+            posts.forEach(function(p, index) {
+                if (p.is_first) {
+                    // First large card
+                    html += `
+                        <div class="most-recent mb-40">
+                            <div class="most-recent-img">
+                                <img src="${p.image}" alt="${p.title}" class="recent-real-img-large">
+                                <div class="most-recent-cap">
+                                    <span class="recent-real-badge bgbeg">New</span>
+                                    <h4 class="recent-real-title">
+                                        <a href="${p.post_url}">${p.title}</a>
+                                    </h4>
+                                    <p class="recent-real-meta">${p.author_name} | ${p.time_ago}</p>
+                                </div>
+                            </div>
+                        </div>`;
+                } else {
+                    // Small cards
+                    html += `
+                        <div class="most-recent-single mb-3">
+                            <div class="most-recent-images">
+                                <img src="${p.image}" alt="${p.title}" class="recent-real-img-small">
+                            </div>
+                            <div class="most-recent-capt">
+                                <h4 class="recent-real-title-small">
+                                    <a href="${p.post_url}">${p.title}</a>
+                                </h4>
+                                <p class="recent-real-meta">${p.author_name} | ${p.time_ago}</p>
+                            </div>
+                        </div>`;
+                }
+            });
+
+            $('#recent-loading').fadeOut(400, function() {
+                $('#recent-content').html(html).fadeIn(500);
+            });
+        },
+        error: function() {
+            $('#recent-loading').html('<p class="text-center text-muted">Failed to load recent posts.</p>');
+        }
+    });
+});
+</script>
+@endpush

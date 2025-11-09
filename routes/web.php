@@ -20,7 +20,10 @@ Route::get('/about', function () {
 
 // post details 
 Route::get('/post/{slug}', [App\Http\Controllers\PostController::class, 'postDetials'])->name('post.details');
-
+Route::get('/popular-posts', [App\Http\Controllers\PostController::class, 'popularPosts'])->name('popular.posts');
+Route::get('/similar-posts/{slug}', [App\Http\Controllers\PostController::class, 'similarPostsAjax'])->name('post.similar.ajax');
+Route::get('/trending-posts', [App\Http\Controllers\PostController::class, 'trendingPosts'])->name('post.trending');
+Route::get('/most-recent-posts', [App\Http\Controllers\PostController::class, 'mostRecentPosts'])->name('post.recent');
 
 Auth::routes();
 
