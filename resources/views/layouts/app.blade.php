@@ -247,6 +247,7 @@
             color: #666;
             font-weight: 500;
         }
+
     </style>
 
 
@@ -379,8 +380,8 @@
                                                     <li><a href="elements.html">Element</a></li>
                                                 </ul>
                                             </li>
-                                            <li><a href="contact.html">About</a></li>
-                                            <li><a href="contact.html">Contact</a></li>
+                                            <li><a href="{{route('about')}}">About</a></li>
+                                            <li><a href="{{route('contact-us')}}">Contact</a></li>
                                             
                                         </ul>
                                     </nav>
@@ -736,11 +737,10 @@
                             <div class="row d-flex align-items-center">
                                 <div class="col-xl-12 ">
                                     <div class="footer-copy-right text-center">
-                                        <p><!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
-                                            Copyright &copy;
+                                        <p>Copyright &copy;
                                             <script>
                                                 document.write(new Date().getFullYear());
-                                            </script> All rights reserved
+                                            </script> All rights reserved | <a href="{{route('terms-and-conditions')}}" ">Terms & Conditions</a> | <a href="{{route('privacy-policy')}}" ">Privacy Policy</a>
                                         </p>
                                     </div>
                                 </div>

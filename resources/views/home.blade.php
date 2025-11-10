@@ -336,6 +336,176 @@
     .recent-real-title-small a:hover { color: #ff4757; }
 </style>
 
+<style>
+    /* Staggered Fade-in */
+    #popular-slider-loading .weekly3-single {
+        animation: fadeIn 0.6s ease-out forwards;
+        opacity: 0;
+    }
+    #popular-slider-loading .weekly3-single:nth-child(1) { animation-delay: 0.1s; }
+    #popular-slider-loading .weekly3-single:nth-child(2) { animation-delay: 0.2s; }
+    #popular-slider-loading .weekly3-single:nth-child(3) { animation-delay: 0.3s; }
+    #popular-slider-loading .weekly3-single:nth-child(4) { animation-delay: 0.4s; }
+    #popular-slider-loading .weekly3-single:nth-child(5) { animation-delay: 0.5s; }
+
+    /* Slider Image */
+    .shimmer-img-slider {
+        width: 100%;
+        height: 180px;
+        border-radius: 12px;
+        background: linear-gradient(90deg, #f0f0f0 25%, #e5e5e5 50%, #f0f0f0 75%);
+        background-size: 200% 100%;
+        animation: shimmer 1.8s ease-in-out infinite;
+        position: relative;
+        overflow: hidden;
+    }
+    .shimmer-img-slider::after {
+        content: '';
+        position: absolute;
+        top: 0; left: -150%;
+        width: 50%; height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255,255,255,0.6), transparent);
+        animation: shine 1.8s ease-in-out infinite;
+    }
+
+    /* Text Lines */
+    .shimmer-line {
+        height: 16px;
+        border-radius: 8px;
+        background: linear-gradient(90deg, #f0f0f0 25%, #e5e5e5 50%, #f0f0f0 75%);
+        background-size: 200% 100%;
+        animation: shimmer 1.8s ease-in-out infinite;
+        margin: 8px 0;
+    }
+    .shimmer-line.title { width: 85%; height: 20px; }
+    .shimmer-line.meta  { width: 55%; height: 14px; }
+
+    @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+    @keyframes shine   { 0% { left: -150%; } 100% { left: 150%; } }
+    @keyframes fadeIn  { to { opacity: 1; } }
+
+    /* Real Content */
+    #popular-slider-content .weekly3-single {
+        animation: fadeInContent 0.6s ease-out forwards;
+        opacity: 0;
+        transform: translateY(8px);
+    }
+    #popular-slider-content .weekly3-single:nth-child(1) { animation-delay: 0.1s; }
+    #popular-slider-content .weekly3-single:nth-child(2) { animation-delay: 0.2s; }
+    #popular-slider-content .weekly3-single:nth-child(3) { animation-delay: 0.3s; }
+    #popular-slider-content .weekly3-single:nth-child(4) { animation-delay: 0.4s; }
+    #popular-slider-content .weekly3-single:nth-child(5) { animation-delay: 0.5s; }
+
+    @keyframes fadeInContent {
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    .popular-real-img {
+        width: 100%; height: 225px; object-fit: cover; border-radius: 12px;
+        transition: transform 0.4s ease;
+    }
+    .popular-real-img:hover { transform: scale(1.03); }
+
+    .popular-real-title {
+        font-size: 1.1rem; line-height: 1.4; font-weight: 600; margin: 12px 0 6px;
+        color: #1a1a1a;
+    }
+    .popular-real-title a { color: inherit; text-decoration: none; }
+    .popular-real-title a:hover { color: #ff4757; }
+
+    .popular-real-date {
+        font-size: 0.85rem; color: #666; font-weight: 500;
+    }
+
+    .slick-arrow{
+        display:none !important;
+    }
+</style>
+<style>
+    /* Staggered Fade-in */
+    #youmightlike-loading .news-card {
+        animation: fadeIn 0.6s ease-out forwards;
+        opacity: 0;
+    }
+    #youmightlike-loading .news-card:nth-child(1) { animation-delay: 0.1s; }
+    #youmightlike-loading .news-card:nth-child(2) { animation-delay: 0.2s; }
+    #youmightlike-loading .news-card:nth-child(3) { animation-delay: 0.3s; }
+    #youmightlike-loading .news-card:nth-child(4) { animation-delay: 0.4s; }
+
+    /* Card Image */
+    .shimmer-img-card {
+        width: 100%;
+        height: 180px;
+        border-radius: 8px;
+        background: linear-gradient(90deg, #f0f0f0 25%, #e5e5e5 50%, #f0f0f0 75%);
+        background-size: 200% 100%;
+        animation: shimmer 1.8s ease-in-out infinite;
+        position: relative;
+        overflow: hidden;
+    }
+    .shimmer-img-card::after {
+        content: '';
+        position: absolute;
+        top: 0; left: -150%;
+        width: 50%; height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255,255,255,0.6), transparent);
+        animation: shine 1.8s ease-in-out infinite;
+    }
+
+    /* Text Lines */
+    .shimmer-line {
+        height: 16px;
+        border-radius: 8px;
+        background: linear-gradient(90deg, #f0f0f0 25%, #e5e5e5 50%, #f0f0f0 75%);
+        background-size: 200% 100%;
+        animation: shimmer 1.8s ease-in-out infinite;
+        margin: 8px 0;
+    }
+    .shimmer-line.title { width: 85%; height: 20px; }
+    .shimmer-line.meta  { width: 60%; height: 14px; }
+
+    @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+    @keyframes shine   { 0% { left: -150%; } 100% { left: 150%; } }
+    @keyframes fadeIn  { to { opacity: 1; } }
+
+    /* Real Content Fade-in */
+    #youmightlike-content .news-card {
+        animation: fadeInContent 0.6s ease-out forwards;
+        opacity: 0;
+        transform: translateY(8px);
+    }
+    #youmightlike-content .news-card:nth-child(1) { animation-delay: 0.1s; }
+    #youmightlike-content .news-card:nth-child(2) { animation-delay: 0.2s; }
+    #youmightlike-content .news-card:nth-child(3) { animation-delay: 0.3s; }
+    #youmightlike-content .news-card:nth-child(4) { animation-delay: 0.4s; }
+
+    @keyframes fadeInContent {
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Real Image */
+    .youmightlike-real-img {
+        width: 100%; height: 180px; object-fit: cover; border-radius: 8px;
+        transition: transform 0.4s ease;
+    }
+    .youmightlike-real-img:hover { transform: scale(1.05); }
+
+    /* Typography */
+    .youmightlike-real-title {
+        font-size: 1.1rem; line-height: 1.4; font-weight: 600; margin: 12px 0 6px;
+        color: #333;
+    }
+    .youmightlike-real-title a { color: inherit; text-decoration: none; }
+    .youmightlike-real-title a:hover { color: #007bff; }
+
+    .youmightlike-real-meta {
+        font-size: 0.9rem; color: #666;
+    }
+
+    .slick-dots{
+        display:none;
+    }
+</style>
 @endpush
 
 
@@ -487,83 +657,53 @@
 
 
 
-        <div class="weekly3-news-area pt-30 pb-130 bg-light">
-            <div class="container">
-                <div class="weekly3-wrapper">
-                    <div class="row">
-                        <div class="col-lg-12">
-                            <div class="slider-wrapper">
-                                <div class="row">
-                                    <div class="col-lg-12">
-                                        <div class="section-tittle mb-30">
-                                            <h3>Most Popular</h3>
-                                        </div>
-                                    </div>
-                                </div>
-                                <!-- Slider -->
-                                <div class="row">
-                                    <div class="col-lg-12">
-                                        <div class="weekly3-news-active dot-style d-flex">
-                                            <div class="weekly3-single">
-                                                <div class="weekly3-img">
-                                                    <img src="assets/img/gallery/weekly2News1.png" alt="">
-                                                </div>
-                                                <div class="weekly3-caption">
-                                                    <h4><a href="latest_news.html">What to Expect From the 2020 Oscar Nomin
-                                                            ations</a></h4>
-                                                    <p>19 Jan 2020</p>
-                                                </div>
-                                            </div>
-                                            <div class="weekly3-single">
-                                                <div class="weekly3-img">
-                                                    <img src="assets/img/gallery/weekly2News2.png" alt="">
-                                                </div>
-                                                <div class="weekly3-caption">
-                                                    <h4><a href="latest_news.html">What to Expect From the 2020 Oscar Nomin
-                                                            ations</a></h4>
-                                                    <p>19 Jan 2020</p>
-                                                </div>
-                                            </div>
-                                            <div class="weekly3-single">
-                                                <div class="weekly3-img">
-                                                    <img src="assets/img/gallery/weekly2News3.png" alt="">
-                                                </div>
-                                                <div class="weekly3-caption">
-                                                    <h4><a href="latest_news.html">What to Expect From the 2020 Oscar Nomin
-                                                            ations</a></h4>
-                                                    <p>19 Jan 2020</p>
-                                                </div>
-                                            </div>
-                                            <div class="weekly3-single">
-                                                <div class="weekly3-img">
-                                                    <img src="assets/img/gallery/weekly2News4.png" alt="">
-                                                </div>
-                                                <div class="weekly3-caption">
-                                                    <h4><a href="latest_news.html">What to Expect From the 2020 Oscar Nomin
-                                                            ations</a></h4>
-                                                    <p>19 Jan 2020</p>
-                                                </div>
-                                            </div>
-                                            <div class="weekly3-single">
-                                                <div class="weekly3-img">
-                                                    <img src="assets/img/gallery/weekly2News2.png" alt="">
-                                                </div>
-                                                <div class="weekly3-caption">
-                                                    <h4><a href="latest_news.html">What to Expect From the 2020 Oscar Nomin
-                                                            ations</a></h4>
-                                                    <p>19 Jan 2020</p>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
+<div class="weekly3-news-area pt-30 pb-130 bg-light">
+    <div class="container">
+        <div class="weekly3-wrapper">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="slider-wrapper">
+
+                        <!-- Title -->
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <div class="section-tittle mb-30">
+                                    <h3>Most Popular</h3>
                                 </div>
                             </div>
                         </div>
+
+                        <!-- Slider Container -->
+                        <div class="row">
+                            <div class="col-lg-12">
+
+                                <!-- Shimmer Skeleton -->
+                                <div id="popular-slider-loading" class="weekly3-news-active dot-style d-flex">
+                                    @for($i = 0; $i < 5; $i++)
+                                        <div class="weekly3-single">
+                                            <div class="weekly3-img">
+                                                <div class="shimmer-img-slider"></div>
+                                            </div>
+                                            <div class="weekly3-caption mt-3">
+                                                <div class="shimmer-line title"></div>
+                                                <div class="shimmer-line meta"></div>
+                                            </div>
+                                        </div>
+                                    @endfor
+                                </div>
+
+                                <!-- Real Content (hidden) -->
+                                <div id="popular-slider-content" class="weekly3-news-active dot-style d-flex" style="display: none;"></div>
+
+                            </div>
+                        </div>
+
                     </div>
                 </div>
             </div>
         </div>
-
+    </div>
+</div>
 
 
 
@@ -582,11 +722,13 @@
 
                     <!-- News Content Column -->
                     <div class="col-lg-9">
+
+                        {{-- start you might like section --}}
                         <!-- section Tittle -->
                         <div class="row">
                             <div class="col-lg-12">
                                 <div class="section-tittle mb-30">
-                                    <h3>You Might Like</he>
+                                    <h3>You Might Like</h3>
                                 </div>
                             </div>
                         </div>
@@ -594,73 +736,34 @@
                         <!-- News Slider -->
                         <div class="row">
                             <div class="col-12">
-                                <div class="news-slider-container draggable">
-                                    <!-- News Card 1 -->
-                                    <div class="news-card">
-                                        <div class="news-card-image">
-                                            <img src="assets/img/gallery/weeklyNews1.png" alt="News Image">
-                                        </div>
-                                        <div class="news-card-content">
-                                            <h4>
-                                                <a href="#">Scarlett's disappointment at latest accolade</a>
-                                            </h4>
-                                            <p class="news-card-meta">Jhon | 2 hours ago</p>
-                                        </div>
-                                    </div>
 
-                                    <!-- News Card 2 -->
-                                    <div class="news-card">
-                                        <div class="news-card-image">
-                                            <img src="assets/img/gallery/weeklyNews1.png" alt="News Image">
+                                <!-- Shimmer Skeleton -->
+                                <div id="youmightlike-loading" class="news-slider-container draggable">
+                                    @for($i = 0; $i < 4; $i++)
+                                        <div class="news-card">
+                                            <div class="news-card-image">
+                                                <div class="shimmer-img-card"></div>
+                                            </div>
+                                            <div class="news-card-content">
+                                                <div class="shimmer-line title mt-3"></div>
+                                                <div class="shimmer-line meta"></div>
+                                            </div>
                                         </div>
-                                        <div class="news-card-content">
-                                            <h4>
-                                                <a href="#">Scarlett's disappointment at latest accolade</a>
-                                            </h4>
-                                            <p class="news-card-meta">Jhon | 2 hours ago</p>
-                                        </div>
-                                    </div>
-
-                                    <!-- News Card 3 -->
-                                    <div class="news-card">
-                                        <div class="news-card-image">
-                                            <img src="assets/img/gallery/weeklyNews1.png" alt="News Image">
-                                        </div>
-                                        <div class="news-card-content">
-                                            <h4>
-                                                <a href="#">Scarlett's disappointment at latest accolade</a>
-                                            </h4>
-                                            <p class="news-card-meta">Jhon | 2 hours ago</p>
-                                        </div>
-                                    </div>
-
-                                    <!-- News Card 4 -->
-                                    <div class="news-card">
-                                        <div class="news-card-image">
-                                            <img src="assets/img/gallery/weeklyNews1.png" alt="News Image">
-                                        </div>
-                                        <div class="news-card-content">
-                                            <h4>
-                                                <a href="#">Scarlett's disappointment at latest accolade</a>
-                                            </h4>
-                                            <p class="news-card-meta">Jhon | 2 hours ago</p>
-                                        </div>
-                                    </div>
+                                    @endfor
                                 </div>
+
+                                <!-- Real Content (hidden) -->
+                                <div id="youmightlike-content" class="news-slider-container draggable" style="display: none;"></div>
+
                             </div>
                         </div>
+                        {{-- end you might like section --}}
+
+
                     </div>
                 </div>
             </div>
         </div>
-
-
-
-
-
-
-
-
 
         <div class="banner-area gray-bg pt-90 pb-90">
             <div class="container">
@@ -678,93 +781,186 @@
 @endsection
 
 @push('scripts')
-<script>
-$(document).ready(function() {
-    $.ajax({
-        url: '{{ route("post.trending") }}',
-        method: 'GET',
-        cache: true,
-        success: function(posts) {
-            let html = '';
-            posts.forEach(function(p) {
-                html += `
-                    <div class="col-xl-6 col-lg-6">
-                        <div class="whats-news-single m-1 p-3 bg-light rounded">
-                            <div class="whates-img">
-                                <img src="${p.image}" alt="${p.title}" class="trending-real-img">
-                            </div>
-                            <div class="whates-caption">
-                                <h4 class="trending-real-title">
-                                    <a href="${p.post_url}">${p.title}</a>
-                                </h4>
-                                <span class="trending-real-meta">by ${p.author_name} - ${p.time_ago}</span>
-                                <p class="trending-real-excerpt">${p.excerpt}</p>
-                            </div>
-                        </div>
-                    </div>`;
-            });
 
-            $('#trending-loading').fadeOut(400, function() {
-                $('#trending-content').html(html).fadeIn(500);
-            });
-        },
-        error: function() {
-            $('#trending-loading').html('<p class="text-center text-muted">Failed to load trending posts.</p>');
-        }
+{{-- trending ajax --}}
+<script>
+    $(document).ready(function() {
+        $.ajax({
+            url: '{{ route("post.trending") }}',
+            method: 'GET',
+            cache: true,
+            success: function(posts) {
+                let html = '';
+                posts.forEach(function(p) {
+                    html += `
+                        <div class="col-xl-6 col-lg-6">
+                            <div class="whats-news-single m-1 p-3 bg-light rounded">
+                                <div class="whates-img">
+                                    <img src="${p.image}" alt="${p.title}" class="trending-real-img">
+                                </div>
+                                <div class="whates-caption">
+                                    <h4 class="trending-real-title">
+                                        <a href="${p.post_url}">${p.title}</a>
+                                    </h4>
+                                    <span class="trending-real-meta">by ${p.author_name} - ${p.time_ago}</span>
+                                    <p class="trending-real-excerpt">${p.excerpt}</p>
+                                </div>
+                            </div>
+                        </div>`;
+                });
+
+                $('#trending-loading').fadeOut(400, function() {
+                    $('#trending-content').html(html).fadeIn(500);
+                });
+            },
+            error: function() {
+                $('#trending-loading').html('<p class="text-center text-muted">Failed to load trending posts.</p>');
+            }
+        });
     });
-});
 </script>
 
+{{-- most recent ajax --}}
 <script>
-$(document).ready(function() {
-    $.ajax({
-        url: '{{ route("post.recent") }}',
-        method: 'GET',
-        cache: true,
-        success: function(posts) {
-            let html = '';
+    $(document).ready(function() {
+        $.ajax({
+            url: '{{ route("post.recent") }}',
+            method: 'GET',
+            cache: true,
+            success: function(posts) {
+                let html = '';
 
-            posts.forEach(function(p, index) {
-                if (p.is_first) {
-                    // First large card
-                    html += `
-                        <div class="most-recent mb-40">
-                            <div class="most-recent-img">
-                                <img src="${p.image}" alt="${p.title}" class="recent-real-img-large">
-                                <div class="most-recent-cap">
-                                    <span class="recent-real-badge bgbeg">New</span>
-                                    <h4 class="recent-real-title">
+                posts.forEach(function(p, index) {
+                    if (p.is_first) {
+                        // First large card
+                        html += `
+                            <div class="most-recent mb-40">
+                                <div class="most-recent-img">
+                                    <img src="${p.image}" alt="${p.title}" class="recent-real-img-large">
+                                    <div class="most-recent-cap">
+                                        <span class="recent-real-badge bgbeg">New</span>
+                                        <h4 class="recent-real-title">
+                                            <a href="${p.post_url}">${p.title}</a>
+                                        </h4>
+                                        <p class="recent-real-meta">${p.author_name} | ${p.time_ago}</p>
+                                    </div>
+                                </div>
+                            </div>`;
+                    } else {
+                        // Small cards
+                        html += `
+                            <div class="most-recent-single mb-3">
+                                <div class="most-recent-images">
+                                    <img src="${p.image}" alt="${p.title}" class="recent-real-img-small">
+                                </div>
+                                <div class="most-recent-capt">
+                                    <h4 class="recent-real-title-small">
                                         <a href="${p.post_url}">${p.title}</a>
                                     </h4>
                                     <p class="recent-real-meta">${p.author_name} | ${p.time_ago}</p>
                                 </div>
-                            </div>
-                        </div>`;
-                } else {
-                    // Small cards
+                            </div>`;
+                    }
+                });
+
+                $('#recent-loading').fadeOut(400, function() {
+                    $('#recent-content').html(html).fadeIn(500);
+                });
+            },
+            error: function() {
+                $('#recent-loading').html('<p class="text-center text-muted">Failed to load recent posts.</p>');
+            }
+        });
+    });
+</script>
+
+{{-- most popular slider --}}
+<script>
+    $(document).ready(function() {
+        $.ajax({
+            url: '{{ route("post.mostpopular") }}',
+            method: 'GET',
+            cache: true,
+            success: function(posts) {
+                let html = '';
+                posts.forEach(function(p) {
                     html += `
-                        <div class="most-recent-single mb-3">
-                            <div class="most-recent-images">
-                                <img src="${p.image}" alt="${p.title}" class="recent-real-img-small">
+                        <div class="weekly3-single">
+                            <div class="weekly3-img">
+                                <img src="${p.image}" alt="${p.title}" class="popular-real-img">
                             </div>
-                            <div class="most-recent-capt">
-                                <h4 class="recent-real-title-small">
+                            <div class="weekly3-caption">
+                                <h4 class="popular-real-title">
                                     <a href="${p.post_url}">${p.title}</a>
                                 </h4>
-                                <p class="recent-real-meta">${p.author_name} | ${p.time_ago}</p>
+                                <p class="popular-real-date">${p.date}</p>
                             </div>
                         </div>`;
-                }
-            });
+                });
 
-            $('#recent-loading').fadeOut(400, function() {
-                $('#recent-content').html(html).fadeIn(500);
-            });
-        },
-        error: function() {
-            $('#recent-loading').html('<p class="text-center text-muted">Failed to load recent posts.</p>');
-        }
+                $('#popular-slider-loading').fadeOut(300, function() {
+                    $(this).remove(); // Remove shimmer
+                    $('#popular-slider-content').html(html).fadeIn(500, function() {
+                        // Re-init Slick
+                        if ($('.weekly3-news-active').hasClass('slick-initialized')) {
+                            $('.weekly3-news-active').slick('unslick');
+                        }
+                        $('#popular-slider-content').slick({
+                            dots: true,
+                            infinite: true,
+                            speed: 500,
+                            slidesToShow: 4,
+                            slidesToScroll: 1,
+                            responsive: [
+                                { breakpoint: 1200, settings: { slidesToShow: 3 } },
+                                { breakpoint: 992,  settings: { slidesToShow: 2 } },
+                                { breakpoint: 768,  settings: { slidesToShow: 1 } }
+                            ]
+                        });
+                    });
+                });
+            },
+            error: function() {
+                $('#popular-slider-loading').html('<p class="text-center text-muted">Failed to load.</p>');
+            }
+        });
     });
-});
 </script>
+
+{{-- you might like  --}}
+<script>
+    $(document).ready(function() {
+        $.ajax({
+            url: '{{ route("post.youmightlike") }}',
+            method: 'GET',
+            cache: true,
+            success: function(posts) {
+                let html = '';
+                posts.forEach(function(p) {
+                    html += `
+                        <div class="news-card">
+                            <div class="news-card-image">
+                                <img src="${p.image}" alt="${p.title}" class="youmightlike-real-img">
+                            </div>
+                            <div class="news-card-content">
+                                <h4 class="youmightlike-real-title">
+                                    <a href="${p.post_url}">${p.title}</a>
+                                </h4>
+                                <p class="youmightlike-real-meta news-card-meta">${p.author_name} | ${p.time_ago}</p>
+                            </div>
+                        </div>`;
+                });
+
+                $('#youmightlike-loading').fadeOut(300, function() {
+                    $(this).remove(); // Remove shimmer
+                    $('#youmightlike-content').html(html).fadeIn(500);
+                });
+            },
+            error: function() {
+                $('#youmightlike-loading').html('<p class="text-center text-muted">Failed to load suggestions.</p>');
+            }
+        });
+    });
+</script>
+
 @endpush
