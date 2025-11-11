@@ -81,7 +81,7 @@
         <!-- End Services Area -->
 
         <!-- Team Section -->
-        <div class="team-area section-padding30">
+        {{-- <div class="team-area section-padding30">
             <div class="container">
                 <div class="row">
                     <div class="cl-xl-7 col-lg-8 col-md-10">
@@ -134,7 +134,7 @@
 
                 </div>
             </div>
-        </div>
+        </div> --}}
         <!-- Team End -->
 
     </main>

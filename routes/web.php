@@ -39,6 +39,10 @@ Route::get('/most-recent-posts', [App\Http\Controllers\PostController::class, 'm
 Route::get('/most-popular-posts', [App\Http\Controllers\PostController::class, 'mostPopularPosts'])->name('post.mostpopular');
 Route::get('/you-might-like-posts', [App\Http\Controllers\PostController::class, 'youMightLikePosts'])->name('post.youmightlike');
 
+// Category Page – uses 'name' instead of slug
+Route::get('/category/{name}', [App\Http\Controllers\CategoryController::class, 'show'])->name('category.show');
+Route::get('/category/{name}/posts', [App\Http\Controllers\CategoryController::class, 'loadMore'])->name('category.loadmore');
+
 Auth::routes();
 
 Route::get('auth/google', [App\Http\Controllers\Auth\GoogleController::class, 'redirectToGoogle'])->name('google.login');
