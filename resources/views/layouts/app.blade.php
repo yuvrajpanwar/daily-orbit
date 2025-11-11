@@ -248,6 +248,14 @@
             font-weight: 500;
         }
 
+        @media only screen and (max-width: 1199px){
+            .btn.post-btn{
+                background : #FFCCCC !important;
+                border: 1px solid #ff2143 !important;
+            }
+
+        }
+
     </style>
 
 
@@ -633,18 +641,21 @@
                                 <div class="single-footer-caption mb-50">
                                     <div class="single-footer-caption mb-30">
                                         <!-- logo -->
-                                        <div class="footer-logo">
-                                            <a href="/"><img src="/assets/img/logo/logo2_footer.png"
-                                                    alt=""></a>
-                                        </div>
                                         <div class="footer-tittle">
-                                            <div class="footer-pera">
-                                                <p class="info1">Lorem ipsum dolor sit amet, nsectetur adipiscing
-                                                    elit,
-                                                    sed do eiusmod tempor incididunt ut labore.</p>
-                                                <p class="info2">198 West 21th Street, Suite 721 New York,NY 10010</p>
-                                                <p class="info2">Phone: +95 (0) 123 456 789 Cell: +95 (0) 123 456 789
-                                                </p>
+                                                <h4>Daily Orbit</h4>
+                                            </div>
+                                        <div class="footer-tittle">
+                                            <div class="footer-pera text-white">
+                                                <h5 style="white-space: nowrap; font-weight:bold">Official Contact Information</h4>
+                                                <ul class="contact-list">
+                                                    <li><strong>Email:</strong> <a href="mailto:info@dailyorbit.in">info@dailyorbit.in</a></li>
+                                                    <li><strong>Phone:</strong> <a href="tel:+918126935280">+91 8126935280</a></li>
+                                                    <li><strong>Address:</strong><br>
+                                                        1202 , Rishivihar <br>
+                                                        Dehradun , Uttarakhand - 248001<br>
+                                                        India
+                                                    </li>
+                                                </ul>
                                             </div>
                                         </div>
                                     </div>
@@ -740,7 +751,7 @@
                                         <p>Copyright &copy;
                                             <script>
                                                 document.write(new Date().getFullYear());
-                                            </script> All rights reserved | <a href="{{route('terms-and-conditions')}}" ">Terms & Conditions</a> | <a href="{{route('privacy-policy')}}" ">Privacy Policy</a>
+                                            </script> All rights reserved <br> <a href="{{route('terms-and-conditions')}}" ">Terms & Conditions</a> | <a href="{{route('privacy-policy')}}" ">Privacy Policy</a>
                                         </p>
                                     </div>
                                 </div>

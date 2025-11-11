@@ -78,7 +78,7 @@
         <!-- Privacy Policy Details End -->
 
         <!-- Support/Call-to-Action Area (Adapted for Privacy Context) -->
-        <div class="support-company-area pt-100 pb-100 section-bg fix mb-100 bg-dark" >
+        <div class="support-company-area pt-100 pb-100 section-bg fix bg-dark" >
             <div class="container" >
                 <div class="row align-items-center">
                     <div class="col-xl-6 col-lg-6">
