@@ -24,7 +24,7 @@ class AppServiceProvider extends ServiceProvider
     {
         // RedirectIfAuthenticated::
         View::composer('layouts.app', function ($view) {
-            $view->with('categories', Category::all());
+            $view->with('categories', Category::select('name')->where('is_deleted', 0)->where('is_active', 1)->get());
         });
     }
 }

@@ -383,9 +383,11 @@
                                             <li><a href="/post/औली-में-स्कीइंग-का-रोमांच-बर्फीले-ढलानों-पर-उड़ान">Must Read</a></li>
                                             <li><a href="#">Categories &nbsp;<i class="fa fa-chevron-down not-for-mobile"></i> </a>
                                                 <ul class="submenu">
-                                                    <li><a href="blog.html">Blog</a></li>
-                                                    <li><a href="blog_details.html">Blog Details</a></li>
-                                                    <li><a href="elements.html">Element</a></li>
+                                                    @foreach($categories as $category)
+                                                        <li><a href="{{ route('category.show', ['name' => $category->name]) }}">{{ $category->name }}</a></li>  
+                                                    @endforeach
+                                                    {{-- cont of categories  --}}
+                                                    {{-- {{dd($categories->count())}} --}}
                                                 </ul>
                                             </li>
                                             <li><a href="{{route('about')}}">About</a></li>
@@ -895,6 +897,63 @@ $(document).ready(function() {
 </script>
     @vite(['resources/js/app.js'])
     @stack('scripts')
+
+    <script>
+        //if any of the images in the page is not found then replace it with /assets/img/default-image.png
+        document.addEventListener("DOMContentLoaded", function () {
+            const defaultSrc = "/assets/img/default-image.png";
+
+            function onError() {
+                // prevent infinite loop if default is missing or already set
+                if (this.dataset.replaced === "true" || this.src === defaultSrc) return;
+                this.dataset.replaced = "true";
+                this.src = defaultSrc;
+                console.log("Image not found. Replaced with default image.", this);
+            }
+
+            function handleImg(img) {
+                if (!img) return;
+
+                // If image element already finished loading and is broken, replace immediately
+                if (img.complete) {
+                if (img.naturalWidth === 0 && img.src !== defaultSrc) {
+                    img.dataset.replaced = "true";
+                    img.src = defaultSrc;
+                    console.log("Found broken image (after load). Replaced:", img);
+                }
+                // even if successful nothing to do
+                } else {
+                // attach error listener for future failure
+                img.addEventListener("error", onError, { once: true });
+                // also set a fallback check after a short delay (optional)
+                setTimeout(() => {
+                    if (img.naturalWidth === 0 && img.src !== defaultSrc) {
+                    img.dataset.replaced = "true";
+                    img.src = defaultSrc;
+                    console.log("Timeout check: replaced broken image:", img);
+                    }
+                }, 3000);
+                }
+            }
+
+            // initial pass
+            Array.from(document.getElementsByTagName("img")).forEach(handleImg);
+
+            // watch for images added later (appended by JS)
+            const mo = new MutationObserver((mutations) => {
+                for (const m of mutations) {
+                for (const node of m.addedNodes) {
+                    if (node.nodeType !== 1) continue; // skip text nodes
+                    if (node.tagName === "IMG") handleImg(node);
+                    else node.querySelectorAll && node.querySelectorAll("img").forEach(handleImg);
+                }
+                }
+            });
+
+            mo.observe(document.body, { childList: true, subtree: true });
+        });
+
+    </script>
 </body>
 
 </html>

@@ -6,9 +6,7 @@ use App\Http\Controllers\EmailVerificationController;
 // use App\Http\Controllers\Auth\GoogleController;
 
 
-Route::get('/', function () {
-    return view('home');
-});
+Route::get('/', [App\Http\Controllers\HomeController::class, 'index']);
 
 Route::any('/coming-soon', function () {
     return view('coming-soon');
