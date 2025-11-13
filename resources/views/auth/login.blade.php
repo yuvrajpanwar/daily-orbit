@@ -33,7 +33,7 @@
         }
 
         .login-body {
-            padding: 40px 30px;
+            padding: 25px 30px;
         }
 
         .form-group {
@@ -254,7 +254,6 @@
         }
     </style>
 @endpush
-
 @section('main')
     <div class="container">
         <div class="row justify-content-center">
@@ -263,11 +262,40 @@
                     <div class="login-header">
                         <h3 class="login-title">{{ __('Login') }}</h3>
                     </div>
-
                     <div class="login-body">
+                        <div class="form-group text-center">
+                            <a href="{{ route('google.login') }}" class="google-btn">
+                                <i class="fab fa-google"></i> Continue with Google
+                            </a>
+                        </div>
+                        <style>
+                            .google-btn {
+                                display: inline-flex;
+                                align-items: center;
+                                justify-content: center;
+                                gap: 8px;
+                                width: 100%;
+                                background: #ff4757 0%;
+                                color: #fff !important;
+                                font-weight: 600;
+                                border-radius: 10px;
+                                padding: 10px;
+                                text-decoration: none;
+                                transition: background 0.3s ease;
+                            }
+
+                            .google-btn:hover {
+                                background: #ff4757;
+                                color: #fff !important;
+                            }
+
+                            .google-btn i {
+                                font-size: 16px;
+                            }
+                        </style>
+
                         <form method="POST" action="{{ route('login') }}">
                             @csrf
-
                             <div class="form-group">
                                 <label for="email" class="form-label">{{ __('Email Address') }}</label>
                                 <div class="input-wrapper">
@@ -283,7 +311,6 @@
                                     </span>
                                 @enderror
                             </div>
-
                             <div class="form-group">
                                 <label for="password" class="form-label">{{ __('Password') }}</label>
                                 <div class="input-wrapper">
@@ -297,7 +324,6 @@
                                             {{ __('Forgot Password?') }}
                                         </a>
                                     @endif
-
                                 </div>
                                 @error('password')
                                     <span class="error-message" role="alert">
@@ -305,7 +331,6 @@
                                     </span>
                                 @enderror
                             </div>
-
                             <div class="form-group">
                                 <div class="remember-wrapper">
                                     <label class="remember-label">
@@ -316,15 +341,15 @@
                                     </label>
                                 </div>
                             </div>
-
                             <div class="form-group">
                                 <button type="submit" class="login-btn">
                                     <span>{{ __('Login') }}</span>
                                     <i class="fas fa-arrow-right"></i>
                                 </button>
                             </div>
-
-
+                            <a href="{{ route('register') }}" class="forgot-link">
+                                {{ __("Don't have an account?") }} <span style="color: blue"> Register Now</span>
+                            </a>
                         </form>
                     </div>
                 </div>
