@@ -66,6 +66,11 @@
                 display: none !important;
             }
         }
+        @media (min-width: 768px) {
+            .not-for-dasktop {
+                display: none !important;
+            }
+        }
         .preloader {
             background-color: #f7f7f7;
             height: 100vh;
@@ -380,6 +385,10 @@
                                             </a>
                                         </div>
                                         <ul id="navigation">
+
+                                            
+                                            
+                                            
                                             <li><a href="/">Home</a></li>
                                             <li><a href="/post/औली-में-स्कीइंग-का-रोमांच-बर्फीले-ढलानों-पर-उड़ान">Must Read</a></li>
                                             <li><a href="#">Categories &nbsp;<i class="fa fa-chevron-down not-for-mobile"></i> </a>
@@ -393,6 +402,23 @@
                                             </li>
                                             <li><a href="{{route('about')}}">About</a></li>
                                             <li><a href="{{route('contact-us')}}">Contact</a></li>
+                                            @if (Auth::check())
+                                                {{-- logout --}}
+                                                <li class="not-for-dasktop" style="border-top: 1px solid black;">
+                                                    <a style="display:flex;justify-content:space-between;align-items:center;" href="#" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                                                        Logout <i class="fa fa-sign-out-alt"></i>
+                                                    </a>
+                                                </li>
+                                                <form id="logout-form" action="{{ route('logout') }}" method="POST"
+                                                    style="display: none;">
+                                                    @csrf
+                                                </form>
+                                            @else
+                                                {{-- login --}}
+                                                <li class="not-for-dasktop" style="border-top: 1px solid black;">
+                                                        <a style="display:flex;justify-content:space-between;align-items:center;" href="{{ route('login') }}">Login / Register <i class="fa fa-sign-in-alt"></i></a>
+                                                </li>
+                                            @endif
                                             
                                         </ul>
                                     </nav>
@@ -949,8 +975,16 @@ $(document).ready(function() {
 
             mo.observe(document.body, { childList: true, subtree: true });
         });
-
+        
     </script>
+    <script>
+document.addEventListener("DOMContentLoaded", function () {
+    if (window.innerWidth >= 768) {
+        document.querySelectorAll('.not-for-dasktop').forEach(el => el.remove());
+    }
+});
+</script>
+
 </body>
 
 </html>

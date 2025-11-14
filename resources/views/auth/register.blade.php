@@ -217,7 +217,7 @@
                                 justify-content: center;
                                 gap: 8px;
                                 width: 100%;
-                                background: #ff4757 0%;
+                                background: #ff4757;  /* Fixed: removed invalid '0%' */
                                 color: #fff !important;
                                 font-weight: 600;
                                 border-radius: 10px;
@@ -235,7 +235,7 @@
                                 font-size: 16px;
                             }
                         </style>
-                        <form method="POST" action="{{ route('register') }}">
+                        <form method="POST" action="{{ route('register') }}" class="register-form">
                             @csrf
                             <div class="form-group">
                                 <label for="name" class="form-label">{{ __('Name') }}</label>
@@ -314,3 +314,18 @@
         </div>
     </div>
 @endsection
+@push('scripts')
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const form = document.querySelector(".register-form"); 
+        const btn = form.querySelector(".register-btn");
+        console.log(form, btn);
+        form.addEventListener("submit", function () {
+            btn.disabled = true; 
+            btn.style.background = "#ccc";
+            btn.innerHTML = `<i class="fa fa-spinner fa-spin"></i> Please Wait ...`;
+        });
+    });
+</script>
+
+@endpush

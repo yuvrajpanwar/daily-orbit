@@ -294,7 +294,7 @@
                             }
                         </style>
 
-                        <form method="POST" action="{{ route('login') }}">
+                        <form method="POST" action="{{ route('login') }}" class="login-form">
                             @csrf
                             <div class="form-group">
                                 <label for="email" class="form-label">{{ __('Email Address') }}</label>
@@ -357,3 +357,19 @@
         </div>
     </div>
 @endsection
+
+@push('scripts')
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const form = document.querySelector(".login-form"); 
+        const btn = form.querySelector(".login-btn");
+        console.log(form, btn);
+        form.addEventListener("submit", function () {
+            btn.disabled = true; 
+            btn.style.background = "#ccc";
+            btn.innerHTML = `<i class="fa fa-spinner fa-spin"></i> Please Wait ...`;
+        });
+    });
+</script>
+
+@endpush
