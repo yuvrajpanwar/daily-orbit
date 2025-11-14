@@ -171,7 +171,7 @@
 @endpush
 
 @section('main')
-    <section class="blog_area single-post-area m-4">
+    <section class="blog_area single-post-area my-4">
         <div class="container">
             <div class="row">
                 <div class="col-lg-8 posts-list">
