@@ -528,7 +528,7 @@
                             </div>
                             <!-- Tab content -->
                             <div class="row">
-                                <div class="col-12">
+                                <div>
                                     <!-- Nav Card -->
                                     <div class="tab-content" id="nav-tabContent">
                                         <!-- Trending Tab -->
