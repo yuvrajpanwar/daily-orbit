@@ -1,6 +1,7 @@
 <!doctype html>
 <html class="no-js" lang="zxx">
 <head>
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3405668939695709" crossorigin="anonymous"></script>
     <meta charset="utf-8">
     <meta http-equiv="x-ua-compatible" content="ie=edge">
     <title>Daily Orbit</title>
