@@ -560,9 +560,9 @@
                             </div>
                         </div>
                         <!-- Banner -->
-                        <div class="banner-one mt-20 mb-30">
+                        {{-- <div class="banner-one mt-20 mb-30">
                             <img src="assets/img/gallery/body_card1.png" alt="">
-                        </div>
+                        </div> --}}
                     </div>
                     <div class="col-lg-4">
                         
@@ -714,14 +714,14 @@
             <div class="container">
                 <div class="row">
                     <!-- Banner Column -->
-                    <div class="col-lg-3">
+                    {{-- <div class="col-lg-3">
                         <div class="news-banner-container">
                             <img src="assets/img/gallery/body_card2.png" alt="Travel Banner">
                         </div>
-                    </div>
+                    </div> --}}
 
                     <!-- News Content Column -->
-                    <div class="col-lg-9">
+                    <div class="col-12">
 
                         {{-- start you might like section --}}
                         <!-- section Tittle -->
@@ -766,7 +766,7 @@
         </div>
 
         <div class="banner-area gray-bg pt-90 pb-90">
-            <div class="container">
+            {{-- <div class="container">
                 <div class="row justify-content-center">
                     <div class="col-lg-10 col-md-10">
                         <div class="banner-one">
@@ -774,7 +774,7 @@
                         </div>
                     </div>
                 </div>
-            </div>
+            </div> --}}
         </div>
 
     </main>

@@ -638,9 +638,8 @@
             <div class="footer-main footer-bg">
                 <div class="footer-area footer-padding">
                     <div class="container">
-                        <div class="row d-flex justify-content-between">
+                        <div class="row d-flex justify-content-start gap-4">
                             <div class="col-xl-3 col-lg-3 col-md-5 col-sm-8">
-
                                 <div class="single-footer-caption mb-50">
                                     <div class="single-footer-caption mb-30">
                                         <!-- logo -->
@@ -663,10 +662,6 @@
                                         </div>
                                     </div>
                                 </div>
-
-                                
-
-
                             </div>
                             <div class="col-xl-4 col-lg-4 col-md-5 col-sm-7">
                                 
@@ -734,13 +729,13 @@
 
 
                             </div>
-                            <div class="col-xl-3 col-lg-3 col-md-5 col-sm-7">
+                            {{-- <div class="col-xl-3 col-lg-3 col-md-5 col-sm-7">
                                 <div class="single-footer-caption mb-50">
                                     <div class="banner">
                                         <img src="/assets/img/gallery/body_card4.png" alt="">
                                     </div>
                                 </div>
-                            </div>
+                            </div> --}}
                         </div>
                     </div>
                 </div>
@@ -857,10 +852,11 @@
                     toast.remove();
                 });
             });
+            $('#preloader-active').css('display', 'none');
         });
         /* 1. Proloder */
         $(window).on('load', function() {
-            $('#preloader-active').css('display', 'none');
+            
         });
     </script>
 
