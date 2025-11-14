@@ -361,7 +361,7 @@ class PostController extends Controller
             ->where('posts.is_published', 1)
             ->where('posts.is_deleted', 0)
             ->inRandomOrder()
-            ->limit(4)
+            ->limit(6)
             ->get();
 
         $posts = $posts->map(function ($post) {
