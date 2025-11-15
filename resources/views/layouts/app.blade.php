@@ -376,7 +376,7 @@
                                                         Account
                                                     </a>
                                                     <div class="my-dropdown-divider" role="separator"></div>
-                                                    <a class="my-dropdown-item" href="#"
+                                                    <a class="my-dropdown-item"
                                                         onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
                                                         <i class="fa fa-sign-out-alt" style="margin-right:6px"></i>
                                                         Logout
@@ -420,7 +420,7 @@
                                             
                                             <li><a href="/">Home</a></li>
                                             <li><a href="/post/औली-में-स्कीइंग-का-रोमांच-बर्फीले-ढलानों-पर-उड़ान">Must Read</a></li>
-                                            <li><a href="#">Categories &nbsp;<i class="fa fa-chevron-down not-for-mobile"></i> </a>
+                                            <li><a>Categories &nbsp;<i class="fa fa-chevron-down not-for-mobile"></i> </a>
                                                 <ul class="submenu">
                                                     @foreach($categories as $category)
                                                         <li><a href="{{ route('category.show', ['name' => $category->name]) }}">{{ $category->name }}</a></li>  
@@ -434,7 +434,7 @@
                                             @if (Auth::check())
                                                 {{-- logout --}}
                                                 <li class="not-for-dasktop" style="border-top: 1px solid black;">
-                                                    <a style="display:flex;justify-content:space-between;align-items:center;" href="#" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                                                    <a style="display:flex;justify-content:space-between;align-items:center;" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
                                                         Logout <i class="fa fa-sign-out-alt"></i>
                                                     </a>
                                                 </li>
@@ -483,7 +483,7 @@
                                                     Account
                                                 </a>
                                                 <div class="my-dropdown-divider" role="separator"></div>
-                                                <a class="my-dropdown-item" href="#"
+                                                <a class="my-dropdown-item"
                                                     onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
                                                     <i class="fa fa-sign-out-alt" style="margin-right:6px"></i> Logout
                                                 </a>
