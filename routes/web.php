@@ -5,6 +5,16 @@ use App\Http\Controllers\EmailVerificationController;
 
 // use App\Http\Controllers\Auth\GoogleController;
 
+use Illuminate\Support\Facades\Artisan;
+
+Route::get('/create-storage-link', function () {
+    try {
+        Artisan::call('storage:link');
+        return 'Storage link created successfully: ' . Artisan::output();
+    } catch (\Exception $e) {
+        return 'Error: ' . $e->getMessage();
+    }
+});
 
 Route::get('/', [App\Http\Controllers\HomeController::class, 'index']);
 
