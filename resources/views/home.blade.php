@@ -840,29 +840,7 @@
             display: none;
         }
 
-        img {
-            cursor: pointer;
-            transition: transform 0.3s ease;
-        }
-
-        img:hover {
-            transform: scale(1.1);
-        }
-
-        a {
-            text-decoration: none !important;
-            transition: transform 0.2s ease, font-size 0.2s ease;
-            display: inline-block;
-            /* required for transform */
-        }
-
-        a:hover,
-        a:focus,
-        a:active {
-            text-decoration: none !important;
-            transform: scale(1.02);
-            /* zoom effect */
-        }
+        
 
     </style>
 @endpush
