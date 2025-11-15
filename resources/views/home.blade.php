@@ -125,387 +125,746 @@
         }
     </style>
     <style>
-    /* Shimmer Container */
-    .trending-shimmer {
-        position: relative;
-        overflow: hidden;
-        animation: fadeIn 0.6s ease-out forwards;
-        opacity: 0;
-    }
-    .trending-shimmer:nth-child(1) { animation-delay: 0.1s; }
-    .trending-shimmer:nth-child(2) { animation-delay: 0.2s; }
+        /* Shimmer Container */
+        .trending-shimmer {
+            position: relative;
+            overflow: hidden;
+            animation: fadeIn 0.6s ease-out forwards;
+            opacity: 0;
+        }
 
-    /* Large Image */
-    .shimmer-img-large {
-        width: 100%;
-        height: 250px;
-        border-radius: 12px;
-        background: linear-gradient(90deg, #f0f0f0 25%, #e5e5e5 50%, #f0f0f0 75%);
-        background-size: 200% 100%;
-        animation: shimmer 1.8s ease-in-out infinite;
-        position: relative;
-        overflow: hidden;
-    }
-    .shimmer-img-large::after {
-        content: '';
-        position: absolute;
-        top: 0; left: -150%;
-        width: 50%; height: 100%;
-        background: linear-gradient(90deg, transparent, rgba(255,255,255,0.6), transparent);
-        animation: shine 1.8s ease-in-out infinite;
-    }
+        .trending-shimmer:nth-child(1) {
+            animation-delay: 0.1s;
+        }
 
-    /* Text Lines */
-    .shimmer-line {
-        height: 16px;
-        border-radius: 8px;
-        background: linear-gradient(90deg, #f0f0f0 25%, #e5e5e5 50%, #f0f0f0 75%);
-        background-size: 200% 100%;
-        animation: shimmer 1.8s ease-in-out infinite;
-        margin: 8px 0;
-    }
-    .shimmer-line.title-long { width: 85%; height: 24px; }
-    .shimmer-line.meta       { width: 50%; height: 14px; }
-    .shimmer-line.short      { width: 70%; }
+        .trending-shimmer:nth-child(2) {
+            animation-delay: 0.2s;
+        }
 
-    @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
-    @keyframes shine   { 0% { left: -150%; } 100% { left: 150%; } }
-    @keyframes fadeIn  { to { opacity: 1; } }
+        /* Large Image */
+        .shimmer-img-large {
+            width: 100%;
+            height: 250px;
+            border-radius: 12px;
+            background: linear-gradient(90deg, #f0f0f0 25%, #e5e5e5 50%, #f0f0f0 75%);
+            background-size: 200% 100%;
+            animation: shimmer 1.8s ease-in-out infinite;
+            position: relative;
+            overflow: hidden;
+        }
 
-    /* Real Content Animation */
-    #trending-content .whats-news-single {
-        animation: fadeInContent 0.6s ease-out forwards;
-        opacity: 0;
-        transform: translateY(10px);
-    }
-    #trending-content .whats-news-single:nth-child(1) { animation-delay: 0.1s; }
-    #trending-content .whats-news-single:nth-child(2) { animation-delay: 0.2s; }
+        .shimmer-img-large::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -150%;
+            width: 50%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.6), transparent);
+            animation: shine 1.8s ease-in-out infinite;
+        }
 
-    @keyframes fadeInContent {
-        to { opacity: 1; transform: translateY(0); }
-    }
+        /* Text Lines */
+        .shimmer-line {
+            height: 16px;
+            border-radius: 8px;
+            background: linear-gradient(90deg, #f0f0f0 25%, #e5e5e5 50%, #f0f0f0 75%);
+            background-size: 200% 100%;
+            animation: shimmer 1.8s ease-in-out infinite;
+            margin: 8px 0;
+        }
 
-    /* Real Image */
-    .trending-real-img {
-        width: 100%; height: 250px; object-fit: cover; border-radius: 12px;
-        transition: transform 0.4s ease;
-    }
-    .trending-real-img:hover { transform: scale(1.03); }
+        .shimmer-line.title-long {
+            width: 85%;
+            height: 24px;
+        }
 
-    /* Typography */
-    .trending-real-title {
-        font-size: 1.4rem; line-height: 1.3; font-weight: 700; margin: 12px 0 6px;
-        color: #1a1a1a;
-    }
-    .trending-real-title a { color: inherit; text-decoration: none; }
-    .trending-real-title a:hover { color: #ff4757; }
+        .shimmer-line.meta {
+            width: 50%;
+            height: 14px;
+        }
 
-    .trending-real-meta {
-        font-size: 0.9rem; color: #666; font-weight: 500;
-    }
+        .shimmer-line.short {
+            width: 70%;
+        }
 
-    .trending-real-excerpt {
-        font-size: 0.95rem; color: #444; line-height: 1.6; margin-top: 10px;
-    }
-    .whats-news-area .most-recent-area .most-recent .most-recent-img::before{
-        /* background:white!important; */
-    }
-</style>
+        @keyframes shimmer {
+            0% {
+                background-position: 200% 0;
+            }
 
-<style>
-    /* Fade-in Animation */
-    #recent-loading > div {
-        animation: fadeIn 0.6s ease-out forwards;
-        opacity: 0;
-    }
-    #recent-loading > div:nth-child(1) { animation-delay: 0.1s; }
-    #recent-loading > div:nth-child(2) { animation-delay: 0.2s; }
-    #recent-loading > div:nth-child(3) { animation-delay: 0.3s; }
+            100% {
+                background-position: -200% 0;
+            }
+        }
 
-    /* Large Featured Post */
-    .shimmer-img-large {
-        width: 100%;
-        height: 280px;
-        background: linear-gradient(90deg, #f0f0f0 25%, #e5e5e5 50%, #f0f0f0 75%);
-        background-size: 200% 100%;
-        animation: shimmer 1.8s ease-in-out infinite;
-        position: relative;
-        overflow: hidden;
-    }
-    .shimmer-img-large::after {
-        content: '';
-        position: absolute;
-        top: 0; left: -150%;
-        width: 50%; height: 100%;
-        background: linear-gradient(90deg, transparent, rgba(255,255,255,0.6), transparent);
-        animation: shine 1.8s ease-in-out infinite;
-    }
+        @keyframes shine {
+            0% {
+                left: -150%;
+            }
 
-    /* Small Thumbnails */
-    .shimmer-img-small {
-        width: 80px; height: 80px;
-        border-radius: 10px;
-        background: linear-gradient(90deg, #f0f0f0 25%, #e5e5e5 50%, #f0f0f0 75%);
-        background-size: 200% 100%;
-        animation: shimmer 1.8s ease-in-out infinite;
-        position: relative;
-        overflow: hidden;
-    }
-    .shimmer-img-small::after {
-        content: '';
-        position: absolute;
-        top: 0; left: -150%;
-        width: 50%; height: 100%;
-        background: linear-gradient(90deg, transparent, rgba(255,255,255,0.6), transparent);
-        animation: shine 1.8s ease-in-out infinite;
-    }
+            100% {
+                left: 150%;
+            }
+        }
 
-    /* Text Lines */
-    .shimmer-line {
-        height: 14px;
-        border-radius: 7px;
-        background: linear-gradient(90deg, #f0f0f0 25%, #e5e5e5 50%, #f0f0f0 75%);
-        background-size: 200% 100%;
-        animation: shimmer 1.8s ease-in-out infinite;
-        margin: 6px 0;
-    }
-    .shimmer-line.badge       { width: 60px; height: 20px; }
-    .shimmer-line.title-long  { width: 80%; height: 26px; }
-    .shimmer-line.title-medium{ width: 90%; height: 18px; }
-    .shimmer-line.meta        { width: 60%; height: 14px; }
+        @keyframes fadeIn {
+            to {
+                opacity: 1;
+            }
+        }
 
-    @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
-    @keyframes shine   { 0% { left: -150%; } 100% { left: 150%; } }
-    @keyframes fadeIn  { to { opacity: 1; } }
+        /* Real Content Animation */
+        #trending-content .whats-news-single {
+            animation: fadeInContent 0.6s ease-out forwards;
+            opacity: 0;
+            transform: translateY(10px);
+        }
 
-    /* Real Content Animation */
-    #recent-content > div {
-        animation: fadeInContent 0.6s ease-out forwards;
-        opacity: 0;
-        transform: translateY(8px);
-    }
-    #recent-content > div:nth-child(1) { animation-delay: 0.1s; }
-    #recent-content > div:nth-child(2) { animation-delay: 0.2s; }
-    #recent-content > div:nth-child(3) { animation-delay: 0.3s; }
+        #trending-content .whats-news-single:nth-child(1) {
+            animation-delay: 0.1s;
+        }
 
-    @keyframes fadeInContent {
-        to { opacity: 1; transform: translateY(0); }
-    }
+        #trending-content .whats-news-single:nth-child(2) {
+            animation-delay: 0.2s;
+        }
 
-    /* Real Images */
-    .recent-real-img-large {
-        width: 100%; height: 280px; object-fit: cover; border-radius: 12px;
-        transition: transform 0.4s ease;
-    }
-    .recent-real-img-large:hover { transform: scale(1.02); }
+        @keyframes fadeInContent {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
 
-    .recent-real-img-small {
-        width: 80px; height: 80px; object-fit: cover; border-radius: 10px;
-        transition: transform 0.3s ease;
-    }
-    .recent-real-img-small:hover { transform: scale(1.08); }
+        /* Real Image */
+        .trending-real-img {
+            width: 100%;
+            height: 250px;
+            object-fit: cover;
+            border-radius: 12px;
+            transition: transform 0.4s ease;
+        }
 
-    /* Typography */
-    .recent-real-badge {
-        display: inline-block;
-        background: #ff4757;
-        color: white;
-        font-size: 12px;
-        font-weight: 600;
-        padding: 4px 10px;
-        border-radius: 20px;
-        margin-bottom: 8px;
-    }
+        .trending-real-img:hover {
+            transform: scale(1.03);
+        }
 
-    .recent-real-title {
-        font-size: 1.35rem; line-height: 1.3; font-weight: 700; margin: 8px 0;
-        color: #1a1a1a;
-    }
-    .recent-real-title a { color: inherit; text-decoration: none; }
-    .recent-real-title a:hover { color: #ff4757; }
+        /* Typography */
+        .trending-real-title {
+            font-size: 1.4rem;
+            line-height: 1.3;
+            font-weight: 700;
+            margin: 12px 0 6px;
+            color: #1a1a1a;
+        }
 
-    .recent-real-meta {
-        font-size: 0.85rem; color: #666; font-weight: 500;
-    }
+        .trending-real-title a {
+            color: inherit;
+            text-decoration: none;
+        }
 
-    .recent-real-title-small {
-        font-size: 1rem; line-height: 1.4; font-weight: 600; margin: 0;
-        color: #1a1a1a;
-    }
-    .recent-real-title-small a { color: inherit; text-decoration: none; }
-    .recent-real-title-small a:hover { color: #ff4757; }
-</style>
+        .trending-real-title a:hover {
+            color: #ff4757;
+        }
 
-<style>
-    /* Staggered Fade-in */
-    #popular-slider-loading .weekly3-single {
-        animation: fadeIn 0.6s ease-out forwards;
-        opacity: 0;
-    }
-    #popular-slider-loading .weekly3-single:nth-child(1) { animation-delay: 0.1s; }
-    #popular-slider-loading .weekly3-single:nth-child(2) { animation-delay: 0.2s; }
-    #popular-slider-loading .weekly3-single:nth-child(3) { animation-delay: 0.3s; }
-    #popular-slider-loading .weekly3-single:nth-child(4) { animation-delay: 0.4s; }
-    #popular-slider-loading .weekly3-single:nth-child(5) { animation-delay: 0.5s; }
+        .trending-real-meta {
+            font-size: 0.9rem;
+            color: #666;
+            font-weight: 500;
+        }
 
-    /* Slider Image */
-    .shimmer-img-slider {
-        width: 100%;
-        height: 180px;
-        border-radius: 12px;
-        background: linear-gradient(90deg, #f0f0f0 25%, #e5e5e5 50%, #f0f0f0 75%);
-        background-size: 200% 100%;
-        animation: shimmer 1.8s ease-in-out infinite;
-        position: relative;
-        overflow: hidden;
-    }
-    .shimmer-img-slider::after {
-        content: '';
-        position: absolute;
-        top: 0; left: -150%;
-        width: 50%; height: 100%;
-        background: linear-gradient(90deg, transparent, rgba(255,255,255,0.6), transparent);
-        animation: shine 1.8s ease-in-out infinite;
-    }
+        .trending-real-excerpt {
+            font-size: 0.95rem;
+            color: #444;
+            line-height: 1.6;
+            margin-top: 10px;
+        }
 
-    /* Text Lines */
-    .shimmer-line {
-        height: 16px;
-        border-radius: 8px;
-        background: linear-gradient(90deg, #f0f0f0 25%, #e5e5e5 50%, #f0f0f0 75%);
-        background-size: 200% 100%;
-        animation: shimmer 1.8s ease-in-out infinite;
-        margin: 8px 0;
-    }
-    .shimmer-line.title { width: 85%; height: 20px; }
-    .shimmer-line.meta  { width: 55%; height: 14px; }
+        .whats-news-area .most-recent-area .most-recent .most-recent-img::before {
+            /* background:white!important; */
+        }
+    </style>
 
-    @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
-    @keyframes shine   { 0% { left: -150%; } 100% { left: 150%; } }
-    @keyframes fadeIn  { to { opacity: 1; } }
+    <style>
+        /* Fade-in Animation */
+        #recent-loading>div {
+            animation: fadeIn 0.6s ease-out forwards;
+            opacity: 0;
+        }
 
-    /* Real Content */
-    #popular-slider-content .weekly3-single {
-        animation: fadeInContent 0.6s ease-out forwards;
-        opacity: 0;
-        transform: translateY(8px);
-    }
-    #popular-slider-content .weekly3-single:nth-child(1) { animation-delay: 0.1s; }
-    #popular-slider-content .weekly3-single:nth-child(2) { animation-delay: 0.2s; }
-    #popular-slider-content .weekly3-single:nth-child(3) { animation-delay: 0.3s; }
-    #popular-slider-content .weekly3-single:nth-child(4) { animation-delay: 0.4s; }
-    #popular-slider-content .weekly3-single:nth-child(5) { animation-delay: 0.5s; }
+        #recent-loading>div:nth-child(1) {
+            animation-delay: 0.1s;
+        }
 
-    @keyframes fadeInContent {
-        to { opacity: 1; transform: translateY(0); }
-    }
+        #recent-loading>div:nth-child(2) {
+            animation-delay: 0.2s;
+        }
 
-    .popular-real-img {
-        width: 100%; height: 225px; object-fit: cover; border-radius: 12px;
-        transition: transform 0.4s ease;
-    }
-    .popular-real-img:hover { transform: scale(1.03); }
+        #recent-loading>div:nth-child(3) {
+            animation-delay: 0.3s;
+        }
 
-    .popular-real-title {
-        font-size: 1.1rem; line-height: 1.4; font-weight: 600; margin: 12px 0 6px;
-        color: #1a1a1a;
-    }
-    .popular-real-title a { color: inherit; text-decoration: none; }
-    .popular-real-title a:hover { color: #ff4757; }
+        /* Large Featured Post */
+        .shimmer-img-large {
+            width: 100%;
+            height: 280px;
+            background: linear-gradient(90deg, #f0f0f0 25%, #e5e5e5 50%, #f0f0f0 75%);
+            background-size: 200% 100%;
+            animation: shimmer 1.8s ease-in-out infinite;
+            position: relative;
+            overflow: hidden;
+        }
 
-    .popular-real-date {
-        font-size: 0.85rem; color: #666; font-weight: 500;
-    }
+        .shimmer-img-large::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -150%;
+            width: 50%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.6), transparent);
+            animation: shine 1.8s ease-in-out infinite;
+        }
 
-    .slick-arrow{
-        display:none !important;
-    }
-</style>
-<style>
-    /* Staggered Fade-in */
-    #youmightlike-loading .news-card {
-        animation: fadeIn 0.6s ease-out forwards;
-        opacity: 0;
-    }
-    #youmightlike-loading .news-card:nth-child(1) { animation-delay: 0.1s; }
-    #youmightlike-loading .news-card:nth-child(2) { animation-delay: 0.2s; }
-    #youmightlike-loading .news-card:nth-child(3) { animation-delay: 0.3s; }
-    #youmightlike-loading .news-card:nth-child(4) { animation-delay: 0.4s; }
+        /* Small Thumbnails */
+        .shimmer-img-small {
+            width: 80px;
+            height: 80px;
+            border-radius: 10px;
+            background: linear-gradient(90deg, #f0f0f0 25%, #e5e5e5 50%, #f0f0f0 75%);
+            background-size: 200% 100%;
+            animation: shimmer 1.8s ease-in-out infinite;
+            position: relative;
+            overflow: hidden;
+        }
 
-    /* Card Image */
-    .shimmer-img-card {
-        width: 100%;
-        height: 180px;
-        border-radius: 8px;
-        background: linear-gradient(90deg, #f0f0f0 25%, #e5e5e5 50%, #f0f0f0 75%);
-        background-size: 200% 100%;
-        animation: shimmer 1.8s ease-in-out infinite;
-        position: relative;
-        overflow: hidden;
-    }
-    .shimmer-img-card::after {
-        content: '';
-        position: absolute;
-        top: 0; left: -150%;
-        width: 50%; height: 100%;
-        background: linear-gradient(90deg, transparent, rgba(255,255,255,0.6), transparent);
-        animation: shine 1.8s ease-in-out infinite;
-    }
+        .shimmer-img-small::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -150%;
+            width: 50%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.6), transparent);
+            animation: shine 1.8s ease-in-out infinite;
+        }
 
-    /* Text Lines */
-    .shimmer-line {
-        height: 16px;
-        border-radius: 8px;
-        background: linear-gradient(90deg, #f0f0f0 25%, #e5e5e5 50%, #f0f0f0 75%);
-        background-size: 200% 100%;
-        animation: shimmer 1.8s ease-in-out infinite;
-        margin: 8px 0;
-    }
-    .shimmer-line.title { width: 85%; height: 20px; }
-    .shimmer-line.meta  { width: 60%; height: 14px; }
+        /* Text Lines */
+        .shimmer-line {
+            height: 14px;
+            border-radius: 7px;
+            background: linear-gradient(90deg, #f0f0f0 25%, #e5e5e5 50%, #f0f0f0 75%);
+            background-size: 200% 100%;
+            animation: shimmer 1.8s ease-in-out infinite;
+            margin: 6px 0;
+        }
 
-    @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
-    @keyframes shine   { 0% { left: -150%; } 100% { left: 150%; } }
-    @keyframes fadeIn  { to { opacity: 1; } }
+        .shimmer-line.badge {
+            width: 60px;
+            height: 20px;
+        }
 
-    /* Real Content Fade-in */
-    #youmightlike-content .news-card {
-        animation: fadeInContent 0.6s ease-out forwards;
-        opacity: 0;
-        transform: translateY(8px);
-    }
-    #youmightlike-content .news-card:nth-child(1) { animation-delay: 0.1s; }
-    #youmightlike-content .news-card:nth-child(2) { animation-delay: 0.2s; }
-    #youmightlike-content .news-card:nth-child(3) { animation-delay: 0.3s; }
-    #youmightlike-content .news-card:nth-child(4) { animation-delay: 0.4s; }
+        .shimmer-line.title-long {
+            width: 80%;
+            height: 26px;
+        }
 
-    @keyframes fadeInContent {
-        to { opacity: 1; transform: translateY(0); }
-    }
+        .shimmer-line.title-medium {
+            width: 90%;
+            height: 18px;
+        }
 
-    /* Real Image */
-    .youmightlike-real-img {
-        width: 100%; height: 180px; object-fit: cover; border-radius: 8px;
-        transition: transform 0.4s ease;
-    }
-    .youmightlike-real-img:hover { transform: scale(1.05); }
+        .shimmer-line.meta {
+            width: 60%;
+            height: 14px;
+        }
 
-    /* Typography */
-    .youmightlike-real-title {
-        font-size: 1.1rem; line-height: 1.4; font-weight: 600; margin: 12px 0 6px;
-        color: #333;
-    }
-    .youmightlike-real-title a { color: inherit; text-decoration: none; }
-    .youmightlike-real-title a:hover { color: #007bff; }
+        @keyframes shimmer {
+            0% {
+                background-position: 200% 0;
+            }
 
-    .youmightlike-real-meta {
-        font-size: 0.9rem; color: #666;
-    }
+            100% {
+                background-position: -200% 0;
+            }
+        }
 
-    .slick-dots{
-        display:none;
-    }
-</style>
+        @keyframes shine {
+            0% {
+                left: -150%;
+            }
+
+            100% {
+                left: 150%;
+            }
+        }
+
+        @keyframes fadeIn {
+            to {
+                opacity: 1;
+            }
+        }
+
+        /* Real Content Animation */
+        #recent-content>div {
+            animation: fadeInContent 0.6s ease-out forwards;
+            opacity: 0;
+            transform: translateY(8px);
+        }
+
+        #recent-content>div:nth-child(1) {
+            animation-delay: 0.1s;
+        }
+
+        #recent-content>div:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        #recent-content>div:nth-child(3) {
+            animation-delay: 0.3s;
+        }
+
+        @keyframes fadeInContent {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Real Images */
+        .recent-real-img-large {
+            width: 100%;
+            height: 280px;
+            object-fit: cover;
+            border-radius: 12px;
+            transition: transform 0.4s ease;
+        }
+
+        .recent-real-img-large:hover {
+            transform: scale(1.02);
+        }
+
+        .recent-real-img-small {
+            width: 80px;
+            height: 80px;
+            object-fit: cover;
+            border-radius: 10px;
+            transition: transform 0.3s ease;
+        }
+
+        .recent-real-img-small:hover {
+            transform: scale(1.08);
+        }
+
+        /* Typography */
+        .recent-real-badge {
+            display: inline-block;
+            background: #ff4757;
+            color: white;
+            font-size: 12px;
+            font-weight: 600;
+            padding: 4px 10px;
+            border-radius: 20px;
+            margin-bottom: 8px;
+        }
+
+        .recent-real-title {
+            font-size: 1.35rem;
+            line-height: 1.3;
+            font-weight: 700;
+            margin: 8px 0;
+            color: #1a1a1a;
+        }
+
+        .recent-real-title a {
+            color: inherit;
+            text-decoration: none;
+        }
+
+        .recent-real-title a:hover {
+            color: #ff4757;
+        }
+
+        .recent-real-meta {
+            font-size: 0.85rem;
+            color: #666;
+            font-weight: 500;
+        }
+
+        .recent-real-title-small {
+            font-size: 1rem;
+            line-height: 1.4;
+            font-weight: 600;
+            margin: 0;
+            color: #1a1a1a;
+        }
+
+        .recent-real-title-small a {
+            color: inherit;
+            text-decoration: none;
+        }
+
+        .recent-real-title-small a:hover {
+            color: #ff4757;
+        }
+    </style>
+
+    <style>
+        /* Staggered Fade-in */
+        #popular-slider-loading .weekly3-single {
+            animation: fadeIn 0.6s ease-out forwards;
+            opacity: 0;
+        }
+
+        #popular-slider-loading .weekly3-single:nth-child(1) {
+            animation-delay: 0.1s;
+        }
+
+        #popular-slider-loading .weekly3-single:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        #popular-slider-loading .weekly3-single:nth-child(3) {
+            animation-delay: 0.3s;
+        }
+
+        #popular-slider-loading .weekly3-single:nth-child(4) {
+            animation-delay: 0.4s;
+        }
+
+        #popular-slider-loading .weekly3-single:nth-child(5) {
+            animation-delay: 0.5s;
+        }
+
+        /* Slider Image */
+        .shimmer-img-slider {
+            width: 100%;
+            height: 180px;
+            border-radius: 12px;
+            background: linear-gradient(90deg, #f0f0f0 25%, #e5e5e5 50%, #f0f0f0 75%);
+            background-size: 200% 100%;
+            animation: shimmer 1.8s ease-in-out infinite;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .shimmer-img-slider::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -150%;
+            width: 50%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.6), transparent);
+            animation: shine 1.8s ease-in-out infinite;
+        }
+
+        /* Text Lines */
+        .shimmer-line {
+            height: 16px;
+            border-radius: 8px;
+            background: linear-gradient(90deg, #f0f0f0 25%, #e5e5e5 50%, #f0f0f0 75%);
+            background-size: 200% 100%;
+            animation: shimmer 1.8s ease-in-out infinite;
+            margin: 8px 0;
+        }
+
+        .shimmer-line.title {
+            width: 85%;
+            height: 20px;
+        }
+
+        .shimmer-line.meta {
+            width: 55%;
+            height: 14px;
+        }
+
+        @keyframes shimmer {
+            0% {
+                background-position: 200% 0;
+            }
+
+            100% {
+                background-position: -200% 0;
+            }
+        }
+
+        @keyframes shine {
+            0% {
+                left: -150%;
+            }
+
+            100% {
+                left: 150%;
+            }
+        }
+
+        @keyframes fadeIn {
+            to {
+                opacity: 1;
+            }
+        }
+
+        /* Real Content */
+        #popular-slider-content .weekly3-single {
+            animation: fadeInContent 0.6s ease-out forwards;
+            opacity: 0;
+            transform: translateY(8px);
+        }
+
+        #popular-slider-content .weekly3-single:nth-child(1) {
+            animation-delay: 0.1s;
+        }
+
+        #popular-slider-content .weekly3-single:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        #popular-slider-content .weekly3-single:nth-child(3) {
+            animation-delay: 0.3s;
+        }
+
+        #popular-slider-content .weekly3-single:nth-child(4) {
+            animation-delay: 0.4s;
+        }
+
+        #popular-slider-content .weekly3-single:nth-child(5) {
+            animation-delay: 0.5s;
+        }
+
+        @keyframes fadeInContent {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .popular-real-img {
+            width: 100%;
+            height: 225px;
+            object-fit: cover;
+            border-radius: 12px;
+            transition: transform 0.4s ease;
+        }
+
+        .popular-real-img:hover {
+            transform: scale(1.03);
+        }
+
+        .popular-real-title {
+            font-size: 1.1rem;
+            line-height: 1.4;
+            font-weight: 600;
+            margin: 12px 0 6px;
+            color: #1a1a1a;
+        }
+
+        .popular-real-title a {
+            color: inherit;
+            text-decoration: none;
+        }
+
+        .popular-real-title a:hover {
+            color: #ff4757;
+        }
+
+        .popular-real-date {
+            font-size: 0.85rem;
+            color: #666;
+            font-weight: 500;
+        }
+
+        .slick-arrow {
+            display: none !important;
+        }
+    </style>
+    <style>
+        /* Staggered Fade-in */
+        #youmightlike-loading .news-card {
+            animation: fadeIn 0.6s ease-out forwards;
+            opacity: 0;
+        }
+
+        #youmightlike-loading .news-card:nth-child(1) {
+            animation-delay: 0.1s;
+        }
+
+        #youmightlike-loading .news-card:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        #youmightlike-loading .news-card:nth-child(3) {
+            animation-delay: 0.3s;
+        }
+
+        #youmightlike-loading .news-card:nth-child(4) {
+            animation-delay: 0.4s;
+        }
+
+        /* Card Image */
+        .shimmer-img-card {
+            width: 100%;
+            height: 180px;
+            border-radius: 8px;
+            background: linear-gradient(90deg, #f0f0f0 25%, #e5e5e5 50%, #f0f0f0 75%);
+            background-size: 200% 100%;
+            animation: shimmer 1.8s ease-in-out infinite;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .shimmer-img-card::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -150%;
+            width: 50%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.6), transparent);
+            animation: shine 1.8s ease-in-out infinite;
+        }
+
+        /* Text Lines */
+        .shimmer-line {
+            height: 16px;
+            border-radius: 8px;
+            background: linear-gradient(90deg, #f0f0f0 25%, #e5e5e5 50%, #f0f0f0 75%);
+            background-size: 200% 100%;
+            animation: shimmer 1.8s ease-in-out infinite;
+            margin: 8px 0;
+        }
+
+        .shimmer-line.title {
+            width: 85%;
+            height: 20px;
+        }
+
+        .shimmer-line.meta {
+            width: 60%;
+            height: 14px;
+        }
+
+        @keyframes shimmer {
+            0% {
+                background-position: 200% 0;
+            }
+
+            100% {
+                background-position: -200% 0;
+            }
+        }
+
+        @keyframes shine {
+            0% {
+                left: -150%;
+            }
+
+            100% {
+                left: 150%;
+            }
+        }
+
+        @keyframes fadeIn {
+            to {
+                opacity: 1;
+            }
+        }
+
+        /* Real Content Fade-in */
+        #youmightlike-content .news-card {
+            animation: fadeInContent 0.6s ease-out forwards;
+            opacity: 0;
+            transform: translateY(8px);
+        }
+
+        #youmightlike-content .news-card:nth-child(1) {
+            animation-delay: 0.1s;
+        }
+
+        #youmightlike-content .news-card:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        #youmightlike-content .news-card:nth-child(3) {
+            animation-delay: 0.3s;
+        }
+
+        #youmightlike-content .news-card:nth-child(4) {
+            animation-delay: 0.4s;
+        }
+
+        @keyframes fadeInContent {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Real Image */
+        .youmightlike-real-img {
+            width: 100%;
+            height: 180px;
+            object-fit: cover;
+            border-radius: 8px;
+            transition: transform 0.4s ease;
+        }
+
+        .youmightlike-real-img:hover {
+            transform: scale(1.05);
+        }
+
+        /* Typography */
+        .youmightlike-real-title {
+            font-size: 1.1rem;
+            line-height: 1.4;
+            font-weight: 600;
+            margin: 12px 0 6px;
+            color: #333;
+        }
+
+        .youmightlike-real-title a {
+            color: inherit;
+            text-decoration: none;
+        }
+
+        .youmightlike-real-title a:hover {
+            color: #007bff;
+        }
+
+        .youmightlike-real-meta {
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        .slick-dots {
+            display: none;
+        }
+
+        img {
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+        img:hover {
+            transform: scale(1.1);
+        }
+
+        a {
+            text-decoration: none !important;
+            transition: transform 0.2s ease, font-size 0.2s ease;
+            display: inline-block;
+            /* required for transform */
+        }
+
+        a:hover,
+        a:focus,
+        a:active {
+            text-decoration: none !important;
+            transform: scale(1.02);
+            /* zoom effect */
+        }
+
+    </style>
 @endpush
 
 
@@ -516,13 +875,13 @@
             <div class="container">
                 <div class="row">
                     <div class="col-lg-8">
-                        <div class="whats-news-wrapper" style="padding: 10px 20px 20px;">
+                        <div class="whats-news-wrapper" style="padding: 10px 10px 20px;">
                             <!-- Heading & Nav Button -->
                             <div class="row justify-content-between align-items-end mb-15">
                                 <div class="col-xl-4">
                                     <div class="section-tittle">
-                                       <h3>Trending</h3>      
-                                       <h4 style="white-space: nowrap">{{date('d M Y | h:i A')}}</h4>                              
+                                        <h3>Trending</h3>
+                                        <h4 style="white-space: nowrap">{{ date('d M Y | h:i A') }}</h4>
                                     </div>
                                 </div>
                             </div>
@@ -532,11 +891,12 @@
                                     <!-- Nav Card -->
                                     <div class="tab-content" id="nav-tabContent">
                                         <!-- Trending Tab -->
-                                        <div class="tab-pane fade show active" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab">
-                                            
+                                        <div class="tab-pane fade show active" id="nav-home" role="tabpanel"
+                                            aria-labelledby="nav-home-tab">
+
                                             {{-- Shimmer Skeleton --}}
                                             <div id="trending-loading" class="row g-4">
-                                                @for($i = 0; $i < 2; $i++)
+                                                @for ($i = 0; $i < 2; $i++)
                                                     <div class="col-xl-6 col-lg-6">
                                                         <div class="trending-shimmer m-1 p-3 bg-light rounded">
                                                             <div class="shimmer-img-large"></div>
@@ -565,7 +925,7 @@
                         </div> --}}
                     </div>
                     <div class="col-lg-4">
-                        
+
                         <!-- Most Recent Area -->
                         <div class="most-recent-area pt-2">
                             <!-- Section Tittle -->
@@ -578,7 +938,8 @@
                                 {{-- First Large Card --}}
                                 <div class="most-recent mb-40">
                                     <div class="most-recent-img">
-                                        <div class="shimmer-img-large" style="border-radius: 12px 12px 0 0 !important;"></div>
+                                        <div class="shimmer-img-large" style="border-radius: 12px 12px 0 0 !important;">
+                                        </div>
                                         <div class="most-recent-cap">
                                             <div class="shimmer-line badge"></div>
                                             <div class="shimmer-line title-long mt-2"></div>
@@ -588,7 +949,7 @@
                                 </div>
 
                                 {{-- Two Small Cards --}}
-                                @for($i = 0; $i < 2; $i++)
+                                @for ($i = 0; $i < 2; $i++)
                                     <div class="most-recent-single mb-3">
                                         <div class="most-recent-images">
                                             <div class="shimmer-img-small"></div>
@@ -657,53 +1018,54 @@
 
 
 
-<div class="weekly3-news-area pt-30 pb-130 bg-light">
-    <div class="container">
-        <div class="weekly3-wrapper">
-            <div class="row">
-                <div class="col-lg-12">
-                    <div class="slider-wrapper">
+        <div class="weekly3-news-area pt-30 pb-130 bg-light">
+            <div class="container">
+                <div class="weekly3-wrapper">
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <div class="slider-wrapper">
 
-                        <!-- Title -->
-                        <div class="row">
-                            <div class="col-lg-12">
-                                <div class="section-tittle mb-30">
-                                    <h3>Most Popular</h3>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Slider Container -->
-                        <div class="row">
-                            <div class="col-lg-12">
-
-                                <!-- Shimmer Skeleton -->
-                                <div id="popular-slider-loading" class="weekly3-news-active dot-style d-flex">
-                                    @for($i = 0; $i < 5; $i++)
-                                        <div class="weekly3-single">
-                                            <div class="weekly3-img">
-                                                <div class="shimmer-img-slider"></div>
-                                            </div>
-                                            <div class="weekly3-caption mt-3">
-                                                <div class="shimmer-line title"></div>
-                                                <div class="shimmer-line meta"></div>
-                                            </div>
+                                <!-- Title -->
+                                <div class="row">
+                                    <div class="col-lg-12">
+                                        <div class="section-tittle mb-30">
+                                            <h3>Most Popular</h3>
                                         </div>
-                                    @endfor
+                                    </div>
                                 </div>
 
-                                <!-- Real Content (hidden) -->
-                                <div id="popular-slider-content" class="weekly3-news-active dot-style d-flex" style="display: none;"></div>
+                                <!-- Slider Container -->
+                                <div class="row">
+                                    <div class="col-lg-12">
+
+                                        <!-- Shimmer Skeleton -->
+                                        <div id="popular-slider-loading" class="weekly3-news-active dot-style d-flex">
+                                            @for ($i = 0; $i < 5; $i++)
+                                                <div class="weekly3-single">
+                                                    <div class="weekly3-img">
+                                                        <div class="shimmer-img-slider"></div>
+                                                    </div>
+                                                    <div class="weekly3-caption mt-3">
+                                                        <div class="shimmer-line title"></div>
+                                                        <div class="shimmer-line meta"></div>
+                                                    </div>
+                                                </div>
+                                            @endfor
+                                        </div>
+
+                                        <!-- Real Content (hidden) -->
+                                        <div id="popular-slider-content" class="weekly3-news-active dot-style d-flex"
+                                            style="display: none;"></div>
+
+                                    </div>
+                                </div>
 
                             </div>
                         </div>
-
                     </div>
                 </div>
             </div>
         </div>
-    </div>
-</div>
 
 
 
@@ -739,7 +1101,7 @@
 
                                 <!-- Shimmer Skeleton -->
                                 <div id="youmightlike-loading" class="news-slider-container draggable">
-                                    @for($i = 0; $i < 4; $i++)
+                                    @for ($i = 0; $i < 4; $i++)
                                         <div class="news-card">
                                             <div class="news-card-image">
                                                 <div class="shimmer-img-card"></div>
@@ -753,7 +1115,8 @@
                                 </div>
 
                                 <!-- Real Content (hidden) -->
-                                <div id="youmightlike-content" class="news-slider-container draggable" style="display: none;"></div>
+                                <div id="youmightlike-content" class="news-slider-container draggable"
+                                    style="display: none;"></div>
 
                             </div>
                         </div>
@@ -781,20 +1144,19 @@
 @endsection
 
 @push('scripts')
-
-{{-- trending ajax --}}
-<script>
-    $(document).ready(function() {
-        $.ajax({
-            url: '{{ route("post.trending") }}',
-            method: 'GET',
-            cache: true,
-            success: function(posts) {
-                let html = '';
-                posts.forEach(function(p) {
-                    html += `
+    {{-- trending ajax --}}
+    <script>
+        $(document).ready(function() {
+            $.ajax({
+                url: '{{ route('post.trending') }}',
+                method: 'GET',
+                cache: true,
+                success: function(posts) {
+                    let html = '';
+                    posts.forEach(function(p) {
+                        html += `
                         <div class="col-xl-6 col-lg-6">
-                            <div class="whats-news-single m-1 p-3 bg-light rounded">
+                            <div class="whats-news-single m-1 py-3 px-2 bg-light rounded">
                                 <div class="whates-img">
                                     <img src="${p.image}" alt="${p.title}" class="trending-real-img">
                                 </div>
@@ -807,48 +1169,51 @@
                                 </div>
                             </div>
                         </div>`;
-                });
+                    });
 
-                $('#trending-loading').fadeOut(400, function() {
-                    $('#trending-content').html(html).fadeIn(500);
-                });
-            },
-            error: function() {
-                $('#trending-loading').html('<p class="text-center text-muted">Failed to load trending posts.</p>');
-            }
+                    $('#trending-loading').fadeOut(400, function() {
+                        $('#trending-content').html(html).fadeIn(500);
+                    });
+                },
+                error: function() {
+                    $('#trending-loading').html(
+                        '<p class="text-center text-muted">Failed to load trending posts.</p>');
+                }
+            });
         });
-    });
-</script>
+    </script>
 
-{{-- most recent ajax --}}
-<script>
-    $(document).ready(function() {
-        $.ajax({
-            url: '{{ route("post.recent") }}',
-            method: 'GET',
-            cache: true,
-            success: function(posts) {
-                let html = '';
+    {{-- most recent ajax --}}
+    <script>
+        $(document).ready(function() {
+            $.ajax({
+                url: '{{ route('post.recent') }}',
+                method: 'GET',
+                cache: true,
+                success: function(posts) {
+                    let html = '';
 
-                posts.forEach(function(p, index) {
-                    if (p.is_first) {
-                        // First large card
-                        html += `
-                            <div class="most-recent mb-40">
-                                <div class="most-recent-img">
-                                    <img src="${p.image}" alt="${p.title}" class="recent-real-img-large">
-                                    <div class="most-recent-cap">
-                                        <span class="recent-real-badge bgbeg">New</span>
-                                        <h4 class="recent-real-title">
-                                            <a href="${p.post_url}">${p.title}</a>
-                                        </h4>
-                                        <p class="recent-real-meta">${p.author_name} | ${p.time_ago}</p>
+                    posts.forEach(function(p, index) {
+                        if (p.is_first) {
+                            // First large card
+                            html += `
+                            <a href="${p.post_url}">
+                                <div class="most-recent mb-40">
+                                    <div class="most-recent-img">
+                                        <img src="${p.image}" alt="${p.title}" class="recent-real-img-large">
+                                        <div class="most-recent-cap">
+                                            <span class="recent-real-badge bgbeg">New</span>
+                                            <h4 class="recent-real-title text-white">
+                                                ${p.title}
+                                            </h4>
+                                            <p class="recent-real-meta">${p.author_name} | ${p.time_ago}</p>
+                                        </div>
                                     </div>
-                                </div>
-                            </div>`;
-                    } else {
-                        // Small cards
-                        html += `
+                                </div> 
+                            </a>`;
+                        } else {
+                            // Small cards
+                            html += `
                             <div class="most-recent-single mb-3">
                                 <div class="most-recent-images">
                                     <img src="${p.image}" alt="${p.title}" class="recent-real-img-small">
@@ -860,31 +1225,32 @@
                                     <p class="recent-real-meta">${p.author_name} | ${p.time_ago}</p>
                                 </div>
                             </div>`;
-                    }
-                });
+                        }
+                    });
 
-                $('#recent-loading').fadeOut(400, function() {
-                    $('#recent-content').html(html).fadeIn(500);
-                });
-            },
-            error: function() {
-                $('#recent-loading').html('<p class="text-center text-muted">Failed to load recent posts.</p>');
-            }
+                    $('#recent-loading').fadeOut(400, function() {
+                        $('#recent-content').html(html).fadeIn(500);
+                    });
+                },
+                error: function() {
+                    $('#recent-loading').html(
+                        '<p class="text-center text-muted">Failed to load recent posts.</p>');
+                }
+            });
         });
-    });
-</script>
+    </script>
 
-{{-- most popular slider --}}
-<script>
-    $(document).ready(function() {
-        $.ajax({
-            url: '{{ route("post.mostpopular") }}',
-            method: 'GET',
-            cache: true,
-            success: function(posts) {
-                let html = '';
-                posts.forEach(function(p) {
-                    html += `
+    {{-- most popular slider --}}
+    <script>
+        $(document).ready(function() {
+            $.ajax({
+                url: '{{ route('post.mostpopular') }}',
+                method: 'GET',
+                cache: true,
+                success: function(posts) {
+                    let html = '';
+                    posts.forEach(function(p) {
+                        html += `
                         <div class="weekly3-single">
                             <div class="weekly3-img">
                                 <img src="${p.image}" alt="${p.title}" class="popular-real-img">
@@ -896,48 +1262,64 @@
                                 <p class="popular-real-date">${p.date}</p>
                             </div>
                         </div>`;
-                });
+                    });
 
-                $('#popular-slider-loading').fadeOut(300, function() {
-                    $(this).remove(); // Remove shimmer
-                    $('#popular-slider-content').html(html).fadeIn(500, function() {
-                        // Re-init Slick
-                        if ($('.weekly3-news-active').hasClass('slick-initialized')) {
-                            $('.weekly3-news-active').slick('unslick');
-                        }
-                        $('#popular-slider-content').slick({
-                            dots: true,
-                            infinite: true,
-                            speed: 500,
-                            slidesToShow: 4,
-                            slidesToScroll: 1,
-                            responsive: [
-                                { breakpoint: 1200, settings: { slidesToShow: 3 } },
-                                { breakpoint: 992,  settings: { slidesToShow: 2 } },
-                                { breakpoint: 768,  settings: { slidesToShow: 1 } }
-                            ]
+                    $('#popular-slider-loading').fadeOut(300, function() {
+                        $(this).remove(); // Remove shimmer
+                        $('#popular-slider-content').html(html).fadeIn(500, function() {
+                            // Re-init Slick
+                            if ($('.weekly3-news-active').hasClass(
+                                    'slick-initialized')) {
+                                $('.weekly3-news-active').slick('unslick');
+                            }
+                            $('#popular-slider-content').slick({
+                                dots: true,
+                                infinite: true,
+                                speed: 500,
+                                slidesToShow: 4,
+                                slidesToScroll: 1,
+                                responsive: [{
+                                        breakpoint: 1200,
+                                        settings: {
+                                            slidesToShow: 3
+                                        }
+                                    },
+                                    {
+                                        breakpoint: 992,
+                                        settings: {
+                                            slidesToShow: 2
+                                        }
+                                    },
+                                    {
+                                        breakpoint: 768,
+                                        settings: {
+                                            slidesToShow: 1
+                                        }
+                                    }
+                                ]
+                            });
                         });
                     });
-                });
-            },
-            error: function() {
-                $('#popular-slider-loading').html('<p class="text-center text-muted">Failed to load.</p>');
-            }
+                },
+                error: function() {
+                    $('#popular-slider-loading').html(
+                        '<p class="text-center text-muted">Failed to load.</p>');
+                }
+            });
         });
-    });
-</script>
+    </script>
 
-{{-- you might like  --}}
-<script>
-    $(document).ready(function() {
-        $.ajax({
-            url: '{{ route("post.youmightlike") }}',
-            method: 'GET',
-            cache: true,
-            success: function(posts) {
-                let html = '';
-                posts.forEach(function(p) {
-                    html += `
+    {{-- you might like  --}}
+    <script>
+        $(document).ready(function() {
+            $.ajax({
+                url: '{{ route('post.youmightlike') }}',
+                method: 'GET',
+                cache: true,
+                success: function(posts) {
+                    let html = '';
+                    posts.forEach(function(p) {
+                        html += `
                         <div class="news-card">
                             <div class="news-card-image">
                                 <img src="${p.image}" alt="${p.title}" class="youmightlike-real-img">
@@ -949,18 +1331,57 @@
                                 <p class="youmightlike-real-meta news-card-meta">${p.author_name} | ${p.time_ago}</p>
                             </div>
                         </div>`;
-                });
+                    });
 
-                $('#youmightlike-loading').fadeOut(300, function() {
-                    $(this).remove(); // Remove shimmer
-                    $('#youmightlike-content').html(html).fadeIn(500);
-                });
-            },
-            error: function() {
-                $('#youmightlike-loading').html('<p class="text-center text-muted">Failed to load suggestions.</p>');
+                    $('#youmightlike-loading').fadeOut(300, function() {
+                        $(this).remove(); // Remove shimmer
+                        $('#youmightlike-content').html(html).fadeIn(500);
+                    });
+                },
+                error: function() {
+                    $('#youmightlike-loading').html(
+                        '<p class="text-center text-muted">Failed to load suggestions.</p>');
+                }
+            });
+        });
+    </script>
+
+
+    <script>
+        document.addEventListener("click", function(e) {
+            const img = e.target;
+
+            if (img.tagName.toLowerCase() !== "img") return;
+
+            let link = null;
+
+            // 1. Search sibling links inside the same parent container
+            let parent = img.parentElement;
+            if (parent) {
+                link = [...parent.children].find(el =>
+                    el.tagName.toLowerCase() === "a" || el.querySelector("a")
+                );
+                if (link) link = link.tagName.toLowerCase() === "a" ? link : link.querySelector("a");
+            }
+
+            // 2. If no sibling link found → search ancestors for any child <a>
+            if (!link) {
+                let ancestor = img.parentElement;
+                while (ancestor && !link) {
+                    link = ancestor.querySelector("a");
+                    ancestor = ancestor.parentElement;
+                }
+            }
+
+            // 3. Redirect if found
+            if (link && link.href) {
+
+                // 🔥 Show preloader before redirect
+                const loader = document.getElementById("preloader-active");
+                if (loader) loader.style.display = "flex";
+
+                window.location.href = link.href;
             }
         });
-    });
-</script>
-
+    </script>
 @endpush

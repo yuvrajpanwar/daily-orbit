@@ -898,7 +898,9 @@ $(document).ready(function() {
                 html += `
                     <div class="whats-right-single mb-20">
                         <div class="whats-right-img">
-                            <img src="${post.image}" alt="${post.title}" loading="lazy">
+                            <a href="/post/${post.slug}">
+                                <img src="${post.image}" alt="${post.title}" loading="lazy">
+                            </a>
                         </div>
                         <div class="whats-right-cap">
                             <h4><a href="/post/${post.slug}">${post.title}</a></h4>
