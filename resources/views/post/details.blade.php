@@ -1,173 +1,20 @@
 @extends('layouts.app')
 @section('title', $post->title)
-
 @push('css')
-    <meta property="og:url" content="{{ request()->url() }}" />
+    <meta property="og:url" content="{{ url('post/'.$post->slug) }}" />
     <meta property="og:type" content="article" />
     <meta property="og:title" content="{{ $post->title }}" />
     <meta property="og:description" content="{{ Str::limit(strip_tags($post->description), 150) }}" />
     <meta property="og:image" content="{{ asset('storage/' . $post->thumbnail) }}" />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
-
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="{{ $post->title }}">
     <meta name="twitter:description" content="{{ Str::limit(strip_tags($post->description), 150) }}">
     <meta name="twitter:image" content="{{ asset('storage/' . $post->thumbnail) }}">
-
-    <!-- ShareThis BEGIN -->
-        <script type='text/javascript' src='https://platform-api.sharethis.com/js/sharethis.js#property=690cc0de38de9793e85fcc81&product=sop' async='async'></script>
-    <!-- ShareThis END -->
-
-    <link
-        href="https://fonts.googleapis.com/css2?family=Hind:wght@400;500;700&family=Tiro+Devanagari+Hindi:wght@400;700&display=swap"
-        rel="stylesheet">
-
-    <style>
-        .blog_area {
-            font-family: 'Mangal', sans-serif;
-            font-size: 18px;
-            line-height: 1.9;
-            color: #222;
-        }
-
-        h1,
-        h2,
-        h3,
-        h4,
-        h5,
-        h6 {
-            font-family: 'Mangal', sans-serif;
-            font-weight: 700;
-            color: #111;
-        }
-
-        h2 {
-            font-size: 1.9rem !important;
-            line-height: 1.3;
-        }
-
-        h1 {
-            font-size: 2rem !important;
-            line-height: 1.3;
-            font-weight: bold !important;
-        }
-
-        .blog_area .ul {
-            font-family: 'Mangal', sans-serif;
-        }
-
-        .blog_details img{
-            max-width: 95%;
-            margin: auto;
-            display: block;
-        }
-
-        .blog_area p {
-            font-family: 'Mangal', sans-serif;
-            font-size: 18px !important;
-            line-height: 1.9;
-            font-weight: 400;
-            color: #222;
-        }
-
-        .like-info{
-            white-space: nowrap;
-        }
-    </style>
-    <style>
-    .hover-bg-light {
-        transition: background-color 0.2s ease;
-    }
-    .hover-bg-light:hover {
-        background-color: #f8f9fa !important;
-    }
-    .transition {
-        transition: all 0.2s ease;
-    }
-</style>
-
-<style>
-    .similar-shimmer-item {
-        display: flex;
-        gap: 12px;
-        align-items: center;
-        animation: fadeIn 0.6s ease-out forwards;
-        opacity: 0;
-    }
-    .similar-shimmer-item:nth-child(1) { animation-delay: 0.1s; }
-    .similar-shimmer-item:nth-child(2) { animation-delay: 0.2s; }
-    .similar-shimmer-item:nth-child(3) { animation-delay: 0.3s; }
-    .similar-shimmer-item:nth-child(4) { animation-delay: 0.4s; }
-    .similar-shimmer-item:nth-child(5) { animation-delay: 0.5s; }
-
-    .shimmer-img {
-        width: 100px;
-        height: 80px;
-        border-radius: 8px;
-        background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
-        background-size: 200% 100%;
-        animation: shimmer 1.8s ease-in-out infinite;
-        position: relative;
-        overflow: hidden;
-    }
-    .shimmer-img::after {
-        content: '';
-        position: absolute;
-        top: 0; left: -150%;
-        width: 50%; height: 100%;
-        background: linear-gradient(90deg, transparent, rgba(255,255,255,0.6), transparent);
-        animation: shine 1.8s ease-in-out infinite;
-    }
-
-    .shimmer-text { flex: 1; }
-    .shimmer-line {
-        height: 14px;
-        border-radius: 7px;
-        background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
-        background-size: 200% 100%;
-        animation: shimmer 1.8s ease-in-out infinite;
-        margin: 6px 0;
-    }
-    .shimmer-line.title { width: 80%; height: 16px; }
-    .shimmer-line.meta  { width: 55%; height: 12px; }
-
-    @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
-    @keyframes shine   { 0% { left: -150%; } 100% { left: 150%; } }
-    @keyframes fadeIn  { to { opacity: 1; } }
-
-    /* Real item fade-in */
-    #similar-content li {
-        animation: fadeInContent 0.5s ease-out forwards;
-        opacity: 0;
-        transform: translateY(5px);
-    }
-    #similar-content li:nth-child(1) { animation-delay: 0.1s; }
-    #similar-content li:nth-child(2) { animation-delay: 0.2s; }
-    #similar-content li:nth-child(3) { animation-delay: 0.3s; }
-    #similar-content li:nth-child(4) { animation-delay: 0.4s; }
-    #similar-content li:nth-child(5) { animation-delay: 0.5s; }
-
-    @keyframes fadeInContent {
-        to { opacity: 1; transform: translateY(0); }
-    }
-
-    /* Real image */
-    .similar-real-img {
-        width: 100px; height: 80px; object-fit: cover; border-radius: 8px;
-        transition: transform .3s ease;
-    }
-    .similar-real-img:hover { transform: scale(1.05); }
-
-    .similar-real-title {
-        font-size: 14px; line-height: 1.3; font-weight: 600; margin: 0;
-        color: #1a1a1a;
-    }
-    .similar-real-title a { color: inherit; text-decoration: none; }
-    .similar-real-title a:hover { color: #ff4757; }
-
-    .similar-real-meta { font-size: 12px; color: #666; }
-</style>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Hind:wght@400;500;700&family=Tiro+Devanagari+Hindi:wght@400;700&display=swap">
+    <link rel="stylesheet" href="{{ asset('assets/css/post-details.min.css') }}">
+    <script type='text/javascript' src='https://platform-api.sharethis.com/js/sharethis.js#property=690cc0de38de9793e85fcc81&product=sop' async='async'></script>
 @endpush
 
 @section('main')
@@ -220,7 +67,7 @@
                             </p>
                             <div class="w-100">
                                 <div class="sharethis-inline-share-buttons"
-                                    data-url="{{ request()->url() }}"
+                                    data-url="{{ url('post/'.$post->slug) }}"
                                     data-image="{{ asset('storage/' . $post->thumbnail) }}"
                                     data-title="{{ $post->title }}"
                                     data-description="{{ Str::limit(strip_tags($post->description), 150) }}"
