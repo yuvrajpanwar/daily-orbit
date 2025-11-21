@@ -132,7 +132,7 @@
                                             <li><a href="{{route('contact-us')}}">Contact</a></li>
                                             @if (Auth::check())
                                                 {{-- logout --}}
-                                                <li class="not-for-dasktop" style="border-top: 1px solid black;">
+                                                <li class="not-for-dasktop" style="border-top: 1px solid black;color:black">
                                                     <a style="display:flex;justify-content:space-between;align-items:center;" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
                                                         Logout <i class="fa fa-sign-out-alt"></i>
                                                     </a>
@@ -169,8 +169,8 @@
                                                         style="margin-right:6px"></i>
                                                 @endif
 
-                                                <span class="my-user-name">
-                                                    {{ strlen(Auth::user()->name) > 15 ? substr(Auth::user()->name, 0, 15) . '...' : Auth::user()->name }}
+                                                <span class="my-user-name" style="white-space: nowrap;">
+                                                    {{ strlen(Auth::user()->name) > 10 ? substr(Auth::user()->name, 0, 10) . '...' : Auth::user()->name }}
                                                 </span>
                                                 <i class="fa fa-chevron-down my-dropdown-icon" aria-hidden="true"></i>
                                             </button>
