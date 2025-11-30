@@ -314,7 +314,7 @@
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
         }
     </style>
-@endpush
+    @endpush
 
 @section('main')
     <div class="container">
@@ -628,13 +628,13 @@
                 .then(res => res.json())
                 .then(data => {
                     if (data.success) {
-                        //create "toast toast-success show" inside toast-container
-                        const toastContainer = document.getElementById("toast-container");
-                        const toast = document.createElement("div");
-                        toast.className = "toast toast-success show";
-                        toast.innerHTML = `<span>${data.message || 'Verification link has been sent to your email.'}</span>
-                        <button class="toast-close">&times;</button>`;
-                        toastContainer.appendChild(toast);
+                        iziToast.success({
+                            title: 'Success',
+                            message: data.message || 'Verification link has been sent to your email.',
+                            position: 'topRight',
+                            timeout: 10000,
+                            close: true
+                        });
                     } else {
                         alert(data.message || "Something went wrong");
                     }
@@ -662,4 +662,9 @@
             }, 1000);
         }
     </script>
+
+        
+    
+
+   
 @endsection

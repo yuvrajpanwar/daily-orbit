@@ -1,5 +1,29 @@
 @extends('layouts.app')
 @push('css')
+<style>
+    /* Password Toggle Icon (shared for both fields) */
+    .password-toggle {
+        position: absolute;
+        right: 18px;
+        top: 50%;
+        transform: translateY(-50%);
+        cursor: pointer;
+        color: #7f8c8d;
+        font-size: 18px;
+        transition: all 0.3s ease;
+        z-index: 5;
+    }
+
+    .password-toggle:hover,
+    .password-toggle.active {
+        color: #ff4757;
+    }
+
+    /* Make sure input has enough right padding so text doesn't go under the eye */
+    .has-toggle {
+        padding-right: 55px !important;
+    }
+</style>
     <style>
         /* Register Form Theme Styles - Matching Login Page */
         .register-card {
@@ -274,8 +298,9 @@
                                 <div class="input-wrapper">
                                     <input id="password" type="password"
                                         class="form-input @error('password') is-invalid @enderror" name="password" required
-                                        autocomplete="new-password" placeholder="Enter your password">
+                                        autocomplete="new-password" placeholder="Enter your password" minlength="8">
                                     <i class="input-icon fas fa-lock"></i>
+                                    <i class="password-toggle fas fa-eye-slash" id="togglePassword"></i>
                                 </div>
                                 @error('password')
                                     <span class="error-message" role="alert">
@@ -327,5 +352,36 @@
         });
     });
 </script>
+@push('scripts')
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const toggleIcon = document.getElementById('togglePassword');
+        const passwordField = document.getElementById('password');
+        const confirmField = document.getElementById('password-confirm');
+
+        toggleIcon.addEventListener('click', function () {
+            // Toggle password visibility
+            const isPassword = passwordField.getAttribute('type') === 'password';
+            passwordField.setAttribute('type', isPassword ? 'text' : 'password');
+            confirmField.setAttribute('type', isPassword ? 'text' : 'password');
+
+            // Toggle icon
+            this.classList.toggle('fa-eye-slash');
+            this.classList.toggle('fa-eye');
+            this.classList.toggle('active');
+        });
+
+        // Optional: Update icon color when input is focused
+        [passwordField, confirmField].forEach(field => {
+            field.addEventListener('focus', () => toggleIcon.style.color = '#ff4757');
+            field.addEventListener('blur', () => {
+                if (!toggleIcon.classList.contains('active')) {
+                    toggleIcon.style.color = '#7f8c8d';
+                }
+            });
+        });
+    });
+</script>
+@endpush
 
 @endpush

@@ -16,7 +16,6 @@ class AccountController extends Controller
     public function update(Request $request)
     {
         $user = Auth::user();
-
         $validated = $request->validate([
             'name'          => 'required|string|max:255',
             'email'         => 'required|email|unique:users,email,' . $user->id,
@@ -26,29 +25,35 @@ class AccountController extends Controller
             'gender'        => 'nullable|in:male,female',
             'age'           => 'nullable|integer|min:1|max:120',
         ]);
-
-        DB::transaction(function () use ($user, $validated) {
-            // update user main table
-            $user->update([
-                'name'          => $validated['name'],
-                'email'         => $validated['email'],
-                'mobile_number' => $validated['mobile_number'] ?? null,
-            ]);
-
-            // update or create user details
-            $user->detail()->updateOrCreate(
-                ['user_id' => $user->id],
-                [
-                    'about'   => $validated['about'] ?? null,
-                    'address' => $validated['address'] ?? null,
-                    'gender'  => $validated['gender'] ?? null,
-                    'age'     => $validated['age'] ?? null,
-                ]
-            );
-        });
-
-        return redirect()->route('account.index')->with('success', 'Account updated successfully!');
+    
+        try {
+            DB::transaction(function () use ($user, $validated) {
+                $user->update([
+                    'name'          => $validated['name'],
+                    'email'         => $validated['email'],
+                    'mobile_number' => $validated['mobile_number'] ?? null,
+                ]);
+    
+                $user->detail()->updateOrCreate(
+                    ['user_id' => $user->id],
+                    [
+                        'about'   => $validated['about'] ?? null,
+                        'address' => $validated['address'] ?? null,
+                        'gender'  => $validated['gender'] ?? null,
+                        'age'     => $validated['age'] ?? null,
+                    ]
+                );
+            });
+            return redirect()->route('account.index')
+                ->with('success', 'Account updated successfully!');
+    
+        } catch (\Throwable $e) {
+            return redirect()->back()
+                ->withInput()
+                ->with('error', 'Update failed: ' . $e->getMessage());
+        }
     }
+    
 
     public function destroy(Request $request)
     {

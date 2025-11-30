@@ -28,7 +28,7 @@ class EmailVerificationController extends Controller
         // Send email
         Mail::to($user->email)->send(new VerifyEmail($user, $verifyUrl));
 
-        return response()->json(['success' => true, 'message' => 'Verification link sent successfully!']);
+        return response()->json(['success' => true, 'message' => 'Verification link has been sent to your email.']);
     }
 
     public function verify(Request $request, $id, $hash)

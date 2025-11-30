@@ -2,12 +2,24 @@
 
 @push('css')
 <link rel="stylesheet" href="{{ asset('assets/css/homepage.min.css') }}">
+<style>
+    .visually-hidden {
+        position: absolute;
+        width: 1px; height: 1px;
+        padding: 0; margin: -1px;
+        overflow: hidden;
+        clip: rect(0,0,0,0);
+        border: 0;
+    }
+</style>
 @endpush
 
 
 @section('main')
     <main>
-
+        <h1 class="visually-hidden">
+            Daily Orbit - Latest Stories, Blogs, Trending News & Updates in India
+        </h1>
         <section class="whats-news-area pt-10 pb-20 gray-bg">
             <div class="container">
                 <div class="row">

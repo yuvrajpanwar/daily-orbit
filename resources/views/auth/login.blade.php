@@ -1,5 +1,27 @@
 @extends('layouts.app')
 @push('css')
+<style>
+    .password-toggle {
+        position: absolute;
+        right: 18px;
+        top: 50%;
+        transform: translateY(-50%);
+        cursor: pointer;
+        color: #7f8c8d;
+        font-size: 18px;
+        transition: color 0.3s ease;
+        z-index: 2;
+    }
+
+    .password-toggle:hover {
+        color: #ff4757;
+    }
+
+    .form-input:focus + .input-icon + .password-toggle,
+    .password-toggle.active {
+        color: #ff4757;
+    }
+</style>
     <style>
         /* Login Form Theme Styles */
         .login-card {
@@ -319,6 +341,7 @@
                                         class="form-input @error('password') is-invalid @enderror" name="password" required
                                         autocomplete="current-password" placeholder="Enter your password">
                                     <i class="input-icon fas fa-lock"></i>
+                                    <i class="password-toggle fas fa-eye-slash" id="togglePassword"></i>
                                     @if (Route::has('password.request'))
                                         <a href="{{ route('password.request') }}" class="forgot-link float-right">
                                             {{ __('Forgot Password?') }}
@@ -368,6 +391,22 @@
             btn.disabled = true; 
             btn.style.background = "#ccc";
             btn.innerHTML = `<i class="fa fa-spinner fa-spin"></i> Please Wait ...`;
+        });
+    });
+</script>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const togglePassword = document.querySelector('#togglePassword');
+        const passwordField   = document.querySelector('#password');
+
+        togglePassword.addEventListener('click', function () {
+            // Toggle the type attribute
+            const type = passwordField.getAttribute('type') === 'password' ? 'text' : 'password';
+            passwordField.setAttribute('type', type);
+
+            // Toggle eye icon
+            this.classList.toggle('fa-eye-slash');
+            this.classList.toggle('fa-eye');
         });
     });
 </script>

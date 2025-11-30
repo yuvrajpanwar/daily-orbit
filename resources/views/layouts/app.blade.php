@@ -1,16 +1,81 @@
 <!doctype html>
 <html class="no-js" lang="zxx">
-<head>
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3405668939695709" crossorigin="anonymous"></script>
-    <meta charset="utf-8">
-    <meta http-equiv="x-ua-compatible" content="ie=edge">
-    <title>Daily Orbit</title>
-    <meta name="description" content="Daily Orbit">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="shortcut icon" type="image/x-icon" href="{{ asset('/assets/img/favicon.ico') }}">
-    <link rel="stylesheet" href="{{ asset('assets/css/global.min.css') }}">
-@stack('css')
-</head>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="x-ua-compatible" content="ie=edge">
+        
+        <!-- 1. Proper Title (50–60 chars) -->
+        <title>@yield('title', 'Daily Orbit - Latest Trending News, Breaking Stories & Updates')</title>
+        
+        <!-- 2. Meta Description (150–160 chars) -->
+        <meta name="description" 
+              content="@yield('meta_description', 'Daily Orbit brings you the latest trending news, breaking stories, politics, entertainment, sports and viral updates from India and around the world.')">
+        
+        <!-- 3. Viewport (you have it – good) -->
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        
+        <!-- 4. Robots – don’t block anything -->
+        <meta name="robots" content="index, follow">
+    
+        <!-- 5. Canonical URL (prevents duplicate issues) -->
+        <link rel="canonical" href="{{ request()->url() }}">
+    
+        <!-- 6. Favicon (you have it – good) -->
+        <link rel="shortcut icon" type="image/x-icon" href="{{ asset('/assets/img/favicon.ico') }}">
+    
+        <!-- 7. Open Graph / Social Tags (huge for sharing & indirect SEO) -->
+        <meta property="og:title" content="@yield('title', 'Daily Orbit - Latest Trending News')">
+        <meta property="og:description" content="@yield('meta_description', 'Daily Orbit brings you the latest trending news...')">
+        <meta property="og:type" content="website">
+        <meta property="og:url" content="{{ request()->url() }}">
+        <meta property="og:image" content="{{ asset('assets/img/og-image.jpg') }}"> <!-- Create this 1200×630 image -->
+        <meta property="og:site_name" content="Daily Orbit">
+        <meta name="twitter:card" content="summary_large_image">
+    
+        <!-- Organization + WebSite Schema -->
+        <script type="application/ld+json">
+            {
+            "@context": "https://schema.org",
+            "@graph": [
+                {
+                "@type": "Organization",
+                "name": "Daily Orbit",
+                "url": "https://dailyorbit.in",
+                "logo": "{{ asset('assets/img/logo/logo-circle.png') }}",
+                "sameAs": [
+                    "https://www.facebook.com/dailyorbit",
+                    "https://twitter.com/dailyorbit",
+                    "https://www.instagram.com/dailyorbit"
+                ],
+                "contactPoint": {
+                    "@type": "ContactPoint",
+                    "email": "info@dailyorbit.in",
+                    "contactType": "Customer Support"
+                }
+                },
+                {
+                "@type": "WebSite",
+                "url": "https://dailyorbit.in",
+                "name": "Daily Orbit",
+                "potentialAction": {
+                    "@type": "SearchAction",
+                    "target": "https://dailyorbit.in/search?q={search_term_string}",
+                    "query-input": "required name=search_term_string"
+                }
+                }
+            ]
+            }
+            </script>
+    
+        <!-- Google Adsense (keep it) -->
+        <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3405668939695709"
+                crossorigin="anonymous"></script>
+    
+        <!-- CSS -->
+        <link rel="stylesheet" href="{{ asset('assets/css/global.min.css') }}">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/izitoast/1.4.0/css/iziToast.css">
+        @stack('css')
+    </head>
 
 <body>
     <!-- Preloader Start -->
@@ -182,7 +247,7 @@
                                                     Account
                                                 </a>
                                                 <div class="my-dropdown-divider" role="separator"></div>
-                                                <a class="my-dropdown-item"
+                                                <a class="my-dropdown-item" style="color:white"
                                                     onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
                                                     <i class="fa fa-sign-out-alt" style="margin-right:6px"></i> Logout
                                                 </a>
@@ -382,41 +447,16 @@
             <!-- Footer End-->
         </footer>
     @endif
-    <div id="toast-container">
-        @if (session('success') || session('error'))
-            @if (session('success'))
-                <div class="toast toast-success show">
-                    <span>{{ session('success') }}</span>
-                    <button class="toast-close">&times;</button>
-                </div>
-            @endif
-            @if (session('error'))
-                <div class="toast toast-error show">
-                    <span>{{ session('error') }}</span>
-                    <button class="toast-close">&times;</button>
-                </div>
-            @endif
-        @endif
-    </div>
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     <script src="{{ asset('assets/js/jquery.scrollUp.min.js') }}"></script>
     <script src="{{ asset('assets/js/slick.min.js') }}"></script>
     <script src="{{ asset('assets/js/jquery.slicknav.min.js') }}"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/izitoast/1.4.0/js/iziToast.min.js" integrity="sha512-Zq9o+E00xhhR/7vJ49mxFNJ0KQw1E1TMWkPTxrWcnpfEFDEXgUiwJHIKit93EW/XxE31HSI5GEOW06G6BF1AtA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
     <script>
         document.addEventListener("DOMContentLoaded", function() {
-            const toasts = document.querySelectorAll(".toast");
-            toasts.forEach(toast => {
-                // Manual close
-                toast.querySelector(".toast-close").addEventListener("click", () => {
-                    toast.remove();
-                });
-            });
             $('#preloader-active').css('display', 'none');
-        });
-        /* 1. Proloder */
-        $(window).on('load', function() {
-            
         });
     </script>
 
@@ -520,7 +560,52 @@
             });
         }); 
     </script>
-
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+        
+            // Laravel validation errors ($errors)
+            @if ($errors->any())
+                @foreach ($errors->all() as $error)
+                    iziToast.error({
+                        message: @json($error),
+                        position: 'topRight',
+                        timeout: 10000
+                    });
+                @endforeach
+            @endif
+        
+            // Session error (single message)
+            @if (session('error'))
+                iziToast.error({
+                    title: 'Error',
+                    message: @json(session('error')),
+                    position: 'topRight',
+                    timeout: 10000
+                });
+            @endif
+        
+            // Flash success
+            @if (session('success'))
+                iziToast.success({
+                    title: 'Success',
+                    message: @json(session('success')),
+                    position: 'topRight',
+                    timeout: 10000
+                });
+            @endif
+        
+            // Flash warning
+            @if (session('warning'))
+                iziToast.warning({
+                    title: 'Warning',
+                    message: @json(session('warning')),
+                    position: 'topRight',
+                    timeout: 10000
+                });
+            @endif
+        
+        });
+    </script>
 </body>
 
 </html>

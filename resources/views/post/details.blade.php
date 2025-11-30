@@ -15,6 +15,33 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Hind:wght@400;500;700&family=Tiro+Devanagari+Hindi:wght@400;700&display=swap">
     <link rel="stylesheet" href="{{ asset('assets/css/post-details.min.css') }}">
     <script type='text/javascript' src='https://platform-api.sharethis.com/js/sharethis.js#property=690cc0de38de9793e85fcc81&product=sop' async='async'></script>
+    <script type="application/ld+json">
+        {
+          "@context": "https://schema.org",
+          "@type": "Article",
+          "headline": "{{ $post->title }}",
+          "image": "{{ asset('storage/' . $post->thumbnail) }}",
+          "author": {
+            "@type": "Person",
+            "name": "{{ $post->author_name ?? 'Daily Orbit Team' }}"
+          },
+          "publisher": {
+            "@type": "Organization",
+            "name": "Daily Orbit",
+            "logo": {
+              "@type": "ImageObject",
+              "url": "{{ asset('assets/img/logo/logo-circle.png') }}"
+            }
+          },
+          "datePublished": "{{ \Carbon\Carbon::parse($post->time)->toIso8601String() }}",
+          "dateModified": "{{ $post->updated_at->toIso8601String() }}",
+          "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "{{ url()->current() }}"
+          },
+          "description": "{{ Str::limit(strip_tags($post->description), 200) }}"
+        }
+    </script>
 @endpush
 
 @section('main')
