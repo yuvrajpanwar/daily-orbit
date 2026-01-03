@@ -17,31 +17,32 @@
     <script type='text/javascript' src='https://platform-api.sharethis.com/js/sharethis.js#property=690cc0de38de9793e85fcc81&product=sop' async='async'></script>
     <script type="application/ld+json">
         {
-          "@context": "https://schema.org",
-          "@type": "Article",
-          "headline": "{{ $post->title }}",
-          "image": "{{ asset('storage/' . $post->thumbnail) }}",
-          "author": {
-            "@type": "Person",
-            "name": "{{ $post->author_name ?? 'Daily Orbit Team' }}"
-          },
-          "publisher": {
-            "@type": "Organization",
-            "name": "Daily Orbit",
-            "logo": {
-              "@type": "ImageObject",
-              "url": "{{ asset('assets/img/logo/logo-circle.png') }}"
-            }
-          },
-          "datePublished": "{{ \Carbon\Carbon::parse($post->time)->toIso8601String() }}",
-          "dateModified": "{{ $post->updated_at->toIso8601String() }}",
-          "mainEntityOfPage": {
-            "@type": "WebPage",
-            "@id": "{{ url()->current() }}"
-          },
-          "description": "{{ Str::limit(strip_tags($post->description), 200) }}"
+            "@context": "https://schema.org",
+            "@type": "Article",
+            "headline": "{{ addslashes($post->title) }}",
+            "image": "{{ asset('storage/' . $post->thumbnail) }}",
+            "author": {
+                "@type": "Person",
+                "name": "{{ $post->author_name ?? 'Daily Orbit Team' }}"
+            },
+            "publisher": {
+                "@type": "Organization",
+                "name": "Daily Orbit",
+                "logo": "{{ asset('assets/img/logo/logo-circle.png') }}"
+            },
+            "datePublished": "{{ $post->time ? \Carbon\Carbon::parse($post->time)->toIso8601String() : '' }}",
+            "dateModified": "{{ $post->updated_at ? \Carbon\Carbon::parse($post->updated_at)->toIso8601String() : '' }}",
+            "description": "{{ addslashes(Str::limit(strip_tags($post->description ?? ''), 200)) }}"
         }
     </script>
+    <style>
+        .google-btn:hover{
+            color: white!important;
+            -webkit-text-fill-color: whitesmoke!important;
+        }
+    </style>
+    
+        
 @endpush
 
 @section('main')
@@ -110,32 +111,49 @@
                         <h5>No Comments Yet</h5>
                     </div>
 
-                    {{-- Comment Form --}}
+                    <!-- Comment Form -->
                     <div class="comment-form mt-0">
-                      <h4><i class="fa fa-comment"></i> Add Comment</h4>
-                        <form class="form-contact comment_form" action="{{route('coming-soon')}}" method="POST">
-                            @csrf
-                            <div class="row">
-                                <div class="col-12">
-                                    <div class="form-group">
-                                        <textarea 
-                                            class="form-control w-100 ps-5" 
-                                            name="comment" 
-                                            id="comment" 
-                                            rows="4" 
-                                            placeholder="Write Your Comment"
-                                            aria-label="Write Your Comment"
-                                            required
-                                        ></textarea>
+                        <h4><i class="fa fa-comment"></i> Add Comment</h4>
+
+                        @auth
+                            <!-- Logged in → normal form (will go to coming-soon for now) -->
+                            <form class="form-contact comment_form" action="{{ route('coming-soon') }}" method="POST">
+                                @csrf
+                                <input type="hidden" name="post_id" value="{{ $post->id }}">
+                                <!-- You can add hidden post_id, slug etc -->
+                                <div class="row">
+                                    <div class="col-12">
+                                        <div class="form-group position-relative">
+                                            <textarea class="form-control w-100 ps-5" name="comment" id="comment" rows="4"
+                                                    placeholder="Write Your Comment..." required></textarea>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                            <div class="form-group">
-                                <button type="submit" class="button button-contactForm btn_1 boxed-btn w-100">
-                                    <i class="fa fa-paper-plane"></i> Comment
-                                </button>
-                            </div>
-                        </form>
+                                <div class="form-group mt-3">
+                                    <button type="submit" class="button button-contactForm btn_1 boxed-btn w-100">
+                                        <i class="fa fa-paper-plane"></i> Submit Comment
+                                    </button>
+                                </div>
+                            </form>
+                        @else
+                            <!-- Not logged in → fake form that triggers modal -->
+                            <form id="guest-comment-form" class="form-contact" onsubmit="return false;">
+                                <div class="row">
+                                    <div class="col-12">
+                                        <div class="form-group position-relative">
+                                            <textarea class="form-control w-100 ps-5" name="comment" rows="4"
+                                                    placeholder="Write Your Comment..." required disabled></textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group mt-3">
+                                    <button type="button" class="button button-contactForm btn_1 boxed-btn w-100" 
+                                            data-bs-toggle="modal" data-bs-target="#loginRequiredModal">
+                                        <i class="fa fa-lock me-2"></i> Login to Comment
+                                    </button>
+                                </div>
+                            </form>
+                        @endauth
                     </div>
                 </div>
 
@@ -215,6 +233,114 @@
                 </div>
             </div>
         </div>
+
+
+<!-- resources/views/components/modals/login-required-compact.blade.php -->
+
+<div class="modal fade" id="loginRequiredModal" tabindex="-1" aria-labelledby="loginRequiredModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-md"> <!-- ← changed from modal-lg to modal-md -->
+        <div class="modal-content login-card border-0 shadow rounded-3 overflow-hidden">
+            
+            <!-- Header - smaller -->
+            <div class="modal-header bg-gradient-danger text-white border-0 py-3 px-4">
+                <h5 class="modal-title fs-5 fw-bold" id="loginRequiredModalLabel" style="color: #ff2143!important;">
+                    Login to Comment
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+
+            <!-- Body - more compact padding -->
+            <div class="modal-body p-4">
+
+                <!-- Google button - smaller -->
+                <div class="mb-3">
+                    <a href="{{ route('google.login') }}" class="btn google-btn w-100 d-flex align-items-center justify-content-center gap-2 py-2 fs-6">
+                        <i class="fab fa-google"></i>
+                        Continue with Google
+                    </a>
+                </div>
+
+                <div class="text-center mb-3">
+                    <small class="text-muted">or</small>
+                </div>
+
+                <form method="POST" action="{{ route('login') }}" class="login-form">
+                    @csrf
+
+                    <!-- Email -->
+                    <div class="mb-3">
+                        <label for="modal_email" class="form-label small fw-semibold mb-1">Email</label>
+                        <div class="input-group input-group-sm">
+                            <span class="input-group-text"><i class="fas fa-envelope fa-xs"></i></span>
+                            <input type="email" class="form-control form-control-sm" id="modal_email" name="email"
+                                   placeholder="your@email.com" required autofocus>
+                        </div>
+                        @error('email') <div class="invalid-feedback d-block small">{{ $message }}</div> @enderror
+                    </div>
+
+                    <!-- Password -->
+                    <div class="mb-3">
+                        <label for="modal_password" class="form-label small fw-semibold mb-1">Password</label>
+                        <div class="input-group input-group-sm">
+                            <span class="input-group-text"><i class="fas fa-lock fa-xs"></i></span>
+                            <input type="password" class="form-control form-control-sm" id="modal_password" name="password"
+                                   placeholder="••••••" required>
+                            <button class="btn btn-outline-secondary btn-sm password-toggle" type="button" id="toggleModalPassword">
+                                <i class="fas fa-eye-slash fa-xs"></i>
+                            </button>
+                        </div>
+                        @error('password') <div class="invalid-feedback d-block small">{{ $message }}</div> @enderror
+                    </div>
+
+                    <!-- Remember & Forgot -->
+                    <div class="d-flex justify-content-between align-items-center mb-3 small">
+                        <div class="form-check">
+                            <input class="form-check-input form-check-sm" type="checkbox" name="remember" id="rememberModal">
+                            <label class="form-check-label" for="rememberModal">Remember me</label>
+                        </div>
+                        @if (Route::has('password.request'))
+                            <a href="{{ route('password.request') }}" class="text-danger text-decoration-none small">
+                                Forgot Password?
+                            </a>
+                        @endif
+                    </div>
+
+                    <!-- Submit button -->
+                    <button type="submit" class="btn btn-danger btn-sm w-100 d-flex align-items-center justify-content-center gap-2 py-2">
+                        <span>Login</span>
+                        <i class="fas fa-arrow-right fa-xs"></i>
+                    </button>
+                </form>
+
+                <!-- Register link -->
+                <div class="text-center mt-3 small">
+                    No account? 
+                    <a href="{{ route('register') }}" class="text-danger fw-medium text-decoration-none">Register</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+        <!-- Password toggle script for modal -->
+        @push('scripts')
+            <script>
+                document.addEventListener('DOMContentLoaded', function () {
+                    const toggleModalPassword = document.getElementById('toggleModalPassword');
+                    if (toggleModalPassword) {
+                        toggleModalPassword.addEventListener('click', function () {
+                            const passwordInput = document.getElementById('modal_password');
+                            const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+                            passwordInput.setAttribute('type', type);
+                            this.querySelector('i').classList.toggle('fa-eye-slash');
+                            this.querySelector('i').classList.toggle('fa-eye');
+                        });
+                    }
+                });
+            </script>
+                
+        @endpush
+
     </section>
 
 @endsection
@@ -222,79 +348,79 @@
 
 @push('scripts')
 <script>
-document.addEventListener('DOMContentLoaded', function () {
-    // Select all forms with .form-contact or newsletter_widget form
-    const forms = document.querySelectorAll('.comment_form, .newsletter_widget form');
+    document.addEventListener('DOMContentLoaded', function () {
+        // Select all forms with .form-contact or newsletter_widget form
+        const forms = document.querySelectorAll('.comment_form, .newsletter_widget form');
 
-    forms.forEach(form => {
-        form.addEventListener('submit', function (e) {
-            const submitBtn = form.querySelector('button[type="submit"]');
-            if (!submitBtn) return;
+        forms.forEach(form => {
+            form.addEventListener('submit', function (e) {
+                const submitBtn = form.querySelector('button[type="submit"]');
+                if (!submitBtn) return;
 
-            // Prevent double click
-            if (submitBtn.disabled) return;
+                // Prevent double click
+                if (submitBtn.disabled) return;
 
-            // Disable button
-            submitBtn.disabled = true;
+                // Disable button
+                submitBtn.disabled = true;
 
-            // Save original text & icon
-            const originalText = submitBtn.innerHTML;
+                // Save original text & icon
+                const originalText = submitBtn.innerHTML;
 
-            // Replace with loading state
-            submitBtn.innerHTML = `
-                <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
-                Please Wait...
-            `;
+                // Replace with loading state
+                submitBtn.innerHTML = `
+                    <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                    Please Wait...
+                `;
 
-            // Optional: Re-enable after 10s (fallback if redirect fails)
-            setTimeout(() => {
-                if (submitBtn.disabled) {
-                    submitBtn.disabled = false;
-                    submitBtn.innerHTML = originalText;
-                }
-            }, 4000);
+                // Optional: Re-enable after 10s (fallback if redirect fails)
+                setTimeout(() => {
+                    if (submitBtn.disabled) {
+                        submitBtn.disabled = false;
+                        submitBtn.innerHTML = originalText;
+                    }
+                }, 4000);
+            });
         });
     });
-});
 </script>
 
 <script>
-$(document).ready(function() {
-    const slug = "{{ $post->slug }}"; // from current post
+    $(document).ready(function() {
+        const slug = "{{ $post->slug }}"; // from current post
 
-    $.ajax({
-        url: '{{ route("post.similar.ajax", ":slug") }}'.replace(':slug', slug),
-        method: 'GET',
-        cache: true,
-        success: function(posts) {
-            let html = '';
-            posts.forEach(function(p) {
-                html += `
-                    <li>
-                        <a href="${p.post_url}" class="d-flex align-items-center p-2 rounded hover-bg-light transition">
-                            <div class="me-3">
-                                <img src="${p.image}" alt="${p.title}" class="similar-real-img">
-                            </div>
-                            <div class="flex-grow-1">
-                                <p class="mb-1 similar-real-title">
-                                    ${p.title}
-                                </p>
-                                <small class="similar-real-meta">
-                                    <i class="fa fa-user"></i> ${p.author_name}
-                                </small>
-                            </div>
-                        </a>
-                    </li>`;
-            });
+        $.ajax({
+            url: '{{ route("post.similar.ajax", ":slug") }}'.replace(':slug', slug),
+            method: 'GET',
+            cache: true,
+            success: function(posts) {
+                let html = '';
+                posts.forEach(function(p) {
+                    html += `
+                        <li>
+                            <a href="${p.post_url}" class="d-flex align-items-center p-2 rounded hover-bg-light transition">
+                                <div class="me-3">
+                                    <img src="${p.image}" alt="${p.title}" class="similar-real-img">
+                                </div>
+                                <div class="flex-grow-1">
+                                    <p class="mb-1 similar-real-title">
+                                        ${p.title}
+                                    </p>
+                                    <small class="similar-real-meta">
+                                        <i class="fa fa-user"></i> ${p.author_name}
+                                    </small>
+                                </div>
+                            </a>
+                        </li>`;
+                });
 
-            $('#similar-loading').fadeOut(300, function() {
-                $('#similar-content').html(html).fadeIn(400);
-            });
-        },
-        error: function() {
-            $('#similar-loading').html('<p class="text-center text-muted small py-2">Failed to load.</p>');
-        }
+                $('#similar-loading').fadeOut(300, function() {
+                    $('#similar-content').html(html).fadeIn(400);
+                });
+            },
+            error: function() {
+                $('#similar-loading').html('<p class="text-center text-muted small py-2">Failed to load.</p>');
+            }
+        });
     });
-});
 </script>
 @endpush

@@ -274,6 +274,31 @@
                 font-size: 22px;
             }
         }
+    </style>                        
+    <style>
+        .google-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            width: 100%;
+            background: #ff4757 0%;
+            color: #fff !important;
+            font-weight: 600;
+            border-radius: 10px;
+            padding: 10px;
+            text-decoration: none;
+            transition: background 0.3s ease;
+        }
+
+        .google-btn:hover {
+            background: #ff4757;
+            color: #fff !important;
+        }
+
+        .google-btn i {
+            font-size: 16px;
+        }
     </style>
 @endpush
 @section('main')
@@ -290,32 +315,6 @@
                                 <i class="fab fa-google"></i> Continue with Google
                             </a>
                         </div>
-                        <style>
-                            .google-btn {
-                                display: inline-flex;
-                                align-items: center;
-                                justify-content: center;
-                                gap: 8px;
-                                width: 100%;
-                                background: #ff4757 0%;
-                                color: #fff !important;
-                                font-weight: 600;
-                                border-radius: 10px;
-                                padding: 10px;
-                                text-decoration: none;
-                                transition: background 0.3s ease;
-                            }
-
-                            .google-btn:hover {
-                                background: #ff4757;
-                                color: #fff !important;
-                            }
-
-                            .google-btn i {
-                                font-size: 16px;
-                            }
-                        </style>
-
                         <form method="POST" action="{{ route('login') }}" class="login-form">
                             @csrf
                             <div class="form-group">
