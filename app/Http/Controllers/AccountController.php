@@ -91,8 +91,8 @@ class AccountController extends Controller
         $avatarPath = $request->file('avatar')->store('uploads/users', 'public');
 
         $user->update([
-            'profile_picture' => "storage/" . $profilePath,
-            'avatar' => "storage/" . $avatarPath,
+            'profile_picture' => "/storage/" . $profilePath,
+            'avatar' => "/storage/" . $avatarPath,
         ]);
 
         return response()->json(['success' => true]);
