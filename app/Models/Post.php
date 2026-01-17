@@ -113,4 +113,11 @@ class Post extends Model
     {
         return $this->scopePublished($query);
     }
+
+    // In Post model
+    public function comments()
+    {
+        return $this->hasMany(PostComment::class);
+    }
+
 }

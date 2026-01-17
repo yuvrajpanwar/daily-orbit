@@ -6,23 +6,30 @@ use Illuminate\Auth\Events\Failed;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Str;
+use App\Models\Post;
 
 class PostController extends Controller
 {
     //post details with category and author from admin table 
     public function postDetials($slug)
     {
-        // Fetch post with category & author
-        $post = DB::table('posts')
-            ->join('categories', 'posts.category_id', '=', 'categories.id')
-            ->join('admins', 'posts.author_id', '=', 'admins.id')
-            ->select(
-                'posts.*',
-                'categories.name as category_name',
-                'admins.name as author_name'
-            )
-            ->where('posts.slug', $slug)
-            ->first();
+        $post = Post::query()
+            ->with([
+                'category',           // → $post->category->name
+                'author',             // → $post->author->name
+                'comments.user'       // eager load only the users for comments
+            ])
+            ->withCount('comments')   // ← adds $post->comments_count (real total count)
+            ->where('slug', $slug)
+            ->where('is_published', 1)
+            ->where('is_deleted', 0)
+            ->firstOrFail();
+
+        // Optional: limit displayed comments to newest 5–6 (performance)
+        $post->setRelation(
+            'comments',
+            $post->comments->take(6)->sortByDesc('created_at')
+        );
 
         if (!$post) {
             abort(404);
@@ -123,7 +130,7 @@ class PostController extends Controller
             return $item;
         });
 
-        return view('post.details', compact('post', 'similarPosts'));
+        return view('post.details', compact('post'));
     }
     
 

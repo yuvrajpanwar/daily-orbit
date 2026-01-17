@@ -2,6 +2,8 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\EmailVerificationController;
+use App\Http\Controllers\NewsletterController;
+use App\Http\Controllers\PostCommentController;
 
 // use App\Http\Controllers\Auth\GoogleController;
 
@@ -50,6 +52,19 @@ Route::get('/you-might-like-posts', [App\Http\Controllers\PostController::class,
 // Category Page – uses 'name' instead of slug
 Route::get('/category/{name}', [App\Http\Controllers\CategoryController::class, 'show'])->name('category.show');
 Route::get('/category/{name}/posts', [App\Http\Controllers\CategoryController::class, 'loadMore'])->name('category.loadmore');
+
+
+
+
+Route::post('/newsletter/subscribe', [NewsletterController::class, 'subscribe'])->name('newsletter.subscribe')->middleware('throttle:4,1');
+// For authenticated users only
+Route::middleware('auth')->group(function () {
+    Route::post('/posts/{post:slug}/comments', [PostCommentController::class, 'store'])
+        ->name('post.comments.store');
+
+    Route::get('/posts/{post:slug}/comments', [PostCommentController::class, 'loadMore'])
+        ->name('post.comments.load');
+});
 
 Auth::routes();
 

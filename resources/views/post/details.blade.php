@@ -106,55 +106,81 @@
                         </div>
                     </div>
 
-                    {{-- Comments Section (static placeholder for now) --}}
-                    <div class="comments-area mt-0">
-                        <h5>No Comments Yet</h5>
-                    </div>
+                    <!-- Comments Section -->
+                        <div class="comments-area mt-4 pb-0 pt-4 mb-0" id="comments-container">
+                            <h4 class="mb-4">Comments (<span id="comments-total-count">{{ $post->comments_count ?? 0 }}</span>)</h4>
 
-                    <!-- Comment Form -->
-                    <div class="comment-form mt-0">
-                        <h4><i class="fa fa-comment"></i> Add Comment</h4>
+                            <div id="comments-list">
+                                @if($post->comments->isNotEmpty())
+                                    @foreach($post->comments->take(5) as $comment)
+                                        @php
+                                            $avatar = $comment->user->avatar ?? $comment->user->profile_picture ?? 'default-user.png';
+                                            $time = $comment->created_at->format('h:i A d-m-Y');
+                                        @endphp
+                                        <x-comment-item :comment="$comment" :avatar="$avatar" :time="$time" />
+                                    @endforeach
+                                @else
+                                    <p class="text-muted text-center pb-4" id="no-comments">No comments yet. Be the first to comment!</p>
+                                @endif
+                            </div>
 
-                        @auth
-                            <!-- Logged in → normal form (will go to coming-soon for now) -->
-                            <form class="form-contact comment_form" action="{{ route('coming-soon') }}" method="POST">
-                                @csrf
-                                <input type="hidden" name="post_id" value="{{ $post->id }}">
-                                <!-- You can add hidden post_id, slug etc -->
-                                <div class="row">
-                                    <div class="col-12">
-                                        <div class="form-group position-relative">
-                                            <textarea class="form-control w-100 ps-5" name="comment" id="comment" rows="4"
-                                                    placeholder="Write Your Comment..." required></textarea>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="form-group mt-3">
-                                    <button type="submit" class="button button-contactForm btn_1 boxed-btn w-100">
-                                        <i class="fa fa-paper-plane"></i> Submit Comment
+                            @if($post->comments->count() > 5)
+                                <div class="text-center">
+                                    <button id="load-more-comments" 
+                                            class="btn btn-outline-primary mb-3 mt-3"
+                                            data-post-slug="{{ $post->slug }}"
+                                            data-next-page="2">
+                                        Load More Comments
                                     </button>
                                 </div>
-                            </form>
-                        @else
-                            <!-- Not logged in → fake form that triggers modal -->
-                            <form id="guest-comment-form" class="form-contact" onsubmit="return false;">
-                                <div class="row">
-                                    <div class="col-12">
-                                        <div class="form-group position-relative">
-                                            <textarea class="form-control w-100 ps-5" name="comment" rows="4"
-                                                    placeholder="Write Your Comment..." required disabled></textarea>
+                            @endif
+                        </div>
+
+                        <!-- Comment Form (only for logged-in users) -->
+                        <div class="comment-form mt-0 pt-0" id="comment-form-wrapper">
+                            @auth
+                                <form id="comment-form" class="form-contact comment_form">
+                                    @csrf
+                                    <input type="hidden" name="post_id" value="{{ $post->id }}">
+                                    <div class="row">
+                                        <div class="col-12">
+                                            <div class="form-group position-relative">
+                                                <textarea class="form-control w-100 ps-5" 
+                                                        name="comment" 
+                                                        id="comment-textarea" 
+                                                        rows="4"
+                                                        placeholder="💬 Write Your Comment..." 
+                                                        required></textarea>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
-                                <div class="form-group mt-3">
-                                    <button type="button" class="button button-contactForm btn_1 boxed-btn w-100" 
-                                            data-bs-toggle="modal" data-bs-target="#loginRequiredModal">
-                                        <i class="fa fa-lock me-2"></i> Login to Comment
-                                    </button>
-                                </div>
-                            </form>
-                        @endauth
-                    </div>
+                                    <div class="form-group mt-3">
+                                        <button type="submit" id="submit-comment-btn" 
+                                                class="button button-contactForm btn_1 boxed-btn w-100">
+                                            <i class="fa fa-paper-plane"></i> Add Comment
+                                        </button>
+                                    </div>
+                                </form>
+                            @else
+                                <!-- Guest version remains the same -->
+                                <form id="guest-comment-form" class="form-contact" onsubmit="return false;">
+                                    <div class="row">
+                                        <div class="col-12">
+                                            <div class="form-group position-relative">
+                                                <textarea class="form-control w-100 ps-5" id="comment-textarea-disabled" rows="4"
+                                                        placeholder="💬 Write Your Comment..." required></textarea>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group mt-3">
+                                        <button type="button" class="button button-contactForm btn_1 boxed-btn w-100" 
+                                                data-bs-toggle="modal" data-bs-target="#loginRequiredModal">
+                                            <i class="fa fa-lock me-2"></i> Login to Comment
+                                        </button>
+                                    </div>
+                                </form>
+                            @endauth
+                        </div>
                 </div>
 
                 {{-- Sidebar --}}
@@ -218,10 +244,10 @@
                         <aside class="single_sidebar_widget newsletter_widget">
                             <h4 class="widget_title">Subscribe</h4>
                             <small>Receive similar posts <i class="fa fa-paper-plane"></i> </small>
-                            <form action="{{route('coming-soon')}}" method="post">
+                            <form action="{{route('newsletter.subscribe')}}" method="post">
                                 @csrf
                                 <div class="form-group">
-                                    <input type="email" class="form-control" onfocus="this.placeholder=''"
+                                    <input type="email" name="email" class="form-control" onfocus="this.placeholder=''"
                                         onblur="this.placeholder='Enter email'" placeholder='Enter email' required>
                                 </div>
                                 <button type="submit" class="button rounded-0 w-100 btn_1 boxed-btn primary-bg">
@@ -235,92 +261,90 @@
         </div>
 
 
-<!-- resources/views/components/modals/login-required-compact.blade.php -->
-
-<div class="modal fade" id="loginRequiredModal" tabindex="-1" aria-labelledby="loginRequiredModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-md"> <!-- ← changed from modal-lg to modal-md -->
-        <div class="modal-content login-card border-0 shadow rounded-3 overflow-hidden">
-            
-            <!-- Header - smaller -->
-            <div class="modal-header bg-gradient-danger text-white border-0 py-3 px-4">
-                <h5 class="modal-title fs-5 fw-bold" id="loginRequiredModalLabel" style="color: #ff2143!important;">
-                    Login to Comment
-                </h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-
-            <!-- Body - more compact padding -->
-            <div class="modal-body p-4">
-
-                <!-- Google button - smaller -->
-                <div class="mb-3">
-                    <a href="{{ route('google.login') }}" class="btn google-btn w-100 d-flex align-items-center justify-content-center gap-2 py-2 fs-6">
-                        <i class="fab fa-google"></i>
-                        Continue with Google
-                    </a>
-                </div>
-
-                <div class="text-center mb-3">
-                    <small class="text-muted">or</small>
-                </div>
-
-                <form method="POST" action="{{ route('login') }}" class="login-form">
-                    @csrf
-
-                    <!-- Email -->
-                    <div class="mb-3">
-                        <label for="modal_email" class="form-label small fw-semibold mb-1">Email</label>
-                        <div class="input-group input-group-sm">
-                            <span class="input-group-text"><i class="fas fa-envelope fa-xs"></i></span>
-                            <input type="email" class="form-control form-control-sm" id="modal_email" name="email"
-                                   placeholder="your@email.com" required autofocus>
-                        </div>
-                        @error('email') <div class="invalid-feedback d-block small">{{ $message }}</div> @enderror
+        <div class="modal fade" id="loginRequiredModal" tabindex="-1" aria-labelledby="loginRequiredModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-md"> <!-- ← changed from modal-lg to modal-md -->
+                <div class="modal-content login-card border-0 shadow rounded-3 overflow-hidden">
+                    
+                    <!-- Header - smaller -->
+                    <div class="modal-header bg-gradient-danger text-white border-0 py-3 px-4">
+                        <h5 class="modal-title fs-5 fw-bold" id="loginRequiredModalLabel" style="color: #ff2143!important;">
+                            Login to Comment
+                        </h5>
+                        <button type="button" class="btn-close btn-sm" style="color: #ff2143" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
 
-                    <!-- Password -->
-                    <div class="mb-3">
-                        <label for="modal_password" class="form-label small fw-semibold mb-1">Password</label>
-                        <div class="input-group input-group-sm">
-                            <span class="input-group-text"><i class="fas fa-lock fa-xs"></i></span>
-                            <input type="password" class="form-control form-control-sm" id="modal_password" name="password"
-                                   placeholder="••••••" required>
-                            <button class="btn btn-outline-secondary btn-sm password-toggle" type="button" id="toggleModalPassword">
-                                <i class="fas fa-eye-slash fa-xs"></i>
-                            </button>
-                        </div>
-                        @error('password') <div class="invalid-feedback d-block small">{{ $message }}</div> @enderror
-                    </div>
+                    <!-- Body - more compact padding -->
+                    <div class="modal-body p-4">
 
-                    <!-- Remember & Forgot -->
-                    <div class="d-flex justify-content-between align-items-center mb-3 small">
-                        <div class="form-check">
-                            <input class="form-check-input form-check-sm" type="checkbox" name="remember" id="rememberModal">
-                            <label class="form-check-label" for="rememberModal">Remember me</label>
-                        </div>
-                        @if (Route::has('password.request'))
-                            <a href="{{ route('password.request') }}" class="text-danger text-decoration-none small">
-                                Forgot Password?
+                        <!-- Google button - smaller -->
+                        <div class="mb-3">
+                            <a href="{{ route('google.login') }}" class="btn google-btn w-100 d-flex align-items-center justify-content-center gap-2 py-2 fs-6">
+                                <i class="fab fa-google"></i>
+                                Continue with Google
                             </a>
-                        @endif
+                        </div>
+
+                        <div class="text-center mb-3">
+                            <small class="text-muted">or</small>
+                        </div>
+
+                        <form method="POST" action="{{ route('login') }}" class="login-form">
+                            @csrf
+
+                            <!-- Email -->
+                            <div class="mb-3">
+                                <label for="modal_email" class="form-label small fw-semibold mb-1">Email</label>
+                                <div class="input-group input-group-sm">
+                                    <span class="input-group-text"><i class="fas fa-envelope fa-xs"></i></span>
+                                    <input type="email" class="form-control form-control-sm" id="modal_email" name="email"
+                                        placeholder="your@email.com" required >
+                                </div>
+                                @error('email') <div class="invalid-feedback d-block small">{{ $message }}</div> @enderror
+                            </div>
+
+                            <!-- Password -->
+                            <div class="mb-3">
+                                <label for="modal_password" class="form-label small fw-semibold mb-1">Password</label>
+                                <div class="input-group input-group-sm">
+                                    <span class="input-group-text"><i class="fas fa-lock fa-xs"></i></span>
+                                    <input type="password" class="form-control form-control-sm" id="modal_password" name="password"
+                                        placeholder="••••••" required>
+                                    <button class="btn btn-outline-secondary btn-sm password-toggle" type="button" id="toggleModalPassword">
+                                        <i class="fas fa-eye-slash fa-xs"></i>
+                                    </button>
+                                </div>
+                                @error('password') <div class="invalid-feedback d-block small">{{ $message }}</div> @enderror
+                            </div>
+
+                            <!-- Remember & Forgot -->
+                            <div class="d-flex justify-content-between align-items-center mb-3 small">
+                                <div class="form-check">
+                                    <input class="form-check-input form-check-sm" type="checkbox" name="remember" id="rememberModal">
+                                    <label class="form-check-label" for="rememberModal">Remember me</label>
+                                </div>
+                                @if (Route::has('password.request'))
+                                    <a href="{{ route('password.request') }}" class="text-danger text-decoration-none small">
+                                        Forgot Password?
+                                    </a>
+                                @endif
+                            </div>
+
+                            <!-- Submit button -->
+                            <button type="submit" class="btn btn-danger btn-sm w-100 d-flex align-items-center justify-content-center gap-2 py-2">
+                                <span>Login</span>
+                                <i class="fas fa-arrow-right fa-xs"></i>
+                            </button>
+                        </form>
+
+                        <!-- Register link -->
+                        <div class="text-center mt-3 small">
+                            No account? 
+                            <a href="{{ route('register') }}" class="text-danger fw-medium text-decoration-none">Register</a>
+                        </div>
                     </div>
-
-                    <!-- Submit button -->
-                    <button type="submit" class="btn btn-danger btn-sm w-100 d-flex align-items-center justify-content-center gap-2 py-2">
-                        <span>Login</span>
-                        <i class="fas fa-arrow-right fa-xs"></i>
-                    </button>
-                </form>
-
-                <!-- Register link -->
-                <div class="text-center mt-3 small">
-                    No account? 
-                    <a href="{{ route('register') }}" class="text-danger fw-medium text-decoration-none">Register</a>
                 </div>
             </div>
         </div>
-    </div>
-</div>
 
         <!-- Password toggle script for modal -->
         @push('scripts')
@@ -422,5 +446,111 @@
             }
         });
     });
+    $('#comment-textarea-disabled').on('click', function(){
+        $('#loginRequiredModal').modal('show');
+    });
 </script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+
+    // Submit comment via AJAX
+    const commentForm = document.getElementById('comment-form');
+    if (commentForm) {
+        commentForm.addEventListener('submit', async function (e) {
+            e.preventDefault();
+
+            const btn = document.getElementById('submit-comment-btn');
+            const textarea = document.getElementById('comment-textarea');
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fa fa-spinner fa-spin"></i> Sending...';
+
+            try {
+                const formData = new FormData(commentForm);
+                const response = await fetch(`/posts/{{ $post->slug }}/comments`, {
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                        'Accept': 'application/json'
+                    }
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    // Append new comment at the top
+                    const list = document.getElementById('comments-list');
+                    const noComments = document.getElementById('no-comments');
+
+                    if (noComments) noComments.remove();
+
+                    list.insertAdjacentHTML('afterbegin', data.comment.html);
+
+                    textarea.value = '';
+
+                    // ────────────────────────────────────────────────
+                    // Increment visible comments count
+                    const countElement = document.getElementById('comments-total-count');
+                    if (countElement) {
+                        let currentCount = parseInt(countElement.textContent.trim(), 10) || 0;
+                        countElement.textContent = currentCount + 1;
+                    }
+                    // ────────────────────────────────────────────────
+
+                    // Optional: scroll to new comment
+                    document.querySelector('.comment-item')?.scrollIntoView({ 
+                        behavior: 'smooth', 
+                        block: 'center' 
+                    });
+                } else {
+                    alert(data.message || 'Something went wrong');
+                }
+            } catch (err) {
+                console.error(err);
+                alert('Error submitting comment');
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fa fa-paper-plane"></i> Add Comment';
+            }
+        });
+    }
+
+    // Load more comments
+    const loadMoreBtn = document.getElementById('load-more-comments');
+    if (loadMoreBtn) {
+        loadMoreBtn.addEventListener('click', async function () {
+            const slug = this.dataset.postSlug;
+            const page = this.dataset.nextPage;
+
+            this.disabled = true;
+            this.innerHTML = '<i class="fa fa-spinner fa-spin"></i> Loading...';
+
+            try {
+                const response = await fetch(`/posts/${slug}/comments?page=${page}`, {
+                    headers: { 'Accept': 'application/json' }
+                });
+
+                const data = await response.json();
+
+                if (data.comments) {
+                    document.getElementById('comments-list').insertAdjacentHTML('beforeend', data.comments);
+
+                    if (data.has_more) {
+                        this.dataset.nextPage = data.next_page;
+                    } else {
+                        this.remove();
+                    }
+                }
+            } catch (err) {
+                console.error(err);
+            } finally {
+                this.disabled = false;
+                this.innerHTML = 'Load More Comments';
+            }
+        });
+    }
+});
+</script>
+
 @endpush
