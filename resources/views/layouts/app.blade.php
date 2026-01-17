@@ -378,7 +378,7 @@
                                                 <h5 style="white-space: nowrap; font-weight:bold">Official Contact Information</h4>
                                                 <ul class="contact-list">
                                                     <li><strong>Email:</strong> <a href="mailto:info@dailyorbit.in">info@dailyorbit.in</a></li>
-                                                    <li><strong>Phone:</strong> <a href="tel:+918126935280">+91 8126935280</a></li>
+                                                    <li><strong>Phone:</strong> <a href="tel:+918126935236">+918126935236</a></li>
                                                     <li><strong>Address:</strong><br>
                                                         1202 , Rishivihar <br>
                                                         Dehradun , Uttarakhand - 248001<br>

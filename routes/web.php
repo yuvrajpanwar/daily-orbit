@@ -22,7 +22,9 @@ Route::get('/create-storage-link', function () {
 Route::get('/', [App\Http\Controllers\HomeController::class, 'index']);
 
 Route::any('/coming-soon', function () {
-    return view('coming-soon');
+    // redirect back with success message we will get back to you soon
+    return redirect()->back()->with('success', 'We will get back to you soon!');
+    // return view('coming-soon');
 })->name('coming-soon');
 
 Route::get('/about', function () {
