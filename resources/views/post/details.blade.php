@@ -61,22 +61,22 @@
 
                             <ul class="blog-info-link mt-3 mb-4">
                                 <li>
-                                    <a href="#">
+                                    <a href="/author/{{ $post->author->id ?? 'Unknown Author' }}" style="text-decoration: underline !important;color:#ff2143">
                                         <i class="fa fa-user"></i>
-                                        {{ $post->author_name ?? 'Unknown Author' }}
+                                        {{ $post->author->name ?? 'Unknown Author' }}
                                     </a>
                                 </li>
                                 <li>
-                                    <a href="#">
+                                    <a href="/category/{{ $post->category->name ?? '' }}" style="text-decoration: underline !important;color:#ff2143">
                                         <i class="fa fa-folder"></i>
-                                        {{ $post->category_name ?? 'Uncategorized' }}
+                                        {{ $post->category->name ?? 'Uncategorized' }}
                                     </a>
                                 </li>
                                 <li>
-                                    <a href="#">
+                                    <small>
                                         <i class="fa fa-calendar"></i>
                                         {{ \Carbon\Carbon::parse($post->time)->format('M d, Y') }}
-                                    </a>
+                                    </small>
                                 </li>
                             </ul>
 

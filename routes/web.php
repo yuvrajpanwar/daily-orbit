@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\EmailVerificationController;
 use App\Http\Controllers\NewsletterController;
 use App\Http\Controllers\PostCommentController;
+use App\Http\Controllers\AuthorController;
 
 // use App\Http\Controllers\Auth\GoogleController;
 
@@ -82,5 +83,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/verify-email/{id}/{hash}', [EmailVerificationController::class, 'verify'])->name('verification.verify');
 });
 
+Route::get('/author/{id}', [AuthorController::class, 'show'])->name('author.show');
+Route::get('/author/{id}/load-more', [AuthorController::class, 'loadMore'])->name('author.loadmore');
 
 require __DIR__ . '/admin.php';

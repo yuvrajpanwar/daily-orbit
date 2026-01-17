@@ -16,6 +16,8 @@
                 </span>
             </a>
             <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdownMenuLink">
+                {{-- name of user logged in in only-admin guard --}}
+                <a class="dropdown-item" href="#"">{{ auth('only-admin')->user()->name }}</a>
                 <a class="dropdown-item" href="{{ route('admin.logout') }}">Log Out</a>
             </div>
         </li>

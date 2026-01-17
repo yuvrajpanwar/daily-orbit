@@ -18,8 +18,6 @@ class PostController extends Controller
         session()->put('url.intended', url()->current());
         redirect()->setIntendedUrl(url()->current());
 
-        
-
         $post = Post::query()
             ->with([
                 'category',           // → $post->category->name
