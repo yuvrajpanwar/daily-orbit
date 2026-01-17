@@ -114,7 +114,7 @@
                                 @if($post->comments->isNotEmpty())
                                     @foreach($post->comments->take(5) as $comment)
                                         @php
-                                            $avatar = $comment->user->avatar ?? $comment->user->profile_picture ?? 'default-user.png';
+                                            $avatar = $comment->user->avatar ?? $comment->user->profile_picture ?? asset('assets/img/default-user-image.jpg');
                                             $time = $comment->created_at->format('h:i A d-m-Y');
                                         @endphp
                                         <x-comment-item :comment="$comment" :avatar="$avatar" :time="$time" />
@@ -154,7 +154,7 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="form-group mt-3">
+                                    <div class="form-group">
                                         <button type="submit" id="submit-comment-btn" 
                                                 class="button button-contactForm btn_1 boxed-btn w-100">
                                             <i class="fa fa-paper-plane"></i> Add Comment
@@ -172,7 +172,7 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="form-group mt-3">
+                                    <div class="form-group">
                                         <button type="button" class="button button-contactForm btn_1 boxed-btn w-100" 
                                                 data-bs-toggle="modal" data-bs-target="#loginRequiredModal">
                                             <i class="fa fa-lock me-2"></i> Login to Comment

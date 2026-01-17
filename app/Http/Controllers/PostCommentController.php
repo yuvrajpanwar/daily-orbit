@@ -68,7 +68,7 @@ class PostCommentController extends Controller
     {
         $avatar = $comment->user->avatar
             ?? $comment->user->profile_picture
-            ?? 'default-user.png';
+            ?? asset('assets/img/default-user-image.jpg');
 
         $time = $comment->created_at->format('h:i A d-m-Y');
 

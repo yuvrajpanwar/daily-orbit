@@ -3,7 +3,7 @@
     
     <div class="d-flex">
         <div class="flex-shrink-0 me-3">
-            <img src="{{ asset('storage/' . $avatar) }}" 
+            <img src="{{$avatar}}" 
                  class="rounded-circle" 
                  width="44" height="44" 
                  style="object-fit: cover; border: 1px solid #e9ecef;">

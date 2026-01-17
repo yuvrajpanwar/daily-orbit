@@ -13,6 +13,13 @@ class PostController extends Controller
     //post details with category and author from admin table 
     public function postDetials($slug)
     {
+
+        // Save where the user was current viewing the post current url
+        session()->put('url.intended', url()->current());
+        redirect()->setIntendedUrl(url()->current());
+
+        
+
         $post = Post::query()
             ->with([
                 'category',           // → $post->category->name
