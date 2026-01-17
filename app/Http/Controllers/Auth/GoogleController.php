@@ -13,6 +13,14 @@ class GoogleController extends Controller
     // Redirect to Google
     public function redirectToGoogle()
     {
+
+        // Save where the user was before going to Google
+        session()->put('url.intended', url()->previous());
+
+        // Optional: also let Laravel's default intended system know
+        // redirect()->intended() will prefer this value if set
+        redirect()->setIntendedUrl(url()->previous());
+
         return Socialite::driver('google')->redirect();
     }
 
