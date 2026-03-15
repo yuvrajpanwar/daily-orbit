@@ -75,6 +75,13 @@
         <link rel="stylesheet" href="{{ asset('assets/css/global.min.css') }}">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/izitoast/1.4.0/css/iziToast.css">
         @stack('css')
+
+
+        
+        <meta name="csrf-token" content="{{ csrf_token() }}">
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+
     </head>
 
 <body>
@@ -606,6 +613,757 @@
         
         });
     </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <style>
+    /* ──────────────────────────────────────────────
+       RESET & BASE
+    ────────────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: #f0f2f5;
+      min-height: 100vh;
+    }
+
+    /* ──────────────────────────────────────────────
+       CSS VARIABLES
+    ────────────────────────────────────────────── */
+    :root {
+      --uv-primary:       #0f172a;
+      --uv-accent:        #6366f1;
+      --uv-accent-light:  #818cf8;
+      --uv-accent-glow:   rgba(99,102,241,0.25);
+      --uv-surface:       #ffffff;
+      --uv-surface-2:     #f8fafc;
+      --uv-border:        #e2e8f0;
+      --uv-text:          #1e293b;
+      --uv-text-muted:    #64748b;
+      --uv-user-bubble:   #6366f1;
+      --uv-ai-bubble:     #f1f5f9;
+      --uv-radius-lg:     18px;
+      --uv-radius-sm:     10px;
+      --uv-shadow:        0 20px 60px rgba(0,0,0,0.15), 0 4px 16px rgba(0,0,0,0.08);
+      --uv-shadow-fab:    0 8px 32px rgba(99,102,241,0.45), 0 2px 8px rgba(0,0,0,0.15);
+      --widget-width:     380px;
+      --widget-height:    580px;
+    }
+
+    /* ──────────────────────────────────────────────
+       FLOATING ACTION BUTTON
+    ────────────────────────────────────────────── */
+    #uv-fab {
+      position: fixed;
+      bottom: 28px;
+      right: 28px;
+      width: 62px;
+      height: 62px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--uv-accent) 0%, #4f46e5 100%);
+      box-shadow: var(--uv-shadow-fab);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 9998;
+      border: none;
+      outline: none;
+      transition: transform 0.3s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.3s ease;
+    }
+
+    #uv-fab:hover {
+      transform: scale(1.1);
+      box-shadow: 0 12px 40px rgba(99,102,241,0.55), 0 2px 8px rgba(0,0,0,0.2);
+    }
+
+    #uv-fab:active { transform: scale(0.95); }
+
+    #uv-fab img {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2px solid rgba(255,255,255,0.6);
+      pointer-events: none;
+    }
+
+    /* Pulse ring */
+    #uv-fab::before {
+      content: '';
+      position: absolute;
+      inset: -4px;
+      border-radius: 50%;
+      border: 2px solid var(--uv-accent);
+      opacity: 0;
+      animation: uv-pulse 2.5s ease-out infinite;
+    }
+
+    @keyframes uv-pulse {
+      0%   { opacity: 0.7; transform: scale(1); }
+      100% { opacity: 0;   transform: scale(1.5); }
+    }
+
+    /* ──────────────────────────────────────────────
+       CHAT WINDOW
+    ────────────────────────────────────────────── */
+    #uv-chat-window {
+      position: fixed;
+      bottom: 10px;
+      right: 10px;
+      width: var(--widget-width);
+      height: var(--widget-height);
+      background: var(--uv-surface);
+      border-radius: 24px;
+      box-shadow: var(--uv-shadow);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      z-index: 9999;
+      border: 1px solid var(--uv-border);
+
+      /* Hidden state */
+      opacity: 0;
+      transform: translateY(20px) scale(0.95);
+      transform-origin: bottom right;
+      pointer-events: none;
+      transition:
+        opacity 0.35s cubic-bezier(0.4,0,0.2,1),
+        transform 0.35s cubic-bezier(0.34,1.56,0.64,1);
+    }
+
+    #uv-chat-window.uv-open {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+      pointer-events: all;
+    }
+
+    /* ──────────────────────────────────────────────
+       HEADER
+    ────────────────────────────────────────────── */
+    #uv-header {
+      background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 60%, #312e81 100%);
+      padding: 18px 20px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-shrink: 0;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Decorative shimmer strip */
+    #uv-header::after {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(99,102,241,0.6), transparent);
+    }
+
+    #uv-avatar-wrap {
+      position: relative;
+      flex-shrink: 0;
+    }
+
+    #uv-header-avatar {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2.5px solid rgba(255,255,255,0.2);
+      display: block;
+    }
+
+    /* Online dot */
+    #uv-avatar-wrap::after {
+      content: '';
+      position: absolute;
+      bottom: 1px; right: 1px;
+      width: 11px; height: 11px;
+      background: #22c55e;
+      border-radius: 50%;
+      border: 2px solid #0f172a;
+    }
+
+    #uv-header-info { flex: 1; min-width: 0; }
+
+    #uv-header-name {
+      font-size: 17px;
+      font-weight: 800;
+      color: #ffffff;
+      letter-spacing: 0.02em;
+      line-height: 1.2;
+    }
+
+    #uv-header-status {
+      font-size: 12px;
+      color: rgba(255,255,255,0.55);
+      margin-top: 2px;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    #uv-header-status span {
+      width: 6px; height: 6px;
+      background: #22c55e;
+      border-radius: 50%;
+      display: inline-block;
+      animation: uv-blink 2s ease-in-out infinite;
+    }
+
+    @keyframes uv-blink {
+      0%, 100% { opacity: 1; }
+      50%       { opacity: 0.3; }
+    }
+
+    #uv-close-btn {
+      background: rgba(255,255,255,0.1);
+      border: none;
+      color: rgba(255,255,255,0.7);
+      cursor: pointer;
+      width: 34px; height: 34px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      transition: background 0.2s, color 0.2s, transform 0.2s;
+    }
+
+    #uv-close-btn:hover {
+      background: rgba(255,255,255,0.2);
+      color: #ffffff;
+      transform: rotate(90deg);
+    }
+
+    #uv-close-btn svg { display: block; }
+
+    /* ──────────────────────────────────────────────
+       MESSAGES AREA
+    ────────────────────────────────────────────── */
+    #uv-messages {
+      flex: 1;
+      overflow-y: auto;
+      padding: 20px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      background: var(--uv-surface-2);
+      scroll-behavior: smooth;
+    }
+
+    #uv-messages::-webkit-scrollbar { width: 4px; }
+    #uv-messages::-webkit-scrollbar-track { background: transparent; }
+    #uv-messages::-webkit-scrollbar-thumb {
+      background: var(--uv-border);
+      border-radius: 4px;
+    }
+
+    /* ── Message rows ── */
+    .uv-msg-row {
+      display: flex;
+      align-items: flex-end;
+      gap: 8px;
+      animation: uv-msg-in 0.3s cubic-bezier(0.34,1.56,0.64,1) both;
+    }
+
+    @keyframes uv-msg-in {
+      from { opacity: 0; transform: translateY(12px) scale(0.96); }
+      to   { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    .uv-msg-row.uv-user { flex-direction: row-reverse; }
+
+    /* Small avatar in rows */
+    .uv-row-avatar {
+      width: 30px; height: 30px;
+      border-radius: 50%;
+      object-fit: cover;
+      flex-shrink: 0;
+      border: 1.5px solid var(--uv-border);
+    }
+
+    .uv-msg-row.uv-user .uv-row-avatar { display: none; }
+
+    /* ── Bubbles ── */
+    .uv-bubble {
+      max-width: 72%;
+      padding: 11px 15px;
+      border-radius: var(--uv-radius-lg);
+      font-size: 14.5px;
+      line-height: 1.55;
+      word-break: break-word;
+      position: relative;
+    }
+
+    /* AI bubble */
+    .uv-msg-row.uv-ai .uv-bubble {
+      background: var(--uv-surface);
+      color: var(--uv-text);
+      border-bottom-left-radius: 4px;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+      border: 1px solid var(--uv-border);
+    }
+
+    /* User bubble */
+    .uv-msg-row.uv-user .uv-bubble {
+      background: linear-gradient(135deg, var(--uv-accent) 0%, #4f46e5 100%);
+      color: #ffffff;
+      border-bottom-right-radius: 4px;
+      box-shadow: 0 4px 12px rgba(99,102,241,0.3);
+    }
+
+    /* Timestamp */
+    .uv-bubble-time {
+      display: block;
+      font-size: 10.5px;
+      margin-top: 5px;
+      opacity: 0.55;
+      text-align: right;
+    }
+
+    .uv-msg-row.uv-ai .uv-bubble-time { text-align: left; }
+
+    /* ── Typing indicator ── */
+    #uv-typing-row {
+      display: none;
+      align-items: flex-end;
+      gap: 8px;
+      animation: uv-msg-in 0.3s ease both;
+    }
+
+    #uv-typing-row.uv-visible { display: flex; }
+
+    .uv-typing-bubble {
+      background: var(--uv-surface);
+      border: 1px solid var(--uv-border);
+      border-radius: var(--uv-radius-lg);
+      border-bottom-left-radius: 4px;
+      padding: 13px 18px;
+      display: flex;
+      gap: 5px;
+      align-items: center;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+    }
+
+    .uv-typing-dot {
+      width: 7px; height: 7px;
+      border-radius: 50%;
+      background: var(--uv-accent-light);
+      animation: uv-dot-bounce 1.2s ease-in-out infinite;
+    }
+
+    .uv-typing-dot:nth-child(2) { animation-delay: 0.18s; }
+    .uv-typing-dot:nth-child(3) { animation-delay: 0.36s; }
+
+    @keyframes uv-dot-bounce {
+      0%, 60%, 100% { transform: translateY(0);  opacity: 0.5; }
+      30%            { transform: translateY(-6px); opacity: 1;   }
+    }
+
+    /* ──────────────────────────────────────────────
+       INPUT AREA
+    ────────────────────────────────────────────── */
+    #uv-input-area {
+      padding: 14px 16px;
+      background: var(--uv-surface);
+      border-top: 1px solid var(--uv-border);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-shrink: 0;
+    }
+
+    #uv-input {
+      flex: 1;
+      border: 1.5px solid var(--uv-border);
+      border-radius: 50px;
+      padding: 11px 18px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 14px;
+      color: var(--uv-text);
+      background: var(--uv-surface-2);
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+      resize: none;
+    }
+
+    #uv-input::placeholder { color: var(--uv-text-muted); }
+
+    #uv-input:focus {
+      border-color: var(--uv-accent);
+      box-shadow: 0 0 0 3px var(--uv-accent-glow);
+      background: #ffffff;
+    }
+
+    #uv-send-btn {
+      width: 44px; height: 44px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--uv-accent) 0%, #4f46e5 100%);
+      border: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      transition: transform 0.2s, box-shadow 0.2s, opacity 0.2s;
+      box-shadow: 0 4px 12px rgba(99,102,241,0.35);
+    }
+
+    #uv-send-btn:hover:not(:disabled) {
+      transform: scale(1.08);
+      box-shadow: 0 6px 16px rgba(99,102,241,0.45);
+    }
+
+    #uv-send-btn:active:not(:disabled) { transform: scale(0.94); }
+
+    #uv-send-btn:disabled {
+      opacity: 0.45;
+      cursor: not-allowed;
+      box-shadow: none;
+    }
+
+    #uv-send-btn svg { display: block; }
+
+    /* ──────────────────────────────────────────────
+       POWERED-BY FOOTER
+    ────────────────────────────────────────────── */
+    #uv-footer {
+      text-align: center;
+      font-size: 10.5px;
+      color: var(--uv-text-muted);
+      padding: 7px 0 9px;
+      background: var(--uv-surface);
+      border-top: 1px solid var(--uv-border);
+      letter-spacing: 0.01em;
+      flex-shrink: 0;
+    }
+
+    #uv-footer strong { color: var(--uv-accent); }
+
+    /* ──────────────────────────────────────────────
+       MOBILE RESPONSIVE
+    ────────────────────────────────────────────── */
+    @media (max-width: 480px) {
+      :root {
+        --widget-width: 100vw;
+        --widget-height: 100dvh;
+      }
+
+      #uv-chat-window {
+        bottom: 0; right: 0;
+        border-radius: 0;
+        border: none;
+        transform-origin: bottom center;
+      }
+
+      #uv-fab {
+        bottom: 20px;
+        right: 20px;
+      }
+    }
+  </style>
+
+
+
+
+<button id="uv-fab" aria-label="Open UV chat" title="Chat with UV">
+  <img
+    src="{{ asset('assets/img/logo/logo-circle.png') }}"
+    alt="UV"
+    onerror="this.style.display='none'; this.parentElement.innerHTML += '<svg width=\'28\' height=\'28\' fill=\'none\' viewBox=\'0 0 24 24\'><path fill=\'%23fff\' d=\'M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14H9V8h2v8zm4 0h-2V8h2v8z\'/></svg>'"
+  />
+</button>
+
+<!-- Chat Window -->
+<div id="uv-chat-window" role="dialog" aria-label="UV Chat" aria-modal="true">
+
+  <!-- Header -->
+  <div id="uv-header">
+    <div id="uv-avatar-wrap">
+      <img
+        id="uv-header-avatar"
+        src="{{ asset('assets/img/logo/logo-circle.png') }}"
+        alt="UV Avatar"
+      />
+    </div>
+    <div id="uv-header-info">
+      <div id="uv-header-name">UV</div>
+      <div id="uv-header-status">
+         Online <span></span> 
+      </div>
+    </div>
+    <button id="uv-close-btn" aria-label="Close chat">
+      <svg width="16" height="16" fill="none" viewBox="0 0 24 24">
+        <path stroke="currentColor" stroke-width="2.2" stroke-linecap="round"
+              d="M18 6 6 18M6 6l12 12"/>
+      </svg>
+    </button>
+  </div>
+
+  <!-- Messages -->
+  <div id="uv-messages" role="log" aria-live="polite" aria-label="Chat messages">
+
+    <!-- Typing indicator (hidden by default) -->
+    <div id="uv-typing-row">
+      <img
+        class="uv-row-avatar"
+        src="https://instagram.fdel27-9.fna.fbcdn.net/v/t51.2885-19/483026242_964140872525917_1868594175724273112_n.jpg"
+        alt="UV"
+      />
+      <div class="uv-typing-bubble">
+        <div class="uv-typing-dot"></div>
+        <div class="uv-typing-dot"></div>
+        <div class="uv-typing-dot"></div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Input Area -->
+  <div id="uv-input-area">
+    <input
+      type="text"
+      id="uv-input"
+      placeholder="Message UV…"
+      autocomplete="off"
+      maxlength="1000"
+      aria-label="Type a message"
+    />
+    <button id="uv-send-btn" aria-label="Send message" disabled>
+      <svg width="20" height="20" fill="none" viewBox="0 0 24 24">
+        <path fill="#fff" d="M2.01 21 23 12 2.01 3 2 10l15 2-15 2z"/>
+      </svg>
+    </button>
+  </div>
+
+  <!-- Powered-by -->
+<div id="uv-footer">
+  Ask anything about <strong>Yuvraj</strong>
+</div>
+
+</div>
+
+<!-- ══════════════════════════════════════
+     JAVASCRIPT
+══════════════════════════════════════ -->
+<script>
+(function () {
+  'use strict';
+
+  // ── DOM refs ──────────────────────────────────────────────
+  const fab         = document.getElementById('uv-fab');
+  const chatWindow  = document.getElementById('uv-chat-window');
+  const closeBtn    = document.getElementById('uv-close-btn');
+  const messagesEl  = document.getElementById('uv-messages');
+  const inputEl     = document.getElementById('uv-input');
+  const sendBtn     = document.getElementById('uv-send-btn');
+  const typingRow   = document.getElementById('uv-typing-row');
+
+  // ── Config ────────────────────────────────────────────────
+  const ENDPOINT     = '/chatbot/message';  // adjust if using /api/ prefix
+  const AI_AVATAR    = "{{ asset('assets/img/logo/logo-circle.png') }}";
+  const GREETING = "Heyy! mera naam hai UV 😎 \ntumhara naam kya hai?";
+  const CSRF_TOKEN   = document.querySelector('meta[name="csrf-token"]')?.content ?? '';
+
+  // ── State ─────────────────────────────────────────────────
+  let isOpen       = false;
+  let isWaiting    = false;
+  let greetingDone = false;
+
+  // ── Helpers ───────────────────────────────────────────────
+  function getTime() {
+    return new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+  }
+
+  function scrollToBottom() {
+    // Move typing row to bottom of messages so scroll follows it
+    messagesEl.appendChild(typingRow);
+    messagesEl.scrollTop = messagesEl.scrollHeight;
+  }
+
+  /**
+   * Append a message bubble to the chat.
+   * @param {'ai'|'user'} who
+   * @param {string} text
+   */
+  function appendMessage(who, text) {
+    const row = document.createElement('div');
+    row.className = `uv-msg-row uv-${who}`;
+
+    const avatarHTML = who === 'ai'
+      ? `<img class="uv-row-avatar" src="${AI_AVATAR}" alt="UV" />`
+      : '';
+
+    row.innerHTML = `
+      ${avatarHTML}
+      <div class="uv-bubble">
+            ${text.replace(/\n/g, '<br>')}
+            <span class="uv-bubble-time">${getTime()}</span>
+        </div>
+    `;
+
+    // Insert before the typing indicator
+    messagesEl.insertBefore(row, typingRow);
+    scrollToBottom();
+  }
+
+  function escapeHTML(str) {
+    return str
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#039;');
+  }
+
+  function showTyping() {
+    typingRow.classList.add('uv-visible');
+    scrollToBottom();
+  }
+
+  function hideTyping() {
+    typingRow.classList.remove('uv-visible');
+  }
+
+  function setWaiting(state) {
+    isWaiting       = state;
+    sendBtn.disabled = state;
+    inputEl.disabled = state;
+  }
+
+  // ── Open / Close ──────────────────────────────────────────
+  function openChat() {
+    if (isOpen) return;
+    isOpen = true;
+    chatWindow.classList.add('uv-open');
+    inputEl.focus();
+
+    // Show greeting once
+    if (!greetingDone) {
+      greetingDone = true;
+      setTimeout(() => appendMessage('ai', GREETING), 350);
+    }
+  }
+
+  function closeChat() {
+    if (!isOpen) return;
+    isOpen = false;
+    chatWindow.classList.remove('uv-open');
+  }
+
+  // ── Send message ──────────────────────────────────────────
+  async function sendMessage() {
+    const text = inputEl.value.trim();
+    if (!text || isWaiting) return;
+
+    inputEl.value = '';
+    sendBtn.disabled = true;
+
+    appendMessage('user', text);
+    setWaiting(true);
+    showTyping();
+
+    try {
+      const response = await fetch(ENDPOINT, {
+        method:  'POST',
+        headers: {
+          'Content-Type':     'application/json',
+          'Accept':           'application/json',
+          'X-CSRF-TOKEN':     CSRF_TOKEN,
+          'X-Requested-With': 'XMLHttpRequest',
+        },
+        body: JSON.stringify({ message: text }),
+      });
+
+      const data = await response.json();
+
+      hideTyping();
+
+      if (!response.ok) {
+        appendMessage('ai', data.reply ?? 'Something went wrong. Please try again.');
+        return;
+      }
+
+      appendMessage('ai', data.reply ?? 'I didn\'t catch that. Could you try again?');
+
+    } catch (err) {
+      hideTyping();
+      appendMessage('ai', 'Network error. Please check your connection and try again.');
+      console.error('[UV Chatbot]', err);
+    } finally {
+      setWaiting(false);
+    }
+  }
+
+  // ── Event Listeners ───────────────────────────────────────
+  fab.addEventListener('click', openChat);
+  closeBtn.addEventListener('click', closeChat);
+
+  sendBtn.addEventListener('click', sendMessage);
+
+  inputEl.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      sendMessage();
+    }
+  });
+
+  // Enable send button only when there's text
+  inputEl.addEventListener('input', () => {
+    sendBtn.disabled = inputEl.value.trim().length === 0 || isWaiting;
+  });
+
+  // Close on overlay click (if on mobile full-screen)
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && isOpen) closeChat();
+  });
+
+})();
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 </body>
 
 </html>

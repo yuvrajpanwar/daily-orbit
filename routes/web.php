@@ -5,7 +5,7 @@ use App\Http\Controllers\EmailVerificationController;
 use App\Http\Controllers\NewsletterController;
 use App\Http\Controllers\PostCommentController;
 use App\Http\Controllers\AuthorController;
-
+use App\Http\Controllers\ChatbotController;
 // use App\Http\Controllers\Auth\GoogleController;
 
 use Illuminate\Support\Facades\Artisan;
@@ -20,6 +20,12 @@ Route::get('/create-storage-link', function () {
 });
 
 Route::get('/', [App\Http\Controllers\HomeController::class, 'index']);
+
+
+
+Route::post('/chatbot/message', [ChatbotController::class, 'message'])
+    ->middleware(['throttle:60,1']); // 60 requests per minute
+
 
 Route::any('/coming-soon', function () {
     // redirect back with success message we will get back to you soon
