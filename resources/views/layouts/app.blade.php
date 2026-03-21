@@ -13,6 +13,8 @@
         
         <!-- 3. Viewport (you have it – good) -->
         <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <meta name="viewport" content="width=device-width, initial-scale=1,interactive-widget=resizes-visual">
         
         <!-- 4. Robots – don’t block anything -->
         <meta name="robots" content="index, follow">
@@ -630,7 +632,7 @@
 
 
 
-  <style>
+ <style>
     /* ──────────────────────────────────────────────
        RESET & BASE
     ────────────────────────────────────────────── */
@@ -737,7 +739,6 @@
       z-index: 9999;
       border: 1px solid var(--uv-border);
 
-      /* Hidden state */
       opacity: 0;
       transform: translateY(20px) scale(0.95);
       transform-origin: bottom right;
@@ -767,7 +768,6 @@
       overflow: hidden;
     }
 
-    /* Decorative shimmer strip */
     #uv-header::after {
       content: '';
       position: absolute;
@@ -790,7 +790,6 @@
       display: block;
     }
 
-    /* Online dot */
     #uv-avatar-wrap::after {
       content: '';
       position: absolute;
@@ -833,7 +832,8 @@
       50%       { opacity: 0.3; }
     }
 
-    #uv-close-btn {
+    /* Header action buttons (refresh + close) */
+    .uv-header-btn {
       background: rgba(255,255,255,0.1);
       border: none;
       color: rgba(255,255,255,0.7);
@@ -847,13 +847,81 @@
       transition: background 0.2s, color 0.2s, transform 0.2s;
     }
 
-    #uv-close-btn:hover {
+    .uv-header-btn:hover {
       background: rgba(255,255,255,0.2);
       color: #ffffff;
-      transform: rotate(90deg);
     }
 
-    #uv-close-btn svg { display: block; }
+    #uv-refresh-btn:hover { transform: rotate(180deg); }
+    #uv-close-btn:hover   { transform: rotate(90deg); }
+
+    .uv-header-btn svg { display: block; }
+
+    /* ──────────────────────────────────────────────
+       CONFIRM BANNER (new chat confirmation)
+    ────────────────────────────────────────────── */
+    #uv-confirm-bar {
+      display: none;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 10px 16px;
+      background: #fefce8;
+      border-bottom: 1px solid #fde68a;
+      font-size: 13px;
+      color: #78350f;
+      flex-shrink: 0;
+      animation: uv-slide-down 0.25s ease both;
+    }
+
+    #uv-confirm-bar.uv-visible { display: flex; }
+
+    @keyframes uv-slide-down {
+      from { opacity: 0; transform: translateY(-8px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    #uv-confirm-bar .uv-confirm-text {
+      flex: 1;
+      font-weight: 600;
+    }
+
+    #uv-confirm-bar .uv-confirm-text small {
+      display: block;
+      font-weight: 400;
+      font-size: 11.5px;
+      color: #92400e;
+      margin-top: 1px;
+    }
+
+    .uv-confirm-actions { display: flex; gap: 6px; }
+
+    .uv-confirm-btn {
+      padding: 5px 13px;
+      border-radius: 20px;
+      border: none;
+      cursor: pointer;
+      font-size: 12.5px;
+      font-weight: 600;
+      font-family: 'DM Sans', sans-serif;
+      transition: transform 0.15s, opacity 0.15s;
+    }
+
+    .uv-confirm-btn:active { transform: scale(0.95); }
+
+    #uv-confirm-yes {
+      background: #ef4444;
+      color: #fff;
+    }
+
+    #uv-confirm-yes:hover { opacity: 0.88; }
+
+    #uv-confirm-no {
+      background: rgba(120,53,15,0.12);
+      color: #78350f;
+    }
+
+    #uv-confirm-no:hover { background: rgba(120,53,15,0.2); }
 
     /* ──────────────────────────────────────────────
        MESSAGES AREA
@@ -876,7 +944,6 @@
       border-radius: 4px;
     }
 
-    /* ── Message rows ── */
     .uv-msg-row {
       display: flex;
       align-items: flex-end;
@@ -891,7 +958,6 @@
 
     .uv-msg-row.uv-user { flex-direction: row-reverse; }
 
-    /* Small avatar in rows */
     .uv-row-avatar {
       width: 30px; height: 30px;
       border-radius: 50%;
@@ -902,7 +968,6 @@
 
     .uv-msg-row.uv-user .uv-row-avatar { display: none; }
 
-    /* ── Bubbles ── */
     .uv-bubble {
       max-width: 72%;
       padding: 11px 15px;
@@ -913,7 +978,6 @@
       position: relative;
     }
 
-    /* AI bubble */
     .uv-msg-row.uv-ai .uv-bubble {
       background: var(--uv-surface);
       color: var(--uv-text);
@@ -922,7 +986,6 @@
       border: 1px solid var(--uv-border);
     }
 
-    /* User bubble */
     .uv-msg-row.uv-user .uv-bubble {
       background: linear-gradient(135deg, var(--uv-accent) 0%, #4f46e5 100%);
       color: #ffffff;
@@ -930,7 +993,6 @@
       box-shadow: 0 4px 12px rgba(99,102,241,0.3);
     }
 
-    /* Timestamp */
     .uv-bubble-time {
       display: block;
       font-size: 10.5px;
@@ -940,6 +1002,40 @@
     }
 
     .uv-msg-row.uv-ai .uv-bubble-time { text-align: left; }
+
+    /* Restored messages (no bounce animation) */
+    .uv-msg-row.uv-restored {
+      animation: uv-msg-fade 0.25s ease both;
+    }
+
+    @keyframes uv-msg-fade {
+      from { opacity: 0; }
+      to   { opacity: 1; }
+    }
+
+    /* History divider */
+    .uv-history-divider {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin: 4px 0 8px;
+      animation: uv-msg-fade 0.3s ease both;
+    }
+
+    .uv-history-divider::before,
+    .uv-history-divider::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--uv-border);
+    }
+
+    .uv-history-divider span {
+      font-size: 11px;
+      color: var(--uv-text-muted);
+      white-space: nowrap;
+      font-weight: 500;
+    }
 
     /* ── Typing indicator ── */
     #uv-typing-row {
@@ -1064,14 +1160,17 @@
     @media (max-width: 480px) {
       :root {
         --widget-width: 100vw;
-        --widget-height: 100dvh;
+        /* --widget-height: 100dvh; */
       }
 
       #uv-chat-window {
         bottom: 0; right: 0;
+        left: 0;
         border-radius: 0;
         border: none;
         transform-origin: bottom center;
+        position: fixed;       /* keep fixed */
+        /* height set dynamically by JS */
       }
 
       #uv-fab {
@@ -1082,11 +1181,10 @@
   </style>
 
 
-
-
+<!-- FAB -->
 <button id="uv-fab" aria-label="Open UV chat" title="Chat with UV">
   <img
-    src="{{ asset('assets/img/logo/logo-circle.png') }}"
+    src="{{ asset('assets/img/uv.jpg') }}"
     alt="UV"
     onerror="this.style.display='none'; this.parentElement.innerHTML += '<svg width=\'28\' height=\'28\' fill=\'none\' viewBox=\'0 0 24 24\'><path fill=\'%23fff\' d=\'M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14H9V8h2v8zm4 0h-2V8h2v8z\'/></svg>'"
   />
@@ -1098,43 +1196,54 @@
   <!-- Header -->
   <div id="uv-header">
     <div id="uv-avatar-wrap">
-      <img
-        id="uv-header-avatar"
-        src="{{ asset('assets/img/logo/logo-circle.png') }}"
-        alt="UV Avatar"
-      />
+      <img id="uv-header-avatar" src="{{ asset('assets/img/uv.jpg') }}" alt="UV Avatar" />
     </div>
     <div id="uv-header-info">
       <div id="uv-header-name">UV</div>
-      <div id="uv-header-status">
-         Online <span></span> 
-      </div>
+      <div id="uv-header-status">Online <span></span></div>
     </div>
-    <button id="uv-close-btn" aria-label="Close chat">
+
+    <!-- Refresh button (left of close) -->
+    <button id="uv-refresh-btn" class="uv-header-btn" aria-label="New chat" title="Start new chat">
       <svg width="16" height="16" fill="none" viewBox="0 0 24 24">
-        <path stroke="currentColor" stroke-width="2.2" stroke-linecap="round"
-              d="M18 6 6 18M6 6l12 12"/>
+        <path stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"
+              d="M1 4v6h6M23 20v-6h-6"/>
+        <path stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"
+              d="M20.49 9A9 9 0 0 0 5.64 5.64L1 10m22 4-4.64 4.36A9 9 0 0 1 3.51 15"/>
+      </svg>
+    </button>
+
+    <!-- Close button -->
+    <button id="uv-close-btn" class="uv-header-btn" aria-label="Close chat">
+      <svg width="16" height="16" fill="none" viewBox="0 0 24 24">
+        <path stroke="currentColor" stroke-width="2.2" stroke-linecap="round" d="M18 6 6 18M6 6l12 12"/>
       </svg>
     </button>
   </div>
 
+  <!-- Confirm bar (hidden by default, shown on refresh click) -->
+  <div id="uv-confirm-bar" role="alert">
+    <div class="uv-confirm-text">
+      Start a new chat?
+      <small>Current conversation will be cleared.</small>
+    </div>
+    <div class="uv-confirm-actions">
+      <button class="uv-confirm-btn" id="uv-confirm-no">Cancel</button>
+      <button class="uv-confirm-btn" id="uv-confirm-yes">Yes, reset</button>
+    </div>
+  </div>
+
   <!-- Messages -->
   <div id="uv-messages" role="log" aria-live="polite" aria-label="Chat messages">
-
-    <!-- Typing indicator (hidden by default) -->
+    <!-- Typing indicator (always last child via JS) -->
     <div id="uv-typing-row">
-      <img
-        class="uv-row-avatar"
-        src="https://instagram.fdel27-9.fna.fbcdn.net/v/t51.2885-19/483026242_964140872525917_1868594175724273112_n.jpg"
-        alt="UV"
-      />
+      <img class="uv-row-avatar" src="{{ asset('assets/img/logo/logo-circle.png') }}" alt="UV" />
       <div class="uv-typing-bubble">
         <div class="uv-typing-dot"></div>
         <div class="uv-typing-dot"></div>
         <div class="uv-typing-dot"></div>
       </div>
     </div>
-
   </div>
 
   <!-- Input Area -->
@@ -1154,10 +1263,10 @@
     </button>
   </div>
 
-  <!-- Powered-by -->
-<div id="uv-footer">
-  Ask anything about <strong>Yuvraj</strong>
-</div>
+  <!-- Footer -->
+  <div id="uv-footer">
+    Ask anything about <strong>Yuvraj</strong>
+  </div>
 
 </div>
 
@@ -1172,57 +1281,86 @@
   const fab         = document.getElementById('uv-fab');
   const chatWindow  = document.getElementById('uv-chat-window');
   const closeBtn    = document.getElementById('uv-close-btn');
+  const refreshBtn  = document.getElementById('uv-refresh-btn');
+  const confirmBar  = document.getElementById('uv-confirm-bar');
+  const confirmYes  = document.getElementById('uv-confirm-yes');
+  const confirmNo   = document.getElementById('uv-confirm-no');
   const messagesEl  = document.getElementById('uv-messages');
   const inputEl     = document.getElementById('uv-input');
   const sendBtn     = document.getElementById('uv-send-btn');
   const typingRow   = document.getElementById('uv-typing-row');
 
   // ── Config ────────────────────────────────────────────────
-  const ENDPOINT     = '/chatbot/message';  // adjust if using /api/ prefix
-  const AI_AVATAR    = "{{ asset('assets/img/logo/logo-circle.png') }}";
-  const GREETING = "Heyy! mera naam hai UV 😎 \ntumhara naam kya hai?";
-  const CSRF_TOKEN   = document.querySelector('meta[name="csrf-token"]')?.content ?? '';
+  const ENDPOINT         = '/chatbot/message';
+  const HISTORY_ENDPOINT = '/chatbot/history';
+  const RESET_ENDPOINT   = '/chatbot/reset';
+  const AI_AVATAR        = "{{ asset('assets/img/logo/logo-circle.png') }}";
+  const GREETING         = "Heyy! mera naam hai UV 😎 \ntumhara naam kya hai?";
+  const CSRF_TOKEN       = document.querySelector('meta[name="csrf-token"]')?.content ?? '';
 
   // ── State ─────────────────────────────────────────────────
-  let isOpen       = false;
-  let isWaiting    = false;
-  let greetingDone = false;
+  let isOpen        = false;
+  let isWaiting     = false;
+  let greetingDone  = false;
+  let confirmActive = false;
 
   // ── Helpers ───────────────────────────────────────────────
   function getTime() {
     return new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
   }
 
-  function scrollToBottom() {
-    // Move typing row to bottom of messages so scroll follows it
+  function formatTime(isoString) {
+    if (!isoString) return getTime();
+    try {
+      return new Date(isoString).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    } catch {
+      return getTime();
+    }
+  }
+
+  function scrollToBottom(instant = false) {
     messagesEl.appendChild(typingRow);
-    messagesEl.scrollTop = messagesEl.scrollHeight;
+    if (instant) {
+      messagesEl.style.scrollBehavior = 'auto';
+      messagesEl.scrollTop = messagesEl.scrollHeight;
+      messagesEl.style.scrollBehavior = '';
+    } else {
+      messagesEl.scrollTop = messagesEl.scrollHeight;
+    }
   }
 
   /**
-   * Append a message bubble to the chat.
    * @param {'ai'|'user'} who
-   * @param {string} text
+   * @param {string} text   — may contain HTML (links from server)
+   * @param {string} time   — formatted time string
+   * @param {boolean} restored — if true, use fade-in instead of bounce
    */
-  function appendMessage(who, text) {
+  function appendMessage(who, text, time = null, restored = false) {
     const row = document.createElement('div');
-    row.className = `uv-msg-row uv-${who}`;
+    row.className = `uv-msg-row uv-${who}${restored ? ' uv-restored' : ''}`;
 
     const avatarHTML = who === 'ai'
       ? `<img class="uv-row-avatar" src="${AI_AVATAR}" alt="UV" />`
       : '';
 
+    const displayTime = time ?? getTime();
+
+    // Server replies may contain anchor tags — render as HTML.
+    // User messages are plain text — escape to prevent XSS.
+    const contentHTML = who === 'user'
+      ? escapeHTML(text).replace(/\n/g, '<br>')
+      : text.replace(/\n/g, '<br>');
+
     row.innerHTML = `
       ${avatarHTML}
       <div class="uv-bubble">
-            ${text.replace(/\n/g, '<br>')}
-            <span class="uv-bubble-time">${getTime()}</span>
-        </div>
+        ${contentHTML}
+        <span class="uv-bubble-time">${displayTime}</span>
+      </div>
     `;
 
-    // Insert before the typing indicator
     messagesEl.insertBefore(row, typingRow);
-    scrollToBottom();
+    scrollToBottom(restored);
   }
 
   function escapeHTML(str) {
@@ -1244,9 +1382,95 @@
   }
 
   function setWaiting(state) {
-    isWaiting       = state;
+    isWaiting        = state;
     sendBtn.disabled = state;
     inputEl.disabled = state;
+  }
+
+  function insertDivider(label) {
+    const div = document.createElement('div');
+    div.className = 'uv-history-divider uv-restored';
+    div.innerHTML = `<span>${label}</span>`;
+    messagesEl.insertBefore(div, typingRow);
+  }
+
+  // ── Confirm bar ───────────────────────────────────────────
+  function showConfirm() {
+    confirmActive = true;
+    confirmBar.classList.add('uv-visible');
+  }
+
+  function hideConfirm() {
+    confirmActive = false;
+    confirmBar.classList.remove('uv-visible');
+  }
+
+  // ── History restore ───────────────────────────────────────
+  async function restoreHistory() {
+    try {
+      const res  = await fetch(HISTORY_ENDPOINT, {
+        headers: {
+          'Accept':           'application/json',
+          'X-Requested-With': 'XMLHttpRequest',
+        },
+        credentials: 'same-origin',
+      });
+
+      if (!res.ok) return;
+
+      const data = await res.json();
+      const messages = data.messages ?? [];
+
+      if (messages.length === 0) return;
+
+      // Mark greeting as done so openChat() doesn't append it again
+      greetingDone = true;
+
+      insertDivider('Previous conversation');
+
+      messages.forEach(msg => {
+        const who = msg.role === 'assistant' ? 'ai' : 'user';
+        appendMessage(who, msg.content, formatTime(msg.sent_at), true);
+      });
+
+    } catch (err) {
+      // Silently fail — user just won't see old messages
+      console.warn('[UV Chatbot] History restore failed:', err);
+    }
+  }
+
+  // ── Reset session ─────────────────────────────────────────
+  async function resetSession() {
+    hideConfirm();
+    setWaiting(true);
+
+    try {
+      await fetch(RESET_ENDPOINT, {
+        method:  'POST',
+        headers: {
+          'Content-Type':     'application/json',
+          'Accept':           'application/json',
+          'X-CSRF-TOKEN':     CSRF_TOKEN,
+          'X-Requested-With': 'XMLHttpRequest',
+        },
+        credentials: 'same-origin',
+      });
+    } catch (err) {
+      console.warn('[UV Chatbot] Reset request failed:', err);
+    }
+
+    // Clear UI regardless of server response
+    // Remove all message rows (keep typing row)
+    [...messagesEl.querySelectorAll('.uv-msg-row, .uv-history-divider')].forEach(el => el.remove());
+
+    greetingDone = false;
+    setWaiting(false);
+
+    // Show fresh greeting
+    greetingDone = true;
+    setTimeout(() => appendMessage('ai', GREETING), 200);
+
+    inputEl.focus();
   }
 
   // ── Open / Close ──────────────────────────────────────────
@@ -1256,7 +1480,6 @@
     chatWindow.classList.add('uv-open');
     inputEl.focus();
 
-    // Show greeting once
     if (!greetingDone) {
       greetingDone = true;
       setTimeout(() => appendMessage('ai', GREETING), 350);
@@ -1267,12 +1490,15 @@
     if (!isOpen) return;
     isOpen = false;
     chatWindow.classList.remove('uv-open');
+    hideConfirm();
   }
 
   // ── Send message ──────────────────────────────────────────
   async function sendMessage() {
     const text = inputEl.value.trim();
     if (!text || isWaiting) return;
+
+    if (confirmActive) hideConfirm();
 
     inputEl.value = '';
     sendBtn.disabled = true;
@@ -1290,11 +1516,11 @@
           'X-CSRF-TOKEN':     CSRF_TOKEN,
           'X-Requested-With': 'XMLHttpRequest',
         },
+        credentials: 'same-origin',
         body: JSON.stringify({ message: text }),
       });
 
       const data = await response.json();
-
       hideTyping();
 
       if (!response.ok) {
@@ -1302,7 +1528,7 @@
         return;
       }
 
-      appendMessage('ai', data.reply ?? 'I didn\'t catch that. Could you try again?');
+      appendMessage('ai', data.reply ?? "I didn't catch that. Could you try again?");
 
     } catch (err) {
       hideTyping();
@@ -1317,6 +1543,17 @@
   fab.addEventListener('click', openChat);
   closeBtn.addEventListener('click', closeChat);
 
+  refreshBtn.addEventListener('click', () => {
+    if (confirmActive) {
+      hideConfirm();
+    } else {
+      showConfirm();
+    }
+  });
+
+  confirmYes.addEventListener('click', resetSession);
+  confirmNo.addEventListener('click', hideConfirm);
+
   sendBtn.addEventListener('click', sendMessage);
 
   inputEl.addEventListener('keydown', (e) => {
@@ -1326,14 +1563,56 @@
     }
   });
 
-  // Enable send button only when there's text
+  inputEl.addEventListener('focus', () => {
+    // Small delay lets the keyboard finish opening
+    setTimeout(() => {
+      inputEl.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+      syncToViewport();
+      scrollToBottom(true);
+    }, 320);
+  });
+
   inputEl.addEventListener('input', () => {
     sendBtn.disabled = inputEl.value.trim().length === 0 || isWaiting;
   });
 
-  // Close on overlay click (if on mobile full-screen)
   document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape' && isOpen) closeChat();
+    if (e.key === 'Escape') {
+      if (confirmActive) { hideConfirm(); return; }
+      if (isOpen) closeChat();
+    }
+  });
+
+  // ── On page load: restore history ────────────────────────
+  document.addEventListener('DOMContentLoaded', () => {
+    restoreHistory();
+  });
+
+  // ── Visual Viewport resize handler (mobile keyboard fix) ──
+  function syncToViewport() {
+    if (window.innerWidth > 480) return; // desktop: do nothing
+    const vv = window.visualViewport;
+    if (!vv) return;
+
+    // The viewport shifts up by the keyboard height.
+    // We clamp the window to match the visual viewport size.
+    chatWindow.style.height = vv.height + 'px';
+    chatWindow.style.top    = vv.offsetTop + 'px';
+    chatWindow.style.bottom = 'auto';
+  }
+
+  if (window.visualViewport) {
+    window.visualViewport.addEventListener('resize', syncToViewport);
+    window.visualViewport.addEventListener('scroll', syncToViewport);
+  }
+
+  // Also reset when keyboard closes / orientation changes
+  window.addEventListener('resize', () => {
+    if (window.innerWidth > 480) {
+      chatWindow.style.height = '';
+      chatWindow.style.top    = '';
+      chatWindow.style.bottom = '';
+    }
   });
 
 })();

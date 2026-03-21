@@ -23,9 +23,10 @@ Route::get('/', [App\Http\Controllers\HomeController::class, 'index']);
 
 
 
-Route::post('/chatbot/message', [ChatbotController::class, 'message'])
-    ->middleware(['throttle:60,1']); // 60 requests per minute
+Route::post('/chatbot/message', [ChatbotController::class, 'message'])->middleware(['throttle:60,1']); // 60 requests per minute
 
+Route::get('/chatbot/history', [ChatbotController::class, 'history']);
+Route::post('/chatbot/reset',  [ChatbotController::class, 'reset']);
 
 Route::any('/coming-soon', function () {
     // redirect back with success message we will get back to you soon
