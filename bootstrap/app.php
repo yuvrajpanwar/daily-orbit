@@ -16,6 +16,13 @@ return Application::configure(basePath: dirname(__DIR__))
             'onlyAdmin' => \App\Http\Middleware\onlyAdmin::class,
         ]);
 
+        $middleware->validateCsrfTokens(except: [
+            'chatbot/*',                // all URLs starting with /stripe/
+            'webhook/receive',         // exact match
+            'api/external/*',          // wildcard example
+            'https://example.com/pay/*',   // full external URL (rare)
+        ]);
+
     })
     ->withExceptions(function (Exceptions $exceptions) {
         //

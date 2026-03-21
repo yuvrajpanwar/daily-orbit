@@ -1294,7 +1294,7 @@
   const ENDPOINT         = '/chatbot/message';
   const HISTORY_ENDPOINT = '/chatbot/history';
   const RESET_ENDPOINT   = '/chatbot/reset';
-  const AI_AVATAR        = "{{ asset('assets/img/logo/logo-circle.png') }}";
+  const AI_AVATAR        = "{{ asset('assets/img/uv.jpg') }}";
   const GREETING         = "Heyy! mera naam hai UV 😎 \ntumhara naam kya hai?";
   const CSRF_TOKEN       = document.querySelector('meta[name="csrf-token"]')?.content ?? '';
 
