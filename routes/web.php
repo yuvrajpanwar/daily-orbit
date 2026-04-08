@@ -75,10 +75,6 @@ Route::middleware('auth')->group(function () {
     Route::get('/posts/{post:slug}/comments', [PostCommentController::class, 'loadMore'])
         ->name('post.comments.load');
 
-
-    Route::get('/chats', [App\Http\Controllers\Admin\ChatController::class, 'index'])->name('admin.chats');
-Route::get('/chats/fetch', [App\Http\Controllers\Admin\ChatController::class, 'fetch'])->name('admin.fetch-chats');
-Route::get('/chats/{id}/messages', [App\Http\Controllers\Admin\ChatController::class, 'messages'])->name('admin.chat-messages');
 });
 
 Auth::routes();
