@@ -30,7 +30,8 @@ class ChatHistoryService
 
     public function resolveSession(Request $request): ChatSession
     {
-        $key = $request->session()->get('uv_chat_session_id');
+        // Get token from request header or body
+        $key = $request->header('X-Chat-Session') ?? $request->input('session_token');
 
         if ($key) {
             $session = ChatSession::where('session_key', $key)
@@ -42,11 +43,6 @@ class ChatHistoryService
                 $session->touch('last_active_at');
                 return $session;
             }
-
-            // Session exists but timed out → close it
-            ChatSession::where('session_key', $key)
-                ->whereNull('ended_at')
-                ->update(['ended_at' => now()]);
         }
 
         return $this->createSession($request);
@@ -64,8 +60,6 @@ class ChatHistoryService
             'user_agent'     => substr($request->userAgent() ?? '', 0, 512),
             'meta'           => [],
         ]);
-
-        $request->session()->put('uv_chat_session_id', $key);
 
         return $session;
     }

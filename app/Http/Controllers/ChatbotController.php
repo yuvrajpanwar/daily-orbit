@@ -188,8 +188,10 @@ PROMPT;
             // ── 6. Save assistant reply to DB ─────────────────
             $this->history->saveMessage($session, 'assistant', $reply);
 
-            return response()->json(['reply' => $reply]);
-
+            return response()->json([
+                'reply'         => $reply,
+                'session_token' => $session->session_key,  // ← add this
+            ]);
         } catch (\Illuminate\Http\Client\ConnectionException $e) {
             Log::error('ChatbotController: Connection timeout.', ['error' => $e->getMessage()]);
             return response()->json(['reply' => 'Network slow lag rahi hai, thodi der mein message karna! Bye !'], 504);
