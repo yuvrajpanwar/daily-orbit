@@ -13,33 +13,32 @@ use App\Models\ChatMessage;
 class ChatbotController extends Controller
 {
     private string $apiEndpoint = 'https://api.groq.com/openai/v1/chat/completions';
+
     private array $knownPeople = [
         'family' => [
-            'digvijay','rashmi','himani','kusi','khusi','khushi','shashi','shivani','ruby','anuraj','sareena','sareena','siti','aditi','minni','mini',
+            'digvijay','rashmi','himani','kusi','khusi','khushi','shashi','shivani','ruby','anuraj','sareena','siti','aditi','minni','mini',
             'shambhavi','shrishti','sarang','preetam','meena','manju','akshay','vinayak','vinni','binni',
             'indrajeet','aditya','lovi','labbi','vivek','monica','sonam','urmila','priya','lavvi',
             'aman','shalini','mayank','damini','archie','mishti','lucky','riya','saina','danu','pimpu','neha','ankita',
         ],
         'school_friend' => [
             'nikita','manish','sakshi','shivam','nidhiiii','shikha',
-            'nisha','balveer','kavita','vipul','gaurav','aman','balveer','vijay','ashish','ravi','diksha',
+            'nisha','balveer','kavita','vipul','gaurav','vijay','ashish','ravi','diksha',
         ],
         'bca_friend' => [
             'vinay','manish','nikhil','shubham','shweta','divya','ritu',
-            'jaspal','ankit','vishesh','vikas','ashutosh','vicky','lakshay','vicky','neeraj','subbi',
+            'jaspal','ankit','vishesh','vikas','ashutosh','vicky','lakshay','neeraj','subbi',
         ],
         'mca_friend' => [
             'rituraj','megha','akash','madhu','madhvi','akki','akhilesh','ashu','ashutosh','aditi','sushila',
-            'trivendra','trivi',
-            'akansha','simranjeet',
+            'trivendra','trivi','akansha','simranjeet',
             'hemurawat','ragini','ayush','harshit',
-            'honey','himani','megha','mansi',
-            'kritika','faraz','bhanu',
+            'honey','himani','mansi','kritika','faraz','bhanu',
         ],
         'colleague' => [
             'aniket','winuu','harsh','dev','prajjwal','vaibhav','vivek','abhinav','harshit','sanjay','saajan','arihant','abhishek',
             'sunil','shiv','vishnu','vikas','pankaj','anurag','himani',
-            'ujjwal','harshit','nitin','vaibhav','neha','kashish','naveen','kamlesh','sinan','tanu'
+            'ujjwal','nitin','neha','kashish','naveen','kamlesh','sinan','tanu',
         ],
     ];
 
@@ -108,45 +107,41 @@ PROMPT;
             return response()->json(['reply' => 'Abhi available nahi hoon, thodi der baad try karo!'], 500);
         }
 
-        // ── 1. Resolve or create session ─────────────────────
+        // ── 1. Resolve or create session ──────────────────────────────────
         $session = $this->history->resolveSession($request);
 
-        // ── 2. Store the static greeting once (if first turn) ─
+        // ── 2. Store the static greeting once (first turn only) ───────────
         $this->history->ensureGreetingStored($session);
 
-        // ── 3. Extract visitor name before saving user message ──
-        $this->history->extractAndSaveName($session, $userMessage);
+        // ── 3. Save user message to DB first ──────────────────────────────
+        $this->history->saveMessage($session, 'user', $userMessage);
 
-        // ── Check if visitor name matches known people ────────
-        $nameHint = null;
+        // ── 4. AI name extraction (message is now in DB) ──────────────────
+        $this->history->extractAndSaveName($session);
+
+        // ── 5. Refresh session to get latest meta after name extraction ───
+        $session->refresh();
         $meta = $session->meta ?? [];
+
+        // ── 6. Check if visitor name matches a known person ───────────────
+        $nameHint = null;
         if (!empty($meta['visitor_name'])) {
             $relation = $this->getPersonRelation($meta['visitor_name']);
-            if ($relation) {
-                // Check if we've already sent the recognition message in a previous turn.
-                // We use a meta flag to avoid repeating it every message.
-                $alreadyMentioned = !empty($meta['name_recognition_sent']);
+            if ($relation && empty($meta['name_recognition_sent'])) {
+                $nameHint = "🚨 IMMEDIATE ACTION — IS REPLY MEIN ABHI KARNA HAI, KOI DELAY NAHI 🚨\n"
+                    . "Visitor ne abhi apna naam bataya hai aur mere {$relation} mein bhi isi naam ka koi hai.\n"
+                    . "Is SAME reply mein — bina kisi agle message ka wait kiye — in dono cheezein naturally bol:\n"
+                    . "  1. Warmly mention kar ki is naam ka mere {$relation} mein bhi koi hai.\n"
+                    . "  2. Agar woh same person hai toh seedha WhatsApp pe baat karte hain: "
+                    . "<a href=\"https://wa.me/918126935236\" target=\"_blank\" rel=\"noopener noreferrer\">WhatsApp pe message karo</a>\n"
+                    . "Yeh NEXT message ke liye mat chhodna — ABHI is reply mein hi bolna hai.\n"
+                    . "Kisi aur ka naam expose mat karna.";
 
-                if (!$alreadyMentioned) {
-                    $nameHint = "🚨 IMMEDIATE ACTION — IS REPLY MEIN ABHI KARNA HAI, KOI DELAY NAHI 🚨\n"
-                        . "Visitor ne abhi apna naam bataya hai aur mere {$relation} mein bhi isi naam ka koi hai.\n"
-                        . "Is SAME reply mein — bina kisi agle message ka wait kiye — in dono cheezein naturally bol:\n"
-                        . "  1. Warmly mention kar ki is naam ka mere {$relation} mein bhi koi hai.\n"
-                        . "  2. Agar woh same person hai toh seedha WhatsApp pe baat karte hain: "
-                        . "<a href=\"https://wa.me/918126935236\" target=\"_blank\" rel=\"noopener noreferrer\">WhatsApp pe message karo</a>\n"
-                        . "Yeh NEXT message ke liye mat chhodna — ABHI is reply mein hi bolna hai.\n"
-                        . "Kisi aur ka naam expose mat karna.";
-
-                    // Mark as sent so subsequent messages don't re-inject the hint
-                    $this->history->setMetaFlag($session, 'name_recognition_sent', true);
-                }
+                $this->history->setMetaFlag($session, 'name_recognition_sent', true);
             }
         }
 
-        // ── 4. Save user message ──────────────────────────────
-        $this->history->saveMessage($session, 'user', $userMessage);
-
-        // ── 5. Build messages array for Groq ─────────────────
+        // ── 7. Build messages array for Groq ──────────────────────────────
         $messages = array_merge(
             [[
                 'role'    => 'system',
@@ -185,13 +180,14 @@ PROMPT;
                 return response()->json(['reply' => 'Kuch toh gadbad hai, dobara bad mai message karna! Bye !']);
             }
 
-            // ── 6. Save assistant reply to DB ─────────────────
+            // ── 8. Save assistant reply ────────────────────────────────────
             $this->history->saveMessage($session, 'assistant', $reply);
 
             return response()->json([
                 'reply'         => $reply,
-                'session_token' => $session->session_key,  // ← add this
+                'session_token' => $session->session_key,
             ]);
+
         } catch (\Illuminate\Http\Client\ConnectionException $e) {
             Log::error('ChatbotController: Connection timeout.', ['error' => $e->getMessage()]);
             return response()->json(['reply' => 'Network slow lag rahi hai, thodi der mein message karna! Bye !'], 504);
@@ -209,7 +205,7 @@ PROMPT;
             'UTF-8'
         );
 
-        // Normalize nicknames like "nidhiiii" → "nidhi", "aaayush" → "ayush"
+        // Normalize repeated chars: "nidhiiii" → "nidhi", "aaayush" → "ayush"
         $normalized = preg_replace('/(.)\1{2,}/', '$1', rtrim($first, '0123456789'));
 
         $labels = [
@@ -230,46 +226,29 @@ PROMPT;
             }
         }
 
-        if (empty($matches))   return null;
+        if (empty($matches))      return null;
         if (count($matches) === 1) return $matches[0];
 
-        // Multiple matches — build a natural string like "family member aur MCA college friend"
-        $last    = array_pop($matches);
+        $last     = array_pop($matches);
         $combined = implode(', ', $matches) . ' aur ' . $last;
         return $combined;
     }
 
-
-
-    // ── Add these two methods to ChatbotController ────────────────────────────
-    // Also add these routes to web.php:
-    //
-    //   Route::get('/chatbot/history', [ChatbotController::class, 'history']);
-    //   Route::post('/chatbot/reset',  [ChatbotController::class, 'reset']);
-    // ─────────────────────────────────────────────────────────────────────────
-
-
     /**
      * GET /chatbot/history
-     *
-     * Returns the current session's message history so the frontend
-     * can restore it on page load/refresh.
-     *
-     * Excludes the static greeting (first assistant message) because
-     * the frontend already hard-codes it — we don't want it duplicated.
+     * Uses X-Chat-Session header (cross-origin safe).
      */
     public function history(Request $request): JsonResponse
     {
-        $key = $request->session()->get('uv_chat_session_id');
+        $key = $request->header('X-Chat-Session');
 
         if (!$key) {
-            // No session yet — return empty so the frontend shows fresh greeting
             return response()->json(['messages' => []]);
         }
 
         $session = ChatSession::where('session_key', $key)
             ->whereNull('ended_at')
-            ->where('last_active_at', '>=', now()->subMinutes(30)) // match SESSION_TIMEOUT_MINUTES
+            ->where('last_active_at', '>=', now()->subMinutes(30))
             ->first();
 
         if (!$session) {
@@ -279,36 +258,28 @@ PROMPT;
         $messages = ChatMessage::where('session_id', $session->id)
             ->orderBy('sent_at', 'asc')
             ->get()
-            // ->skip(1) // skip the static greeting (always first row)
             ->map(fn($m) => [
-                'role'    => $m->role,           // 'user' | 'assistant'
+                'role'    => $m->role,
                 'content' => $m->content,
-                'sent_at' => $m->sent_at,        // ISO string — JS formats it
+                'sent_at' => $m->sent_at,
             ])
             ->values();
 
         return response()->json(['messages' => $messages]);
     }
 
-
     /**
      * POST /chatbot/reset
-     *
-     * Ends the current session (stamps ended_at) and removes the
-     * session key cookie so the next message starts a fresh session.
+     * Uses X-Chat-Session header (cross-origin safe).
      */
     public function reset(Request $request): JsonResponse
     {
-        $key = $request->session()->get('uv_chat_session_id');
+        $key = $request->header('X-Chat-Session');
 
         if ($key) {
-            // Mark current session as ended
             ChatSession::where('session_key', $key)
                 ->whereNull('ended_at')
                 ->update(['ended_at' => now()]);
-
-            // Remove the key so resolveSession() creates a new one next time
-            $request->session()->forget('uv_chat_session_id');
         }
 
         return response()->json(['status' => 'reset']);
