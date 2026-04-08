@@ -70,6 +70,12 @@
                     <span class="ml-3 item-text h6">AUTHORS</span>
                 </a>
             </li>
+            <li class="nav-item">
+                <a href="{{ route('admin.chats') }}" class="nav-link">
+                    <i class="fe fe-16 fe-message-circle"></i>
+                    <span class="ml-3 item-text h6">CHATS</span>
+                </a>
+            </li>
             {{-- <li class="nav-item dropdown">
                     <a href="#roleandpermission" data-toggle="collapse" aria-expanded="false"
                         class="dropdown-toggle nav-link">
