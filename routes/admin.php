@@ -54,6 +54,13 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::post('/update-author-visibility/{author}', [AuthorController::class, 'updateAuthorVisibility'])->name('update-author-visibility');
         Route::delete('/delete-author/{author}', [AuthorController::class, 'deleteAuthor'])->name('delete-author');
 
-    });
+    
+        Route::get('/chats', [App\Http\Controllers\Admin\ChatController::class, 'index'])->name('chats');
+        Route::get('/chats/fetch', [App\Http\Controllers\Admin\ChatController::class, 'fetch'])->name('fetch-chats');
+        Route::get('/chats/{id}/messages', [App\Http\Controllers\Admin\ChatController::class, 'messages'])->name('chat-messages');
+
+    
+    
+        });
 });
 

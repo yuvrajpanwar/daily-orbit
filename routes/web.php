@@ -74,6 +74,7 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/posts/{post:slug}/comments', [PostCommentController::class, 'loadMore'])
         ->name('post.comments.load');
+
 });
 
 Auth::routes();

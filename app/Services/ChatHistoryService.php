@@ -5,32 +5,43 @@ namespace App\Services;
 use App\Models\ChatMessage;
 use App\Models\ChatSession;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 
 class ChatHistoryService
 {
     private const MAX_HISTORY             = 12;
     private const SESSION_TIMEOUT_MINUTES = 30;
+    private const NAME_EXTRACTION_EVERY   = 2;  // run AI extraction every N user messages until name found
 
-    // The exact static greeting shown in the JS frontend.
-    // Stored once per session so the AI has full context.
     private const STATIC_GREETING = "Heyy! mera naam hai UV 😎 \ntumhara naam kya hai?";
 
-    // Single-word/short strings that are definitely NOT names
-    private const NAME_BLACKLIST = [
-        'hi','hello','hii','hlo','hola','hey','heya','heyy',
-        'bye','okay','ok','nope','yes','no','yep','yup','nah',
-        'kya','kyun','kaun','kon','koi','kuch','sab','bhi',
-        'haan','han','nahi','nai','na','ha','huh','hmm','umm',
-        'naam','name','sir','mam','madam','bhai','dost','yaar',
-        'bol','hun','hoon','hoo','hu','hai','he','the','and','for',
-    ];
+    private const NAME_EXTRACTION_PROMPT = <<<PROMPT
+You are a name extractor. Your ONLY job is to find the visitor's real personal name from the conversation.
+
+STRICT OUTPUT RULES — no exceptions:
+- If you find a name: respond with ONLY the name. Example: "Rahul" or "Priya Singh"
+- If no name found: respond with ONLY the two words: NO_NAME
+- No sentences. No explanations. No punctuation. No greetings. No extra words. Nothing else.
+
+WHAT COUNTS AS A NAME:
+- A real human first name or full name the visitor used to refer to themselves
+- Nicknames they introduced themselves with (e.g. "call me Rocky")
+- Hinglish/Hindi intros like "mera naam Rohit hai", "main Pooja hoon", "I'm Aryan"
+
+WHAT DOES NOT COUNT AS A NAME:
+- Greetings: hi, hello, hey, heyy, namaste
+- Common words: ok, yes, no, bye, thanks
+- The AI's name "UV" — that is the chatbot, not the visitor
+- Any word that is clearly not a person's name
+PROMPT;
 
     // ── Session resolution ────────────────────────────────────────────────
 
     public function resolveSession(Request $request): ChatSession
     {
-        $key = $request->session()->get('uv_chat_session_id');
+        $key = $request->header('X-Chat-Session') ?? $request->input('session_token');
 
         if ($key) {
             $session = ChatSession::where('session_key', $key)
@@ -42,11 +53,6 @@ class ChatHistoryService
                 $session->touch('last_active_at');
                 return $session;
             }
-
-            // Session exists but timed out → close it
-            ChatSession::where('session_key', $key)
-                ->whereNull('ended_at')
-                ->update(['ended_at' => now()]);
         }
 
         return $this->createSession($request);
@@ -56,7 +62,7 @@ class ChatHistoryService
     {
         $key = Str::uuid()->toString();
 
-        $session = ChatSession::create([
+        return ChatSession::create([
             'session_key'    => $key,
             'started_at'     => now(),
             'last_active_at' => now(),
@@ -64,10 +70,6 @@ class ChatHistoryService
             'user_agent'     => substr($request->userAgent() ?? '', 0, 512),
             'meta'           => [],
         ]);
-
-        $request->session()->put('uv_chat_session_id', $key);
-
-        return $session;
     }
 
     // ── Message persistence ───────────────────────────────────────────────
@@ -84,9 +86,9 @@ class ChatHistoryService
     }
 
     /**
-     * Save the static frontend greeting as the very first assistant message
-     * so the DB history is complete and the AI sees the full conversation.
-     * Called once per session — idempotent (checks message count first).
+     * Stores the static frontend greeting as the very first assistant message
+     * so the AI always sees a complete conversation history.
+     * Idempotent — checks for existing messages first.
      */
     public function ensureGreetingStored(ChatSession $session): void
     {
@@ -103,7 +105,7 @@ class ChatHistoryService
         }
     }
 
-    // ── History for API ───────────────────────────────────────────────────
+    // ── History for Groq API ──────────────────────────────────────────────
 
     public function getApiHistory(ChatSession $session): array
     {
@@ -118,7 +120,7 @@ class ChatHistoryService
         $anchor = [];
 
         // If visitor name is known but has scrolled out of the history window,
-        // prepend a tiny synthetic exchange so the AI remembers it (~15 tokens).
+        // inject a tiny synthetic exchange so the AI always remembers it.
         if (!empty($meta['visitor_name'])) {
             $name    = $meta['visitor_name'];
             $hasName = $rows->contains(
@@ -139,232 +141,156 @@ class ChatHistoryService
         return array_merge($anchor, $history);
     }
 
-    // ── Name extraction ───────────────────────────────────────────────────
+    // ── Name extraction — AI powered ──────────────────────────────────────
 
     /**
-     * Main entry point — call this before saveMessage() on every user turn.
+     * Called AFTER saveMessage('user') in the controller — so the user's
+     * message is already persisted in the DB when this runs.
      *
-     * Strategy (priority order):
-     *   1. Already have a name → skip immediately.
-     *   2. Is this the first user message in the session? (reply to greeting)
-     *      → use the "first-message fast path" which is much more aggressive.
-     *   3. For later messages run the full pattern set.
+     * Runs on:
+     *   - The very first user message (count === 1)
+     *   - Then every NAME_EXTRACTION_EVERY messages
+     *   - Stops permanently once a name is found or after 10 user messages
      */
-    public function extractAndSaveName(ChatSession $session, string $userMessage): void
+    public function extractAndSaveName(ChatSession $session): void
     {
         $meta = $session->meta ?? [];
 
+        // Already have a confirmed name — nothing to do
         if (!empty($meta['visitor_name']) && mb_strlen($meta['visitor_name']) >= 2) {
-            return; // already known, bail early
-        }
-
-        $message = trim($userMessage);
-        if (mb_strlen($message) < 1) {
             return;
         }
 
-        // Check if this is the very first user message (only greeting stored so far)
+        // Permanently stopped — no more attempts
+        if (!empty($meta['name_extraction_done'])) {
+            return;
+        }
+
+        // Count all user messages now (current message already saved)
         $userMessageCount = ChatMessage::where('session_id', $session->id)
             ->where('role', 'user')
             ->count();
 
-        $isFirstMessage = ($userMessageCount === 0);
+        // Run on message 1, then every N messages
+        $shouldRun = ($userMessageCount === 1)
+            || ($userMessageCount % self::NAME_EXTRACTION_EVERY === 0);
 
-        $name = $isFirstMessage
-            ? $this->extractFromFirstMessage($message)
-            : $this->extractFromAnyMessage($message);
+        if (!$shouldRun) {
+            return;
+        }
+
+        // Build full conversation text from DB (everything already saved)
+        $history = ChatMessage::where('session_id', $session->id)
+            ->orderBy('sent_at', 'asc')
+            ->get()
+            ->map(fn($m) => $m->role . ': ' . strip_tags($m->content))
+            ->implode("\n");
+
+        $name = $this->callAiForName($history);
+
+        // Refresh meta before writing to avoid overwriting parallel updates
+        $session->refresh();
+        $meta = $session->meta ?? [];
 
         if ($name !== null) {
-            $meta['visitor_name'] = $name;
+            $meta['visitor_name']         = $name;
+            $meta['name_extraction_done'] = true;  // stop all future extractions
+            $session->update(['meta' => $meta]);
+            return;
+        }
+
+        // Hard stop after 10 user messages even if no name was ever found
+        if ($userMessageCount >= 10) {
+            $meta['name_extraction_done'] = true;
             $session->update(['meta' => $meta]);
         }
     }
 
-    // ── First-message fast path ───────────────────────────────────────────
-
     /**
-     * The AI just asked "tumhara naam kya hai?" — so the reply is almost
-     * certainly a name, possibly with a greeting prefix or suffix.
-     *
-     * Order of attempts:
-     *   A) Strip greeting words → if what's left is 1-3 clean words, treat as name.
-     *   B) Known intro patterns  ("mera naam X", "main X hoon", etc.)
-     *   C) Whole message is a clean name (last resort, but very common here)
+     * Fires a lean secondary Groq API call with a strict name-extraction prompt.
+     * Returns the cleaned name string, or null if no name found / on any error.
      */
-    private function extractFromFirstMessage(string $raw): ?string
+    private function callAiForName(string $conversationText): ?string
     {
-        // ── A) Strip common greeting/filler words and see what's left ────
-        $stripped = $this->stripFillerWords($raw);
+        $apiKey = config('services.grok.api_key');
 
-        if ($stripped !== null) {
-            // If 1-3 tokens remain and they look like a name, use them
-            $words = preg_split('/\s+/', $stripped, -1, PREG_SPLIT_NO_EMPTY);
-            if (count($words) >= 1 && count($words) <= 3) {
-                $candidate = implode(' ', $words);
-                $name = $this->validateAndClean($candidate);
-                if ($name !== null) return $name;
-            }
-        }
-
-        // ── B) Explicit intro patterns ────────────────────────────────────
-        $fromPattern = $this->matchIntroPatterns($raw);
-        if ($fromPattern !== null) return $fromPattern;
-
-        // ── C) Whole message as name (very common: user just types their name) ─
-        $words = preg_split('/\s+/', trim($raw), -1, PREG_SPLIT_NO_EMPTY);
-        if (count($words) >= 1 && count($words) <= 3) {
-            $candidate = implode(' ', $words);
-            $name = $this->validateAndClean($candidate);
-            if ($name !== null) return $name;
-        }
-
-        return null;
-    }
-
-    /**
-     * Remove common greeting/filler tokens from the message.
-     * Returns what's left, or null if nothing useful remains.
-     */
-    private function stripFillerWords(string $raw): ?string
-    {
-        $fillers = [
-            // Greetings
-            'hello','hi','hii','hiii','hlo','hey','heya','heyy','heyyyy',
-            'namaste','namaskar','salaam','salam','jai hind',
-            // Self-intro triggers
-            'mera naam','mera name','my name is','main hoon','mai hoon',
-            'i am','i\'m','naam hai','name is','naam','name',
-            // Suffixes / polite particles
-            'hai','hain','he','hoon','hun','hu','hoo',
-            'ji','jee','sir','mam','madam','bhai','yaar','dost',
-            // Punctuation artifacts
-            '!','.',',','?',':','-','—',
-        ];
-
-        $lower = mb_strtolower(trim($raw), 'UTF-8');
-
-        // Sort fillers longest-first so multi-word ones match before their parts
-        usort($fillers, fn($a, $b) => mb_strlen($b) - mb_strlen($a));
-
-        $changed = true;
-        while ($changed) {
-            $changed = false;
-            foreach ($fillers as $filler) {
-                $f = mb_strtolower($filler, 'UTF-8');
-
-                // Strip from start
-                if (str_starts_with($lower, $f . ' ') || $lower === $f) {
-                    $lower   = ltrim(mb_substr($lower, mb_strlen($filler)), ' ');
-                    $changed = true;
-                }
-
-                // Strip from end
-                if (str_ends_with($lower, ' ' . $f) || $lower === $f) {
-                    $lower   = rtrim(mb_substr($lower, 0, mb_strlen($lower) - mb_strlen($filler)), ' ');
-                    $changed = true;
-                }
-            }
-        }
-
-        $lower = trim($lower);
-        return mb_strlen($lower) >= 2 ? $lower : null;
-    }
-
-    // ── General pattern matching (any message) ────────────────────────────
-
-    private function extractFromAnyMessage(string $raw): ?string
-    {
-        $fromPattern = $this->matchIntroPatterns($raw);
-        if ($fromPattern !== null) return $fromPattern;
-
-        return null; // Don't guess on later messages — too risky
-    }
-
-    /**
-     * Explicit intro patterns — safe to run on any message.
-     */
-    private function matchIntroPatterns(string $raw): ?string
-    {
-        $patterns = [
-            // ── English ──────────────────────────────────────────────────
-            '/\bmy name is\s+([a-zA-Z\'\-\s]{2,35})/i',
-            '/\bi(?:\'?m| am)\s+([a-zA-Z\'\-\s]{2,30})(?:\s+(?:here|speaking|talking))?/i',
-            '/\bthis is\s+([a-zA-Z\'\-\s]{2,30})(?:\s+(?:here|speaking|talking))?/i',
-            '/\bcall(?:\s+me)?\s+([a-zA-Z\'\-\s]{2,30})/i',
-            '/\bpeople call me\s+([a-zA-Z\'\-\s]{2,30})/i',
-            '/\bknown as\s+([a-zA-Z\'\-\s]{2,30})/i',
-
-            // ── Hinglish ─────────────────────────────────────────────────
-            '/\bmera\s+(?:naam|name)\s+([a-zA-Z\'\-\s]{2,35})(?:\s+(?:hai|hain|he|h))?/iu',
-            '/\b(?:main|mai|mein)\s+([a-zA-Z\'\-\s]{2,30})\s+(?:hoon|hun|hu|hoo|bol raha|bol rahi|here|speaking)/iu',
-            '/\b(?:mujhe|muje)\s+([a-zA-Z\'\-\s]{2,30})\s+(?:bolo|bolte|kehte|kehna)/iu',
-            '/\b(?:my|mera|meri)\s+name\s+is\s+([a-zA-Z\'\-\s]{2,30})/iu',
-            '/\bnaam\s+([a-zA-Z\'\-\s]{2,30})\s+(?:hai|he|h)\b/iu',
-
-            // ── Pure Hindi (Devanagari) ───────────────────────────────────
-            '/मेरा\s+नाम\s+([ऀ-ॿa-zA-Z\s\'\-]{2,35})\s*(?:है|हैं|हूँ|हू|हे)?/u',
-            '/मैं\s+([ऀ-ॿa-zA-Z\s\'\-]{2,30})\s*(?:हूँ|हूं|हू|है)/u',
-            '/नाम\s+([ऀ-ॿa-zA-Z\s\'\-]{2,30})\s+है/u',
-
-            // ── Casual / short patterns ───────────────────────────────────
-            '/^([A-Za-zÀ-ž]{2,25})\s+(?:here|speaking|bol raha|bol rahi|hoon|hun|hu|hoo)$/iu',
-            '/^([A-Za-zÀ-ž]{2,25})\s+(?:ji|jee)$/iu',
-        ];
-
-        foreach ($patterns as $pattern) {
-            if (preg_match($pattern, $raw, $m)) {
-                $name = $this->validateAndClean(trim($m[1]));
-                if ($name !== null) return $name;
-            }
-        }
-
-        return null;
-    }
-
-    // ── Validation & cleanup ──────────────────────────────────────────────
-
-    /**
-     * Clean, de-suffix, validate and properly capitalise a name candidate.
-     * Returns null if the candidate fails quality checks.
-     */
-    private function validateAndClean(string $candidate): ?string
-    {
-        // Remove trailing filler words that sometimes attach
-        $trailFillers = [
-            'ji','jee','sir','mam','madam','bhai','yaar','dost',
-            'here','speaking','talking','bol','hoon','hun','hu','hoo',
-            'hai','hain','he','h',
-        ];
-        foreach ($trailFillers as $filler) {
-            $pattern = '/\s+' . preg_quote($filler, '/') . '$/iu';
-            $candidate = preg_replace($pattern, '', $candidate);
-        }
-
-        $candidate = trim(preg_replace('/\s+/', ' ', $candidate) ?? '');
-
-        if (mb_strlen($candidate) < 2) return null;
-
-        // Must contain at least one letter
-        if (!preg_match('/[a-zA-ZÀ-žऀ-ॿ]/u', $candidate)) return null;
-
-        // Blacklist check (whole string)
-        if (in_array(mb_strtolower($candidate, 'UTF-8'), self::NAME_BLACKLIST, true)) {
+        if (empty($apiKey)) {
             return null;
         }
 
-        // Each word individually must not be blacklisted
-        $words = preg_split('/\s+/', $candidate, -1, PREG_SPLIT_NO_EMPTY);
-        foreach ($words as $w) {
-            if (in_array(mb_strtolower($w, 'UTF-8'), self::NAME_BLACKLIST, true)) {
+        try {
+            $response = Http::withToken($apiKey)
+                ->timeout(8)         // short — never block the main chat response
+                ->connectTimeout(4)
+                ->post('https://api.groqcloud.com/openai/v1/chat/completions', [
+                    'model'       => 'llama-3.3-70b-versatile',
+                    'messages'    => [
+                        [
+                            'role'    => 'system',
+                            'content' => self::NAME_EXTRACTION_PROMPT,
+                        ],
+                        [
+                            'role'    => 'user',
+                            'content' => "Extract the visitor's name from this conversation:\n\n" . $conversationText,
+                        ],
+                    ],
+                    'max_tokens'  => 10,   // a name needs 2–4 tokens at most
+                    'temperature' => 0,    // fully deterministic — no creativity needed
+                ]);
+
+            if ($response->failed()) {
+                Log::warning('ChatHistoryService: Name extraction API failed.', [
+                    'status' => $response->status(),
+                ]);
                 return null;
             }
+
+            $raw = trim($response->json('choices.0.message.content') ?? '');
+
+            return $this->parseNameResponse($raw);
+
+        } catch (\Exception $e) {
+            // Never let this secondary call break the main chat flow
+            Log::warning('ChatHistoryService: Name extraction exception.', [
+                'error' => $e->getMessage(),
+            ]);
+            return null;
+        }
+    }
+
+    /**
+     * Validates and cleans the raw AI response.
+     * Returns a properly capitalised name string, or null.
+     */
+    private function parseNameResponse(string $raw): ?string
+    {
+        if (empty($raw)) {
+            return null;
         }
 
-        // Max 3 words — longer is probably not a name
-        if (count($words) > 3) return null;
+        // Normalise the "no name" signal regardless of spacing/casing/punctuation
+        if (strtoupper(str_replace([' ', '_', '-'], '', $raw)) === 'NONAME') {
+            return null;
+        }
 
-        return $this->capitalizeName($candidate);
+        // Strip everything except letters, spaces, apostrophes, hyphens, and Devanagari
+        $cleaned = trim(preg_replace('/[^a-zA-ZÀ-žऀ-ॿ\s\'\-]/u', '', $raw));
+        $cleaned = preg_replace('/\s+/', ' ', $cleaned);
+
+        if (mb_strlen($cleaned) < 2) {
+            return null;
+        }
+
+        // Must be 1–3 words — anything longer is not a name
+        $words = explode(' ', $cleaned);
+        if (count($words) > 3) {
+            return null;
+        }
+
+        return $this->capitalizeName($cleaned);
     }
+
+    // ── Helpers ───────────────────────────────────────────────────────────
 
     private function capitalizeName(string $str): string
     {
@@ -374,7 +300,6 @@ class ChatHistoryService
         $capitalized = array_map(function (string $part): string {
             $part = mb_strtolower($part, 'UTF-8');
 
-            // Prefix-aware capitalisation (Mc/Mac/O')
             foreach (['Mc' => 2, 'Mac' => 3, "O'" => 2] as $prefix => $len) {
                 if (stripos($part, strtolower($prefix)) === 0) {
                     return $prefix . mb_convert_case(mb_substr($part, $len), MB_CASE_TITLE, 'UTF-8');
@@ -387,16 +312,15 @@ class ChatHistoryService
         return implode(' ', $capitalized);
     }
 
-    // ── Token estimate ────────────────────────────────────────────────────
-
     private function estimateTokens(string $text): int
     {
         return (int) ceil(mb_strlen($text) / 4);
     }
+
     public function setMetaFlag($session, string $key, mixed $value): void
     {
-        $session->refresh(); // ensure fresh state
-        $meta = $session->meta ?? [];
+        $session->refresh();
+        $meta       = $session->meta ?? [];
         $meta[$key] = $value;
         $session->update(['meta' => $meta]);
     }

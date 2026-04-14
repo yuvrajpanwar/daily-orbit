@@ -1182,13 +1182,13 @@
 
 
 <!-- FAB -->
-<button id="uv-fab" aria-label="Open UV chat" title="Chat with UV">
+{{-- <button id="uv-fab" aria-label="Open UV chat" title="Chat with UV">
   <img
     src="{{ asset('assets/img/uv.jpg') }}"
     alt="UV"
     onerror="this.style.display='none'; this.parentElement.innerHTML += '<svg width=\'28\' height=\'28\' fill=\'none\' viewBox=\'0 0 24 24\'><path fill=\'%23fff\' d=\'M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14H9V8h2v8zm4 0h-2V8h2v8z\'/></svg>'"
   />
-</button>
+</button> --}}
 
 <!-- Chat Window -->
 <div id="uv-chat-window" role="dialog" aria-label="UV Chat" aria-modal="true">
@@ -1270,6 +1270,7 @@
 
 </div>
 
+
 <!-- ══════════════════════════════════════
      JAVASCRIPT
 ══════════════════════════════════════ -->
@@ -1291,10 +1292,10 @@
   const typingRow   = document.getElementById('uv-typing-row');
 
   // ── Config ────────────────────────────────────────────────
-  const ENDPOINT         = '/chatbot/message';
-  const HISTORY_ENDPOINT = '/chatbot/history';
-  const RESET_ENDPOINT   = '/chatbot/reset';
-  const AI_AVATAR        = "{{ asset('assets/img/uv.jpg') }}";
+  const ENDPOINT         = 'https://dailyorbit.in/chatbot/message';
+  const HISTORY_ENDPOINT = 'https://dailyorbit.in/chatbot/history';
+  const RESET_ENDPOINT   = 'https://dailyorbit.in/chatbot/reset';
+  const AI_AVATAR        = "/portfolio/assets/img/uv.jpg";
   const GREETING         = "Heyy! mera naam hai UV 😎 \ntumhara naam kya hai?";
   const CSRF_TOKEN       = document.querySelector('meta[name="csrf-token"]')?.content ?? '';
 
@@ -1303,6 +1304,7 @@
   let isWaiting     = false;
   let greetingDone  = false;
   let confirmActive = false;
+  let sessionToken  = localStorage.getItem('uv_chat_session') ?? null;
 
   // ── Helpers ───────────────────────────────────────────────
   function getTime() {
@@ -1412,8 +1414,7 @@
         headers: {
           'Accept':           'application/json',
           'X-Requested-With': 'XMLHttpRequest',
-        },
-        credentials: 'same-origin',
+        }
       });
 
       if (!res.ok) return;
@@ -1446,15 +1447,19 @@
 
     try {
       await fetch(RESET_ENDPOINT, {
-        method:  'POST',
-        headers: {
-          'Content-Type':     'application/json',
-          'Accept':           'application/json',
-          'X-CSRF-TOKEN':     CSRF_TOKEN,
-          'X-Requested-With': 'XMLHttpRequest',
-        },
-        credentials: 'same-origin',
+          method:  'POST',
+          headers: {
+              'Content-Type':     'application/json',
+              'Accept':           'application/json',
+              'X-Requested-With': 'XMLHttpRequest',
+              'X-Chat-Session':   sessionToken ?? '',   // ← add this
+          },
+          // credentials: 'same-origin',   ← remove this line
       });
+
+      // ← add these two lines after the fetch (before UI clear)
+      sessionToken = null;
+      localStorage.removeItem('uv_chat_session');
     } catch (err) {
       console.warn('[UV Chatbot] Reset request failed:', err);
     }
@@ -1509,18 +1514,24 @@
 
     try {
       const response = await fetch(ENDPOINT, {
-        method:  'POST',
-        headers: {
-          'Content-Type':     'application/json',
-          'Accept':           'application/json',
-          'X-CSRF-TOKEN':     CSRF_TOKEN,
-          'X-Requested-With': 'XMLHttpRequest',
-        },
-        credentials: 'same-origin',
-        body: JSON.stringify({ message: text }),
+          method:  'POST',
+          headers: {
+              'Content-Type':     'application/json',
+              'Accept':           'application/json',
+              'X-Requested-With': 'XMLHttpRequest',
+              'X-Chat-Session':   sessionToken ?? '',   // ← add this
+          },
+          // credentials: 'same-origin',   ← remove this line
+          body: JSON.stringify({ message: text }),
       });
 
       const data = await response.json();
+
+      // ← add this block
+      if (data.session_token) {
+          sessionToken = data.session_token;
+          localStorage.setItem('uv_chat_session', sessionToken);
+      }
       hideTyping();
 
       if (!response.ok) {
@@ -1617,6 +1628,8 @@
 
 })();
 </script>
+
+
 
 
 
