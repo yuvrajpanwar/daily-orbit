@@ -1,4 +1,25 @@
 User-agent: *
 Allow: /
 
+# Block admin panel
+Disallow: /admin/
+
+# Block AJAX/API routes — not real pages
+Disallow: /similar-posts/
+Disallow: /popular-posts
+Disallow: /trending-posts
+Disallow: /most-recent-posts
+Disallow: /most-popular-posts
+Disallow: /you-might-like-posts
+Disallow: /category/*/posts
+Disallow: /chatbot/
+Disallow: /author/*/load-more
+
+# Block auth & account pages
+Disallow: /account
+Disallow: /home
+Disallow: /verify-email/
+Disallow: /send-verification-link
+Disallow: /create-storage-link
+
 Sitemap: https://dailyorbit.in/sitemap.xml
