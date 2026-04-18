@@ -25,6 +25,11 @@ Route::get('/sitemap-posts.xml',      [App\Http\Controllers\SitemapController::c
 Route::get('/sitemap-static.xml',     [App\Http\Controllers\SitemapController::class, 'staticPages']);
 Route::get('/sitemap-categories.xml', [App\Http\Controllers\SitemapController::class, 'categories']);
 
+// Catch common crawler junk URLs and return proper 404
+Route::get('/index.html', function () { abort(404); });
+Route::get('/index.php', function () { abort(404); });
+Route::get('/wp-admin', function () { abort(404); });
+Route::get('/wp-login.php', function () { abort(404); });
 
 
 Route::post('/chatbot/message', [ChatbotController::class, 'message'])->middleware(['throttle:60,1']); // 60 requests per minute

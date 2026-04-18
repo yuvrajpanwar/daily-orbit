@@ -170,7 +170,7 @@ class PostController extends Controller
             return $post;
         });
 
-        return response()->json($posts);
+        return response()->json($posts)->header('X-Robots-Tag', 'noindex, nofollow');
     }
 
 
@@ -186,7 +186,7 @@ class PostController extends Controller
             ->first();
 
         if (!$current) {
-            return response()->json([], 404);
+            return response()->json([], 404)->header('X-Robots-Tag', 'noindex, nofollow');
         }
 
         $categoryId = $current->category_id;
@@ -248,7 +248,7 @@ class PostController extends Controller
             return $p;
         });
 
-        return response()->json($posts);
+        return response()->json($posts)->header('X-Robots-Tag', 'noindex, nofollow');
     }
 
 
@@ -284,7 +284,7 @@ class PostController extends Controller
             return $post;
         });
 
-        return response()->json($posts);
+        return response()->json($posts)->header('X-Robots-Tag', 'noindex, nofollow');
     }
 
 
@@ -317,7 +317,7 @@ class PostController extends Controller
             return $post;
         });
 
-        return response()->json($posts);
+        return response()->json($posts)->header('X-Robots-Tag', 'noindex, nofollow');
     }
 
 
@@ -350,7 +350,7 @@ class PostController extends Controller
             return $post;
         });
 
-        return response()->json($posts);
+        return response()->json($posts)->header('X-Robots-Tag', 'noindex, nofollow');
     }
 
 
@@ -384,7 +384,7 @@ class PostController extends Controller
             return $post;
         });
 
-        return response()->json($posts);
+        return response()->json($posts)->header('X-Robots-Tag', 'noindex, nofollow');
     }
 
 

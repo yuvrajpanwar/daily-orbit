@@ -4,6 +4,7 @@
         <meta charset="utf-8">
         <meta http-equiv="x-ua-compatible" content="ie=edge">
         
+        
         <!-- 1. Proper Title (50–60 chars) -->
         <title>@yield('title', 'Daily Orbit - Latest Trending News, Breaking Stories & Updates')</title>
         
@@ -20,7 +21,7 @@
         <meta name="robots" content="index, follow">
     
         <!-- 5. Canonical URL (prevents duplicate issues) -->
-        <link rel="canonical" href="{{ request()->url() }}">
+        <link rel="canonical" href="{{ url()->current() }}">
     
         <!-- 6. Favicon (you have it – good) -->
         <link rel="shortcut icon" type="image/x-icon" href="{{ asset('/assets/img/favicon.ico') }}">
@@ -29,7 +30,7 @@
         <meta property="og:title" content="@yield('title', 'Daily Orbit - Latest Trending News')">
         <meta property="og:description" content="@yield('meta_description', 'Daily Orbit brings you the latest trending news...')">
         <meta property="og:type" content="website">
-        <meta property="og:url" content="{{ request()->url() }}">
+        <meta property="og:url" content="{{ url()->current() }}">
         <meta property="og:image" content="{{ asset('assets/img/og-image.jpg') }}"> <!-- Create this 1200×630 image -->
         <meta property="og:site_name" content="Daily Orbit">
         <meta name="twitter:card" content="summary_large_image">
