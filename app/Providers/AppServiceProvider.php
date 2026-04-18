@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use App\Models\Category;
 use Illuminate\Support\Facades\View;
+use App\Models\Post;  
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Auth\Middleware\RedirectIfAuthenticated;
 
@@ -26,5 +27,6 @@ class AppServiceProvider extends ServiceProvider
         View::composer('layouts.app', function ($view) {
             $view->with('categories', Category::select('name')->where('is_deleted', 0)->where('is_active', 1)->get());
         });
+        Post::observe(\App\Observers\PostObserver::class);
     }
 }

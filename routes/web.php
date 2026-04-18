@@ -20,6 +20,10 @@ Route::get('/create-storage-link', function () {
 });
 
 Route::get('/', [App\Http\Controllers\HomeController::class, 'index']);
+Route::get('/sitemap.xml',            [App\Http\Controllers\SitemapController::class, 'index']);
+Route::get('/sitemap-posts.xml',      [App\Http\Controllers\SitemapController::class, 'posts']);
+Route::get('/sitemap-static.xml',     [App\Http\Controllers\SitemapController::class, 'staticPages']);
+Route::get('/sitemap-categories.xml', [App\Http\Controllers\SitemapController::class, 'categories']);
 
 
 
