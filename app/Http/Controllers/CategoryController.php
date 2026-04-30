@@ -65,8 +65,8 @@ class CategoryController extends Controller
             ->get();
 
         $posts = $posts->map(function ($post) {
-            $post->title = Str::limit($post->title, 70, '...');
-            $post->excerpt = Str::limit(strip_tags($post->description), 110, '...');
+            $post->title = Str::limit($post->title, 200, '...');
+            $post->excerpt = Str::limit(strip_tags($post->description), 200, '...');
             $post->image = asset('storage/' . $post->thumbnail);
             $post->post_url = route('post.details', $post->slug);
             $post->date = \Carbon\Carbon::parse($post->time)->format('M d, Y');
@@ -98,8 +98,8 @@ class CategoryController extends Controller
             ->limit($limit)
             ->get()
             ->map(function ($post) {
-                $post->title = Str::limit($post->title, 70, '...');
-                $post->excerpt = Str::limit(strip_tags($post->description), 110, '...');
+                $post->title = Str::limit($post->title, 200, '...');
+                $post->excerpt = Str::limit(strip_tags($post->description), 200, '...');
                 $post->image = asset('storage/' . $post->thumbnail);
                 $post->post_url = route('post.details', $post->slug);
                 $post->date = \Carbon\Carbon::parse($post->time)->format('M d, Y');

@@ -131,7 +131,7 @@ class PostController extends Controller
 
         // Merge and trim titles
         $similarPosts = $sameCategoryPosts->merge($otherPosts)->map(function ($item) {
-            $item->title = Str::limit($item->title, 50, '...');
+            $item->title = Str::limit($item->title, 200, '...');
             return $item;
         });
 
@@ -164,7 +164,7 @@ class PostController extends Controller
 
         // Format response
         $posts = $posts->map(function ($post) {
-            $post->title = Str::limit($post->title, 60, '...');
+            $post->title = Str::limit($post->title, 200, '...');
             $post->time_ago = \Carbon\Carbon::parse($post->created_at)->diffForHumans();
             $post->image = asset('storage/' . $post->thumbnail);
             return $post;
@@ -241,7 +241,7 @@ class PostController extends Controller
 
         // 4. Merge + format
         $posts = $same->merge($others)->map(function ($p) {
-            $p->title      = Str::limit($p->title, 50, '...');
+            $p->title      = Str::limit($p->title, 200, '...');
             $p->image      = asset('storage/' . $p->thumbnail);
             $p->time_ago   = \Carbon\Carbon::parse($p->created_at)->diffForHumans();
             $p->post_url   = route('post.details', $p->slug);
@@ -276,7 +276,7 @@ class PostController extends Controller
             ->get();
 
         $posts = $posts->map(function ($post) {
-            $post->title       = Str::limit($post->title, 70, '...');
+            $post->title       = Str::limit($post->title, 200, '...');
             $post->excerpt     = Str::limit(strip_tags($post->description), 120, '...');
             $post->image       = asset('storage/' . $post->thumbnail);
             $post->post_url    = route('post.details', $post->slug);
@@ -309,7 +309,7 @@ class PostController extends Controller
             ->get();
 
         $posts = $posts->map(function ($post, $index) {
-            $post->title     = Str::limit($post->title, $index === 0 ? 60 : 70, '...');
+            $post->title     = Str::limit($post->title, $index === 0 ? 200 : 200, '...');
             $post->image     = asset('storage/' . $post->thumbnail);
             $post->post_url  = route('post.details', $post->slug);
             $post->time_ago  = \Carbon\Carbon::parse($post->created_at)->diffForHumans();
@@ -343,7 +343,7 @@ class PostController extends Controller
             ->get();
 
         $posts = $posts->map(function ($post) {
-            $post->title     = Str::limit($post->title, 70, '...');
+            $post->title     = Str::limit($post->title, 200, '...');
             $post->image     = asset('storage/' . $post->thumbnail);
             $post->post_url  = route('post.details', $post->slug);
             $post->date      = \Carbon\Carbon::parse($post->created_at)->format('d M Y');
@@ -377,7 +377,7 @@ class PostController extends Controller
             ->get();
 
         $posts = $posts->map(function ($post) {
-            $post->title     = Str::limit($post->title, 60, '...');
+            $post->title     = Str::limit($post->title, 200, '...');
             $post->image     = asset('storage/' . $post->thumbnail);
             $post->post_url  = route('post.details', $post->slug);
             $post->time_ago  = \Carbon\Carbon::parse($post->created_at)->diffForHumans();
