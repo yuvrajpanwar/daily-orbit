@@ -16,24 +16,27 @@
     <link rel="stylesheet" href="{{ asset('assets/css/post-details.min.css') }}">
     <script type='text/javascript' src='https://platform-api.sharethis.com/js/sharethis.js#property=690cc0de38de9793e85fcc81&product=sop' async='async'></script>
     <script type="application/ld+json">
-        {
-            "@context": "https://schema.org",
-            "@type": "Article",
-            "headline": "{{ addslashes($post->title) }}",
-            "image": "{{ asset('storage/' . $post->thumbnail) }}",
-            "author": {
-                "@type": "Person",
-                "name": "{{ $post->author_name ?? 'Daily Orbit Team' }}"
-            },
-            "publisher": {
-                "@type": "Organization",
-                "name": "Daily Orbit",
-                "logo": "{{ asset('assets/img/logo/logo-circle.png') }}"
-            },
-            "datePublished": "{{ $post->time ? \Carbon\Carbon::parse($post->time)->toIso8601String() : '' }}",
-            "dateModified": "{{ $post->updated_at ? \Carbon\Carbon::parse($post->updated_at)->toIso8601String() : '' }}",
-            "description": "{{ addslashes(Str::limit(strip_tags($post->description ?? ''), 200)) }}"
-        }
+        {!! json_encode([
+            "@context" => "https://schema.org",
+            "@type" => "Article",
+            "headline" => $post->title,
+            "image" => asset('storage/' . $post->thumbnail),
+            "author" => [
+                "@type" => "Person",
+                "name" => $post->author_name ?? 'Daily Orbit Team',
+            ],
+            "publisher" => [
+                "@type" => "Organization",
+                "name" => "Daily Orbit",
+                "logo" => [
+                    "@type" => "ImageObject",
+                    "url" => asset('assets/img/logo/logo-circle.png'),
+                ]
+            ],
+            "datePublished" => $post->time ? \Carbon\Carbon::parse($post->time)->toIso8601String() : null,
+            "dateModified" => $post->updated_at ? \Carbon\Carbon::parse($post->updated_at)->toIso8601String() : null,
+            "description" => Str::limit(strip_tags($post->description ?? ''), 200),
+        ], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) !!}
     </script>
     <style>
         .google-btn:hover{
