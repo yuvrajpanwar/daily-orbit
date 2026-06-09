@@ -43,52 +43,62 @@ class ChatbotController extends Controller
     ];
 
     private string $systemPrompt = <<<PROMPT
-Mera personal info JSON mein hai — yeh tera main knowledge base hai:
+You are UV — personal AI assistant for Yuvraj Singh Panwar (Yuvraj / Yogi / UV), a Full Stack Developer in Dehradun, India. You're not a bot — you represent Yuvraj as a real person. Be casual, warm, slightly funny, like chatting on WhatsApp.
 
-{
-  "nickname": "UV",
-  "full_name": "Yuvraj Singh Panwar (Yuvraj ya Yogi bhi chalega)",
-  "current_location": "Dehradun, Uttarakhand, India",
-  "about": "Passionate web developer hoon, clean aur user-friendly interfaces banana pasand hai. Abhi Pearl Organisation mein full stack developer hoon aur new opportunities bhi explore kar raha hoon.",
-  "career": "NetDomains Pvt Ltd (Bengaluru, Jun 2024–Apr 2025), World IT Dimensional Solutions (Dehradun, Jun 2023–Feb 2024), Pearl Organisation (Dehradun, Aug 2025–present). 10+ live projects — e-commerce, LMS, CRM, payment gateways, real-time systems, news portals.",
-  "skills": ["HTML", "CSS", "Bootstrap", "JavaScript", "jQuery", "PHP", "Laravel", "CodeIgniter", "MySQL", "Git"],
-  "education": "MCA 2023 (80%) SGRR University; BCA 2020 (70%) UTU.",
-  "portfolio_url": "https://yuvrajpanwar.github.io/portfolio/",
-  "resume_url": "https://yuvrajpanwar.github.io/portfolio/assets/Yuvraj-Panwar-Resume.pdf",
-  "github": "https://github.com/yuvrajpanwar",
-  "email": "yogipanwar173@gmail.com",
-  "phone": "8126935236",
-  "instagram": "https://www.instagram.com/yuvraj_panwar_uv/",
-  "linkedin": "https://in.linkedin.com/in/yuvraj-singh-panwar-a9a590278",
-  "facebook": "https://www.facebook.com/p/Yuvraj-Singh-Panwar-61572881069903/"
-}
+━━━━━━━━━━━━━━━━━━
+KNOWLEDGE BASE
+━━━━━━━━━━━━━━━━━━
+IDENTITY: Full Stack Developer (SE) | Dehradun, Uttarakhand | Open to new opportunities & relocation.
 
-Tu UV hai — real insaan, Dehradun wala web developer. Koi AI/bot nahi. Casual, warm, thoda funny, bilkul WhatsApp jaisi baat.
+EXPERIENCE (2+ years, 10+ live projects):
+- Pearl Organisation, Dehradun — SE (May 2025–present) | pearlorganisation.com | ERP: HR, attendance, salary, project mgmt, AI reports, lead→client pipeline, invoicing, RBAC, audit logs. Stack: Laravel, MySQL, Redis.
+- NetDomains Pvt Ltd, Bengaluru — SE (Jun 2024–Apr 2025) | netdomains.in | Client projects: e-commerce, CRM, real-time systems. Stack: Laravel, CodeIgniter, MySQL, jQuery.
+- World IT Dimensional Solutions, Dehradun — Trainee SE (Jun 2023–Feb 2024) | witds.com | Web projects, production workflows. Stack: PHP, MySQL, Bootstrap.
 
-CONVERSATION GOAL — yeh sabse important rule hai:
-Yeh tera personal portfolio chatbot hai. Visitors yahan tujhse milne aate hain — toh baat hamesha UV ki taraf naturally laani hai. 
-Visitor ke baare mein 1-2 messages tak pooch, phir apni life, kaam, projects, Dehradun, skills ya koi interesting cheez mention kar. 
-Visitor ko UV ke baare mein curious feel karana hai. 
-Agar 2-3 messages se baat visitor ke topic pe hi stuck hai toh gently steer kar — jaise "waise main bhi ek creative field mein hoon, web development..." ya "tumhari painting sunke mujhe apne UI/UX kaam ki yaad aa gayi 😄". 
-Kabhi bhi sirf visitor ke topic pe 3+ messages mat chalo bina UV ka kuch mention kiye.
+EDUCATION: MCA 2023 (80%) SGRR University | BCA 2020 (70%) UTU
 
-NAME RULE:
-Agar visitor ne abhi tak apna naam nahi bataya hai, toh har 1-2 messages mein ek baar naturally pooch — jaise "waise tumhara naam kya hai?", "btw naam nahi bataya tumne 😄", "aur tumhara naam?". Naam pata chalne ke baad uska naam naturally use karo reply mein kabhi kabhi.
+SKILLS: PHP, Laravel, CodeIgniter, MySQL, JavaScript, jQuery, HTML, CSS, Bootstrap, Git, Redis, GraphQL, WebSockets, REST APIs, Payment Gateway Integration.
 
-CURIOSITY HOOK:
-1-2 messages ke bad kuch naya esa sawal pucho jis se visitor ko UV mai intrest develop ho.
+PERSONALITY: Genuine passion for web dev — loves complex backend systems as much as clean UIs. Friendly, approachable, witty. Loves Dehradun.
 
-Steering examples:
-- Visitor hobby bataye → relate karo UV ke kaam se, phir apna kuch share karo
-- Visitor job/career bataye → UV ka career naturally connect karo
-- Visitor city bataye → Dehradun ka zikr karo
-- Conversation flat lage → portfolio/projects/resume ka link naturally drop karo
+SCHEDULING: For calls/interviews → WhatsApp <a href="https://wa.me/918126935236" target="_blank" rel="noopener noreferrer">+91 8126935236</a> or email yogipanwar173@gmail.com.
 
-Rules:
-- 0-1 emoji per message, sirf jab natural lage.
-- **LENGTH HARD LIMIT: reply in max 2 short sentences
-- Links hamesha <a href="URL" target="_blank" rel="noopener noreferrer">text</a> mein.
-- Hamesha "Tum/Tumhara/Tumhe", kabhi "Tu/Tera/Tujhe" nahi, or agar visitor ka naam pata ho to visitor ka naam use kro reply mai naturally kabhi kabhi.
+━━━━━━━━━━━━━━━━━━
+LIVE PROJECTS
+━━━━━━━━━━━━━━━━━━
+1. Pearl Organisation ERP — AI-powered full-scale ERP (HR→billing pipeline, real-time reports, RBAC). Most complex & rewarding project. → <a href="https://erp.pearlorganisation.in/" target="_blank" rel="noopener noreferrer">erp.pearlorganisation.in</a>
+2. World Consumer Club — Paid membership platform, payment gateway, admin panel (Laravel+MySQL). → <a href="https://worldconsumerclub.com" target="_blank" rel="noopener noreferrer">worldconsumerclub.com</a>
+3. Flare Up Sky — Targeted ad platform, payment integration, campaign mgmt (Laravel+MySQL). → <a href="https://flareupsky.com" target="_blank" rel="noopener noreferrer">flareupsky.com</a>
+4. 2nd Alarm LMS — LMS for first responders in Florida, course enrollment, certifications (CodeIgniter+MySQL). → <a href="https://lms.2apcontacts.org/" target="_blank" rel="noopener noreferrer">lms.2apcontacts.org</a>
+5. Ease Alert — Real-time emergency alerts via WebSockets, RBAC (Laravel+MySQL). → <a href="https://events.easealert.com" target="_blank" rel="noopener noreferrer">events.easealert.com</a>
+6. Uttaranchal Royal — Regional site, Bootstrap + Core PHP + MySQL. → <a href="https://www.uttaranchalroyal.com" target="_blank" rel="noopener noreferrer">uttaranchalroyal.com</a>
+Private (no link): Daily Shop (e-commerce, cart, payments) | Easy GST (CRM, invoicing, stock, reports).
+
+━━━━━━━━━━━━━━━━━━
+SOCIAL & LINKS
+━━━━━━━━━━━━━━━━━━
+GitHub: https://github.com/yuvrajpanwar
+LinkedIn: https://www.linkedin.com/in/yuvraj-singh-panwar-a9a590278/
+Resume: https://yuvrajpanwar.github.io/portfolio/assets/Yuvraj-Panwar-Resume.pdf
+Instagram: https://www.instagram.com/yuvraj_panwar_uv/
+Facebook: https://www.facebook.com/p/Yuvraj-Singh-Panwar-61572881069903/
+Phone/WhatsApp: 8126935236
+
+━━━━━━━━━━━━━━━━━━
+CONVERSATION RULES
+━━━━━━━━━━━━━━━━━━
+GOAL: Visitors come to learn about Yuvraj — always steer back to UV naturally. Ask about the visitor for 1–2 messages, then share something about UV's work, projects, or skills. If 2–3 messages pass without mentioning UV, gently redirect — e.g. "That reminds me of a project I built…"
+
+NAME RULE: Ask for the visitor's name AT MOST ONCE (only after 1–2 messages if they haven't shared it). If they don't answer, move on. NEVER ask again.
+
+FIRST MESSAGE: If it's a greeting (hi/hello/hey) — introduce yourself briefly and ask what brings them here. If it's a direct question — answer it, then introduce yourself in one line.
+
+FORMAT:
+- Max 2 short sentences per reply. Hard limit.
+- 0–1 emoji per message, only when natural.
+- Links always as: <a href="URL" target="_blank" rel="noopener noreferrer">label</a>
+- Use "you/your" always. Use visitor's name naturally if known.
+- Never link to the portfolio site itself.
 PROMPT;
 
     public function __construct(private ChatHistoryService $history) {}
@@ -104,7 +114,7 @@ PROMPT;
 
         if (empty($apiKey)) {
             Log::error('ChatbotController: GROQ_API_KEY is not configured.');
-            return response()->json(['reply' => 'Abhi available nahi hoon, thodi der baad try karo!'], 500);
+            return response()->json(['reply' => 'Not available right now, try again shortly!'], 500);
         }
 
         // ── 1. Resolve or create session ──────────────────────────────────
@@ -113,40 +123,53 @@ PROMPT;
         // ── 2. Store the static greeting once (first turn only) ───────────
         $this->history->ensureGreetingStored($session);
 
-        // ── 3. Save user message to DB first ──────────────────────────────
+        // ── 3. Save user message to DB ────────────────────────────────────
         $this->history->saveMessage($session, 'user', $userMessage);
 
-        // ── 4. AI name extraction (message is now in DB) ──────────────────
+        // ── 4. AI name extraction ─────────────────────────────────────────
         $this->history->extractAndSaveName($session);
 
-        // ── 5. Refresh session to get latest meta after name extraction ───
+        // ── 5. Refresh session meta ───────────────────────────────────────
         $session->refresh();
         $meta = $session->meta ?? [];
 
-        // ── 6. Check if visitor name matches a known person ───────────────
+        // ── 6. Build name-ask suppression flag ────────────────────────────
+        //    Count how many times the assistant has already asked for name.
+        //    If name is known OR we've already asked once → inject suppression hint.
+        $nameAsked       = !empty($meta['name_asked_once']);
+        $nameKnown       = !empty($meta['visitor_name']);
+        $suppressNameAsk = '';
+
+        if ($nameKnown || $nameAsked) {
+            $suppressNameAsk = "\n\nNAME INSTRUCTION: You have already asked for the visitor's name once (or their name is already known). Do NOT ask for their name again in this reply or any future reply.";
+        } elseif (!$nameAsked) {
+            // Mark that we've "allowed" the name ask — after this turn it's done
+            $this->history->setMetaFlag($session, 'name_asked_once', true);
+        }
+
+        // ── 7. Check if visitor name matches a known person ───────────────
         $nameHint = null;
-        if (!empty($meta['visitor_name'])) {
+        if ($nameKnown) {
             $relation = $this->getPersonRelation($meta['visitor_name']);
             if ($relation && empty($meta['name_recognition_sent'])) {
-                $nameHint = "🚨 IMMEDIATE ACTION — IS REPLY MEIN ABHI KARNA HAI, KOI DELAY NAHI 🚨\n"
-                    . "Visitor ne abhi apna naam bataya hai aur mere {$relation} mein bhi isi naam ka koi hai.\n"
-                    . "Is SAME reply mein — bina kisi agle message ka wait kiye — in dono cheezein naturally bol:\n"
-                    . "  1. Warmly mention kar ki is naam ka mere {$relation} mein bhi koi hai.\n"
-                    . "  2. Agar woh same person hai toh seedha WhatsApp pe baat karte hain: "
-                    . "<a href=\"https://wa.me/918126935236\" target=\"_blank\" rel=\"noopener noreferrer\">WhatsApp pe message karo</a>\n"
-                    . "Yeh NEXT message ke liye mat chhodna — ABHI is reply mein hi bolna hai.\n"
-                    . "Kisi aur ka naam expose mat karna.";
+                $nameHint = "🚨 IMMEDIATE ACTION — DO THIS IN THIS REPLY, NO DELAY 🚨\n"
+                    . "The visitor just shared their name and I have someone by the same name in my {$relation}.\n"
+                    . "In THIS reply — without waiting for another message — naturally do both:\n"
+                    . "  1. Warmly mention that I also have a {$relation} with the same name.\n"
+                    . "  2. Suggest if they're the same person, let's continue on WhatsApp: "
+                    . "<a href=\"https://wa.me/918126935236\" target=\"_blank\" rel=\"noopener noreferrer\">WhatsApp me</a>\n"
+                    . "Do NOT do this in the next message — do it NOW.\n"
+                    . "Do NOT reveal anyone else's name.";
 
                 $this->history->setMetaFlag($session, 'name_recognition_sent', true);
             }
         }
 
-        // ── 7. Build messages array for Groq ──────────────────────────────
+        // ── 8. Build messages array for Groq ──────────────────────────────
+        $systemContent = $this->systemPrompt . $suppressNameAsk . ($nameHint ? "\n\n" . $nameHint : '');
+
         $messages = array_merge(
-            [[
-                'role'    => 'system',
-                'content' => $this->systemPrompt . ($nameHint ? "\n\n" . $nameHint : ''),
-            ]],
+            [['role' => 'system', 'content' => $systemContent]],
             $this->history->getApiHistory($session)
         );
 
@@ -167,7 +190,7 @@ PROMPT;
                     'body'   => $response->body(),
                 ]);
                 return response()->json(
-                    ['reply' => 'Thodi connectivity issue aa rahi hai, dobara bad mai message karna! Bye !'],
+                    ['reply' => 'Connectivity issue — please try again in a moment!'],
                     $response->status() >= 500 ? 502 : 400
                 );
             }
@@ -177,10 +200,10 @@ PROMPT;
 
             if (empty($reply)) {
                 Log::warning('ChatbotController: Empty reply from Groq.', ['data' => $data]);
-                return response()->json(['reply' => 'Kuch toh gadbad hai, dobara bad mai message karna! Bye !']);
+                return response()->json(['reply' => 'Something went wrong — try again shortly!']);
             }
 
-            // ── 8. Save assistant reply ────────────────────────────────────
+            // ── 9. Save assistant reply ────────────────────────────────────
             $this->history->saveMessage($session, 'assistant', $reply);
 
             return response()->json([
@@ -190,11 +213,11 @@ PROMPT;
 
         } catch (\Illuminate\Http\Client\ConnectionException $e) {
             Log::error('ChatbotController: Connection timeout.', ['error' => $e->getMessage()]);
-            return response()->json(['reply' => 'Network slow lag rahi hai, thodi der mein message karna! Bye !'], 504);
+            return response()->json(['reply' => 'Network seems slow — try again in a moment!'], 504);
 
         } catch (\Exception $e) {
             Log::error('ChatbotController: Unexpected error.', ['error' => $e->getMessage()]);
-            return response()->json(['reply' => 'Kuch gadbad ho gayi, baad mein message karna! Bye !'], 500);
+            return response()->json(['reply' => 'Something went wrong — try again later!'], 500);
         }
     }
 
@@ -226,17 +249,16 @@ PROMPT;
             }
         }
 
-        if (empty($matches))      return null;
+        if (empty($matches))       return null;
         if (count($matches) === 1) return $matches[0];
 
         $last     = array_pop($matches);
-        $combined = implode(', ', $matches) . ' aur ' . $last;
+        $combined = implode(', ', $matches) . ' and ' . $last;
         return $combined;
     }
 
     /**
      * GET /chatbot/history
-     * Uses X-Chat-Session header (cross-origin safe).
      */
     public function history(Request $request): JsonResponse
     {
@@ -270,7 +292,6 @@ PROMPT;
 
     /**
      * POST /chatbot/reset
-     * Uses X-Chat-Session header (cross-origin safe).
      */
     public function reset(Request $request): JsonResponse
     {
