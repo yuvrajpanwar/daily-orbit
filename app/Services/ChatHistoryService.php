@@ -42,7 +42,9 @@ PROMPT;
     public function resolveSession(Request $request): ChatSession
     {
         $key = $request->header('X-Chat-Session') ?? $request->input('session_token');
-
+        \Log::info('session_key before/after save', [
+            'before' => $key,
+                    ]);
         if ($key) {
             $session = ChatSession::where('session_key', $key)
                 ->whereNull('ended_at')
@@ -60,7 +62,10 @@ PROMPT;
                     return $session;
                 }
         }
-
+        \Log::info('session_key before/after save', [
+            
+            'after'  => $key,
+        ]);
         return $this->createSession($request);
     }
 
