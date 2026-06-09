@@ -49,14 +49,16 @@ PROMPT;
                 ->where('last_active_at', '>=', now()->subMinutes(self::SESSION_TIMEOUT_MINUTES))
                 ->first();
 
-            if ($session) {
-                // FIX: use explicit column assignment instead of touch()
-                // touch() only works on columns listed in the model's $touches array.
-                // Direct assignment + save() always persists correctly.
-                $session->last_active_at = now();
-                $session->save();
-                return $session;
-            }
+                if ($session) {
+                    $before = $session->session_key;
+                    $session->last_active_at = now();
+                    $session->save();
+                    \Log::info('session_key before/after save', [
+                        'before' => $before,
+                        'after'  => $session->session_key,
+                    ]);
+                    return $session;
+                }
         }
 
         return $this->createSession($request);
