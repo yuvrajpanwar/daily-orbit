@@ -48,7 +48,7 @@ PROMPT;
         if ($key) {
             $session = ChatSession::where('session_key', $key)
                 ->whereNull('ended_at')
-                ->where('last_active_at', '>=', now()->subMinutes(self::SESSION_TIMEOUT_MINUTES))
+                // ->where('last_active_at', '>=', now()->subMinutes(self::SESSION_TIMEOUT_MINUTES))
                 ->first();
 
                 if ($session) {
