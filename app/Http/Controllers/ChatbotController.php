@@ -123,31 +123,28 @@ PROMPT;
         // ── 2. Store the static greeting once (first turn only) ───────────
         $this->history->ensureGreetingStored($session);
 
-        // ── 3. Save user message to DB ────────────────────────────────────
+        // ── 3. Save user message ──────────────────────────────────────────
         $this->history->saveMessage($session, 'user', $userMessage);
 
-        // ── 4. AI name extraction ─────────────────────────────────────────
+        // ── 4. AI name extraction (runs after message is saved) ───────────
         $this->history->extractAndSaveName($session);
 
-        // ── 5. Refresh session meta ───────────────────────────────────────
+        // ── 5. Refresh session to get latest meta ─────────────────────────
         $session->refresh();
-        $meta = $session->meta ?? [];
+        $meta      = $session->meta ?? [];
+        $nameKnown = !empty($meta['visitor_name']);
+        $nameAsked = !empty($meta['name_asked_once']);
 
-        // ── 6. Build name-ask suppression flag ────────────────────────────
-        //    Count how many times the assistant has already asked for name.
-        //    If name is known OR we've already asked once → inject suppression hint.
-        $nameAsked       = !empty($meta['name_asked_once']);
-        $nameKnown       = !empty($meta['visitor_name']);
+        // ── 6. Name-ask suppression (written AFTER messages are saved) ─────
         $suppressNameAsk = '';
-
         if ($nameKnown || $nameAsked) {
             $suppressNameAsk = "\n\nNAME INSTRUCTION: You have already asked for the visitor's name once (or their name is already known). Do NOT ask for their name again in this reply or any future reply.";
-        } elseif (!$nameAsked) {
-            // Mark that we've "allowed" the name ask — after this turn it's done
+        } else {
+            // Allow the ask this turn, then permanently lock it
             $this->history->setMetaFlag($session, 'name_asked_once', true);
         }
 
-        // ── 7. Check if visitor name matches a known person ───────────────
+        // ── 7. Known-person name recognition hint ─────────────────────────
         $nameHint = null;
         if ($nameKnown) {
             $relation = $this->getPersonRelation($meta['visitor_name']);
@@ -165,7 +162,7 @@ PROMPT;
             }
         }
 
-        // ── 8. Build messages array for Groq ──────────────────────────────
+        // ── 8. Build messages for Groq ────────────────────────────────────
         $systemContent = $this->systemPrompt . $suppressNameAsk . ($nameHint ? "\n\n" . $nameHint : '');
 
         $messages = array_merge(
@@ -228,7 +225,6 @@ PROMPT;
             'UTF-8'
         );
 
-        // Normalize repeated chars: "nidhiiii" → "nidhi", "aaayush" → "ayush"
         $normalized = preg_replace('/(.)\1{2,}/', '$1', rtrim($first, '0123456789'));
 
         $labels = [
@@ -257,9 +253,6 @@ PROMPT;
         return $combined;
     }
 
-    /**
-     * GET /chatbot/history
-     */
     public function history(Request $request): JsonResponse
     {
         $key = $request->header('X-Chat-Session');
@@ -290,9 +283,6 @@ PROMPT;
         return response()->json(['messages' => $messages]);
     }
 
-    /**
-     * POST /chatbot/reset
-     */
     public function reset(Request $request): JsonResponse
     {
         $key = $request->header('X-Chat-Session');

@@ -13,9 +13,9 @@ class ChatHistoryService
 {
     private const MAX_HISTORY             = 12;
     private const SESSION_TIMEOUT_MINUTES = 30;
-    private const NAME_EXTRACTION_EVERY   = 2;  // run AI extraction every N user messages until name found
+    private const NAME_EXTRACTION_EVERY   = 2;
 
-    private const STATIC_GREETING = "Heyy! mera naam hai UV 😎 \ntumhara naam kya hai?";
+    private const STATIC_GREETING = "Hey! my name is UV 😎";
 
     private const NAME_EXTRACTION_PROMPT = <<<PROMPT
 You are a name extractor. Your ONLY job is to find the visitor's real personal name from the conversation.
@@ -50,7 +50,11 @@ PROMPT;
                 ->first();
 
             if ($session) {
-                $session->touch('last_active_at');
+                // FIX: use explicit column assignment instead of touch()
+                // touch() only works on columns listed in the model's $touches array.
+                // Direct assignment + save() always persists correctly.
+                $session->last_active_at = now();
+                $session->save();
                 return $session;
             }
         }
@@ -60,10 +64,8 @@ PROMPT;
 
     private function createSession(Request $request): ChatSession
     {
-        $key = Str::uuid()->toString();
-
         return ChatSession::create([
-            'session_key'    => $key,
+            'session_key'    => Str::uuid()->toString(),
             'started_at'     => now(),
             'last_active_at' => now(),
             'ip_address'     => $request->ip(),
@@ -85,11 +87,6 @@ PROMPT;
         ]);
     }
 
-    /**
-     * Stores the static frontend greeting as the very first assistant message
-     * so the AI always sees a complete conversation history.
-     * Idempotent — checks for existing messages first.
-     */
     public function ensureGreetingStored(ChatSession $session): void
     {
         $hasMessages = ChatMessage::where('session_id', $session->id)->exists();
@@ -119,7 +116,7 @@ PROMPT;
         $meta   = $session->meta ?? [];
         $anchor = [];
 
-        // If visitor name is known but has scrolled out of the history window,
+        // If the visitor name has scrolled out of the context window,
         // inject a tiny synthetic exchange so the AI always remembers it.
         if (!empty($meta['visitor_name'])) {
             $name    = $meta['visitor_name'];
@@ -128,7 +125,7 @@ PROMPT;
             );
 
             if (!$hasName) {
-                $anchor[] = ['role' => 'user',      'content' => "Mera naam {$name} hai."];
+                $anchor[] = ['role' => 'user',      'content' => "My name is {$name}."];
                 $anchor[] = ['role' => 'assistant',  'content' => "Got it, {$name}! 😄"];
             }
         }
@@ -141,37 +138,24 @@ PROMPT;
         return array_merge($anchor, $history);
     }
 
-    // ── Name extraction — AI powered ──────────────────────────────────────
+    // ── Name extraction ───────────────────────────────────────────────────
 
-    /**
-     * Called AFTER saveMessage('user') in the controller — so the user's
-     * message is already persisted in the DB when this runs.
-     *
-     * Runs on:
-     *   - The very first user message (count === 1)
-     *   - Then every NAME_EXTRACTION_EVERY messages
-     *   - Stops permanently once a name is found or after 10 user messages
-     */
     public function extractAndSaveName(ChatSession $session): void
     {
         $meta = $session->meta ?? [];
 
-        // Already have a confirmed name — nothing to do
         if (!empty($meta['visitor_name']) && mb_strlen($meta['visitor_name']) >= 2) {
             return;
         }
 
-        // Permanently stopped — no more attempts
         if (!empty($meta['name_extraction_done'])) {
             return;
         }
 
-        // Count all user messages now (current message already saved)
         $userMessageCount = ChatMessage::where('session_id', $session->id)
             ->where('role', 'user')
             ->count();
 
-        // Run on message 1, then every N messages
         $shouldRun = ($userMessageCount === 1)
             || ($userMessageCount % self::NAME_EXTRACTION_EVERY === 0);
 
@@ -179,7 +163,6 @@ PROMPT;
             return;
         }
 
-        // Build full conversation text from DB (everything already saved)
         $history = ChatMessage::where('session_id', $session->id)
             ->orderBy('sent_at', 'asc')
             ->get()
@@ -188,28 +171,22 @@ PROMPT;
 
         $name = $this->callAiForName($history);
 
-        // Refresh meta before writing to avoid overwriting parallel updates
         $session->refresh();
         $meta = $session->meta ?? [];
 
         if ($name !== null) {
             $meta['visitor_name']         = $name;
-            $meta['name_extraction_done'] = true;  // stop all future extractions
+            $meta['name_extraction_done'] = true;
             $session->update(['meta' => $meta]);
             return;
         }
 
-        // Hard stop after 10 user messages even if no name was ever found
         if ($userMessageCount >= 10) {
             $meta['name_extraction_done'] = true;
             $session->update(['meta' => $meta]);
         }
     }
 
-    /**
-     * Fires a lean secondary Groq API call with a strict name-extraction prompt.
-     * Returns the cleaned name string, or null if no name found / on any error.
-     */
     private function callAiForName(string $conversationText): ?string
     {
         $apiKey = config('services.grok.api_key');
@@ -219,10 +196,12 @@ PROMPT;
         }
 
         try {
+            // FIX: was 'api.groqcloud.com' — that domain does not exist.
+            // Correct Groq endpoint is 'api.groq.com'.
             $response = Http::withToken($apiKey)
-                ->timeout(8)         // short — never block the main chat response
+                ->timeout(8)
                 ->connectTimeout(4)
-                ->post('https://api.groqcloud.com/openai/v1/chat/completions', [
+                ->post('https://api.groq.com/openai/v1/chat/completions', [
                     'model'       => 'llama-3.3-70b-versatile',
                     'messages'    => [
                         [
@@ -234,8 +213,8 @@ PROMPT;
                             'content' => "Extract the visitor's name from this conversation:\n\n" . $conversationText,
                         ],
                     ],
-                    'max_tokens'  => 10,   // a name needs 2–4 tokens at most
-                    'temperature' => 0,    // fully deterministic — no creativity needed
+                    'max_tokens'  => 10,
+                    'temperature' => 0,
                 ]);
 
             if ($response->failed()) {
@@ -250,7 +229,6 @@ PROMPT;
             return $this->parseNameResponse($raw);
 
         } catch (\Exception $e) {
-            // Never let this secondary call break the main chat flow
             Log::warning('ChatHistoryService: Name extraction exception.', [
                 'error' => $e->getMessage(),
             ]);
@@ -258,22 +236,16 @@ PROMPT;
         }
     }
 
-    /**
-     * Validates and cleans the raw AI response.
-     * Returns a properly capitalised name string, or null.
-     */
     private function parseNameResponse(string $raw): ?string
     {
         if (empty($raw)) {
             return null;
         }
 
-        // Normalise the "no name" signal regardless of spacing/casing/punctuation
         if (strtoupper(str_replace([' ', '_', '-'], '', $raw)) === 'NONAME') {
             return null;
         }
 
-        // Strip everything except letters, spaces, apostrophes, hyphens, and Devanagari
         $cleaned = trim(preg_replace('/[^a-zA-ZÀ-žऀ-ॿ\s\'\-]/u', '', $raw));
         $cleaned = preg_replace('/\s+/', ' ', $cleaned);
 
@@ -281,7 +253,6 @@ PROMPT;
             return null;
         }
 
-        // Must be 1–3 words — anything longer is not a name
         $words = explode(' ', $cleaned);
         if (count($words) > 3) {
             return null;
